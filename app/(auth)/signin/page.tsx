@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth"
 import { auth } from "@/lib/firebase/client"
 import Link from "next/link"
@@ -13,10 +13,19 @@ export default function SignInPage() {
   const [pass, setPass] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   async function emailSignIn(e: React.FormEvent) {
     e.preventDefault()
+    if (!auth) {
+      setError("Firebase is not configured. Please add environment variables.")
+      return
+    }
     setLoading(true)
     setError(null)
     try {
@@ -30,6 +39,10 @@ export default function SignInPage() {
   }
 
   async function googleSignIn() {
+    if (!auth) {
+      setError("Firebase is not configured. Please add environment variables.")
+      return
+    }
     setLoading(true)
     setError(null)
     try {
@@ -41,6 +54,10 @@ export default function SignInPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (!mounted) {
+    return null
   }
 
   return (

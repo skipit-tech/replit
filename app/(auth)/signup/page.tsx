@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth"
 import { auth, db } from "@/lib/firebase/client"
 import { setDoc, doc } from "firebase/firestore"
@@ -15,7 +15,12 @@ export default function SignUpPage() {
   const [confirmPass, setConfirmPass] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   async function emailSignUp(e: React.FormEvent) {
     e.preventDefault()
@@ -26,11 +31,15 @@ export default function SignUpPage() {
       return
     }
 
+    if (!auth || !db) {
+      setError("Firebase is not configured. Please add environment variables.")
+      return
+    }
+
     setLoading(true)
     try {
       const { user } = await createUserWithEmailAndPassword(auth, email, pass)
 
-      // Create user profile in Firestore
       await setDoc(doc(db, "profiles", user.uid), {
         id: user.uid,
         email: user.email,
@@ -52,13 +61,17 @@ export default function SignUpPage() {
   }
 
   async function googleSignUp() {
+    if (!auth || !db) {
+      setError("Firebase is not configured. Please add environment variables.")
+      return
+    }
+
     setLoading(true)
     setError(null)
     try {
       const provider = new GoogleAuthProvider()
       const { user } = await signInWithPopup(auth, provider)
 
-      // Create/update profile in Firestore
       await setDoc(
         doc(db, "profiles", user.uid),
         {
@@ -81,6 +94,10 @@ export default function SignUpPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (!mounted) {
+    return null
   }
 
   return (
