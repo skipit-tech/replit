@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState, useCallback, memo, useEffect } from "react"
-import { Home, Search, User, ChevronDown, LogOut, Mail, Sun, Moon } from "lucide-react"
+import { Home, Search, User, ChevronDown, LogOut, Mail, Sun, Moon } from 'lucide-react'
 import CircularTimer from "@/components/circular-timer"
 import { useI18n } from "@/i18n/I18nProvider"
 import type { Locale } from "@/i18n/translations"
@@ -325,6 +325,54 @@ export default function SettingsPage() {
       </header>
 
       <main role="main" id="main" className="max-w-6xl mx-auto px-4 py-8">
+        {/* Demo SKIP IT section */}
+        <section className="mb-8 p-8 bg-gradient-to-br from-[#E8F0FF] to-[#F0E8FF] dark:from-[#1a1654] dark:to-[#2d1f5e] rounded-3xl border-2 border-[#4A5FBA]/20 dark:border-[#6B9DFC]/20">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Demo SKIP IT.</h2>
+          <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
+            Explore different user experiences for investors and partner demos.
+          </p>
+          <div className="grid md:grid-cols-3 gap-4">
+            <Link
+              href="/demo/parent"
+              className="group p-6 rounded-2xl bg-white dark:bg-[#0D0B3B] border-2 border-gray-200 dark:border-gray-700 hover:border-[#4A5FBA] dark:hover:border-[#6B9DFC] transition shadow-lg hover:shadow-xl hover:scale-105 transform"
+            >
+              <div className="text-4xl mb-3">👨‍👩‍👧‍👦</div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-[#4A5FBA] dark:group-hover:text-[#6B9DFC] transition">
+                View as Parent
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Manage kids' viewing filters with gentle, trauma-informed controls.
+              </p>
+            </Link>
+
+            <Link
+              href="/demo/therapist"
+              className="group p-6 rounded-2xl bg-white dark:bg-[#0D0B3B] border-2 border-gray-200 dark:border-gray-700 hover:border-[#4A5FBA] dark:hover:border-[#6B9DFC] transition shadow-lg hover:shadow-xl hover:scale-105 transform"
+            >
+              <div className="text-4xl mb-3">🩺</div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-[#4A5FBA] dark:group-hover:text-[#6B9DFC] transition">
+                View as Therapist
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Set recommended filters aligned with client treatment plans.
+              </p>
+            </Link>
+
+            <Link
+              href="/school-admin"
+              className="group p-6 rounded-2xl bg-white dark:bg-[#0D0B3B] border-2 border-gray-200 dark:border-gray-700 hover:border-[#4A5FBA] dark:hover:border-[#6B9DFC] transition shadow-lg hover:shadow-xl hover:scale-105 transform"
+            >
+              <div className="text-4xl mb-3">🏫</div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-[#4A5FBA] dark:group-hover:text-[#6B9DFC] transition">
+                View as School Admin
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Manage content filters and access codes for school districts.
+              </p>
+            </Link>
+          </div>
+        </section>
+
         <div className="grid md:grid-cols-[320px_1fr] gap-6">
           {/* Profile Sidebar */}
           <ProfileSidebar

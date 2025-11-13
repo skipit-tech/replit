@@ -1,8 +1,8 @@
 "use client"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams } from 'next/navigation'
 import Image from "next/image"
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 
 const kidsProfiles = [
   { id: 1, name: "Sophia", grade: 4, avatar: "/kids/bunny-party.png" },
@@ -13,98 +13,108 @@ const kidsProfiles = [
   { id: 6, name: "Noah", grade: 1, avatar: "/kids/bunny-party.png" },
 ]
 
+type CategoryId =
+  | "movies"
+  | "feel-good"
+  | "ocean-friends"
+  | "animals-nature"
+  | "adventure"
+  | "new-popular"
+
+type Movie = {
+  id: number
+  title: string
+  poster?: string
+  color?: string
+  desc: string
+  tags: CategoryId[]
+}
+
 const categories = [
-  { id: 1, name: "Movies", icon: "🎬", color: "#FF6B9D" },
-  { id: 2, name: "Feel-Good Stories", icon: "🧠", color: "#FFA94D" },
-  { id: 3, name: "Ocean Friends", icon: "🐠", color: "#4ECDC4" },
-  { id: 4, name: "Animals & Nature", icon: "🐼", color: "#95E1D3" },
-  { id: 5, name: "Adventure", icon: "⭐", color: "#FFE66D" },
-  { id: 6, name: "New & Popular", icon: "🍿", color: "#A8E6CF" },
+  { id: "movies" as CategoryId, name: "Movies", icon: "🎬", color: "#FF6B9D" },
+  { id: "feel-good" as CategoryId, name: "Feel-Good Stories", icon: "🧠", color: "#FFA94D" },
+  { id: "ocean-friends" as CategoryId, name: "Ocean Friends", icon: "🐠", color: "#4ECDC4" },
+  { id: "animals-nature" as CategoryId, name: "Animals & Nature", icon: "🐼", color: "#95E1D3" },
+  { id: "adventure" as CategoryId, name: "Adventure", icon: "⭐", color: "#FFE66D" },
+  { id: "new-popular" as CategoryId, name: "New & Popular", icon: "🍿", color: "#A8E6CF" },
+]
+
+const allMovies: Movie[] = [
+  { id: 1, title: "Inside Out", poster: "/movie-posters/inside-out.png", desc: "A colorful adventure about feelings!", tags: ["movies", "feel-good", "new-popular"] },
+  { id: 2, title: "Moana", poster: "/movie-posters/moana.png", desc: "A brave girl goes on an ocean adventure.", tags: ["movies", "ocean-friends", "adventure", "new-popular"] },
+  { id: 3, title: "Coco", poster: "/movie-posters/coco.png", desc: "A musical journey about family and memories.", tags: ["movies", "feel-good", "new-popular"] },
+  { id: 4, title: "Ratatouille", poster: "/movie-posters/ratatouille.png", desc: "A little chef rat makes amazing food!", tags: ["movies", "animals-nature"] },
+  { id: 5, title: "Finding Nemo", poster: "/movie-posters/nemo.png", desc: "A fish dad searches for his son.", tags: ["movies", "ocean-friends", "adventure"] },
+  { id: 6, title: "Zootopia", poster: "/movie-posters/zootopia.png", desc: "Animals work together to solve a mystery.", tags: ["movies", "animals-nature", "adventure"] },
+  { id: 7, title: "The Lion King", poster: "/movie-posters/lion-king.png", desc: "A lion cub grows up to become king.", tags: ["movies", "adventure", "animals-nature"] },
+  { id: 8, title: "Brave", poster: "/movie-posters/brave.png", desc: "A princess who's great with a bow and arrow.", tags: ["movies", "adventure"] },
+  { id: 9, title: "Up", poster: "/movie-posters/up.png", desc: "A house flies with balloons on an adventure.", tags: ["movies", "adventure", "feel-good"] },
+  { id: 10, title: "Big Hero 6", poster: "/movie-posters/big-hero-6.png", desc: "A boy and his robot save the city.", tags: ["movies", "adventure", "feel-good"] },
+  { id: 11, title: "Tarzan", poster: "/movie-posters/tarzan.png", desc: "A boy raised by gorillas in the jungle.", tags: ["movies", "adventure", "animals-nature"] },
+  { id: 12, title: "Frozen", poster: "/movie-posters/frozen.png", desc: "Two sisters and a snowman's icy adventure.", tags: ["movies", "adventure", "feel-good", "new-popular"] },
+  { id: 13, title: "Soul", poster: "/movie-posters/soul.png", desc: "A musician finds his spark in life.", tags: ["movies", "feel-good", "new-popular"] },
+  { id: 14, title: "Paddington", poster: "/movie-posters/paddington.png", desc: "A kind bear finds a loving family.", tags: ["movies", "animals-nature"] },
+  { id: 15, title: "Toy Story", poster: "/movie-posters/toy-story.png", desc: "Toys come to life when you're away.", tags: ["movies", "feel-good", "adventure"] },
+  { id: 16, title: "Encanto", poster: "/movie-posters/encanto.png", desc: "A magical family in Colombia.", tags: ["movies", "feel-good", "new-popular"] },
+  { id: 17, title: "Onward", poster: "/movie-posters/onward.png", desc: "Two brothers go on a magical quest.", tags: ["movies", "feel-good", "adventure"] },
+  { id: 18, title: "Luca", poster: "/movie-posters/luca.png", desc: "Two sea monsters become best friends.", tags: ["movies", "feel-good", "ocean-friends", "new-popular"] },
+  { id: 19, title: "Bluey", color: "from-blue-400 to-blue-300", desc: "A playful puppy and her family.", tags: ["movies", "animals-nature", "feel-good"] },
+  { id: 20, title: "Puffin Rock", poster: "/kids-shows/elinor-wonders-why.png", desc: "A puffin explores the island.", tags: ["movies", "animals-nature", "ocean-friends"] },
+  { id: 21, title: "Octonauts", poster: "/kids-shows/octonauts.png", desc: "Underwater animal rescue team.", tags: ["movies", "ocean-friends", "animals-nature", "adventure"] },
+  { id: 22, title: "The Jungle Book", poster: "/kids-shows/jungle-book.png", desc: "A boy grows up with jungle animals.", tags: ["movies", "animals-nature", "adventure"] },
+  { id: 23, title: "Bambi", poster: "/kids-shows/bambi.png", desc: "A young deer makes forest friends.", tags: ["movies", "animals-nature"] },
+  { id: 24, title: "Elinor Wonders Why", color: "from-green-400 to-blue-400", desc: "A curious bunny learns about nature.", tags: ["movies", "animals-nature"] },
+  { id: 25, title: "The Magic School Bus", color: "from-orange-400 to-red-400", desc: "A class takes magical field trips!", tags: ["movies", "adventure"] },
+  { id: 26, title: "Curious George", poster: "/kids-shows/curious-george.png", desc: "A curious monkey explores and learns.", tags: ["movies", "animals-nature"] },
+  { id: 27, title: "Arthur", color: "from-yellow-400 to-orange-400", desc: "An aardvark and his friends at school.", tags: ["movies", "feel-good"] },
+  { id: 28, title: "Wild Kratts", poster: "/kids-shows/wild-kratts.png", desc: "Brothers discover animal superpowers.", tags: ["movies", "animals-nature", "adventure"] },
+  { id: 29, title: "Sesame Street", color: "from-red-400 to-yellow-400", desc: "Friends learn letters and numbers.", tags: ["movies", "feel-good"] },
+  { id: 30, title: "Daniel Tiger", poster: "/kids-shows/daniel-tiger.png", desc: "A tiger learns about feelings.", tags: ["movies", "feel-good", "animals-nature"] },
 ]
 
 const forYou = [
-  { id: 1, title: "Inside Out", poster: "/movie-posters/inside-out.png", desc: "A colorful adventure about feelings!" },
-  { id: 2, title: "Moana", poster: "/movie-posters/moana.png", desc: "A brave girl goes on an ocean adventure." },
-  { id: 3, title: "Coco", poster: "/movie-posters/coco.png", desc: "A musical journey about family and memories." },
-  {
-    id: 4,
-    title: "Ratatouille",
-    poster: "/movie-posters/ratatouille.png",
-    desc: "A little chef rat makes amazing food!",
-  },
-  { id: 5, title: "Finding Nemo", poster: "/movie-posters/nemo.png", desc: "A fish dad searches for his son." },
-  {
-    id: 6,
-    title: "Zootopia",
-    poster: "/movie-posters/zootopia.png",
-    desc: "Animals work together to solve a mystery.",
-  },
+  { id: 1, title: "Inside Out", poster: "/movie-posters/inside-out.png", desc: "A colorful adventure about feelings!", tags: ["movies", "feel-good", "new-popular"] },
+  { id: 2, title: "Moana", poster: "/movie-posters/moana.png", desc: "A brave girl goes on an ocean adventure.", tags: ["movies", "ocean-friends", "adventure", "new-popular"] },
+  { id: 3, title: "Coco", poster: "/movie-posters/coco.png", desc: "A musical journey about family and memories.", tags: ["movies", "feel-good", "new-popular"] },
+  { id: 4, title: "Ratatouille", poster: "/movie-posters/ratatouille.png", desc: "A little chef rat makes amazing food!", tags: ["movies", "animals-nature"] },
+  { id: 5, title: "Finding Nemo", poster: "/movie-posters/nemo.png", desc: "A fish dad searches for his son.", tags: ["movies", "ocean-friends", "adventure"] },
+  { id: 6, title: "Zootopia", poster: "/movie-posters/zootopia.png", desc: "Animals work together to solve a mystery.", tags: ["movies", "animals-nature", "adventure"] },
 ]
 
 const adventure = [
-  {
-    id: 1,
-    title: "The Lion King",
-    color: "from-yellow-500 to-orange-500",
-    desc: "A lion cub grows up to become king.",
-  },
-  { id: 2, title: "Brave", color: "from-blue-400 to-purple-400", desc: "A princess who's great with a bow and arrow." },
-  { id: 3, title: "Up", color: "from-blue-400 to-pink-400", desc: "A house flies with balloons on an adventure." },
-  { id: 4, title: "Big Hero 6", color: "from-red-400 to-purple-400", desc: "A boy and his robot save the city." },
-  { id: 5, title: "Tarzan", color: "from-green-500 to-yellow-500", desc: "A boy raised by gorillas in the jungle." },
-  { id: 6, title: "Frozen", color: "from-blue-300 to-purple-300", desc: "Two sisters and a snowman's icy adventure." },
+  { id: 7, title: "The Lion King", poster: "/movie-posters/lion-king.png", desc: "A lion cub grows up to become king.", tags: ["movies", "adventure", "animals-nature"] },
+  { id: 8, title: "Brave", poster: "/movie-posters/brave.png", desc: "A princess who's great with a bow and arrow.", tags: ["movies", "adventure"] },
+  { id: 9, title: "Up", poster: "/movie-posters/up.png", desc: "A house flies with balloons on an adventure.", tags: ["movies", "adventure", "feel-good"] },
+  { id: 10, title: "Big Hero 6", poster: "/movie-posters/big-hero-6.png", desc: "A boy and his robot save the city.", tags: ["movies", "adventure", "feel-good"] },
+  { id: 11, title: "Tarzan", poster: "/movie-posters/tarzan.png", desc: "A boy raised by gorillas in the jungle.", tags: ["movies", "adventure", "animals-nature"] },
+  { id: 12, title: "Frozen", poster: "/movie-posters/frozen.png", desc: "Two sisters and a snowman's icy adventure.", tags: ["movies", "adventure", "feel-good", "new-popular"] },
 ]
 
 const feelGoodStories = [
-  {
-    id: 1,
-    title: "Toy Story",
-    color: "from-blue-400 to-yellow-400",
-    desc: "Toys come to life when you're not looking!",
-  },
-  { id: 2, title: "Paddington", color: "from-orange-400 to-yellow-400", desc: "A friendly bear finds a new home." },
-  { id: 3, title: "Encanto", color: "from-purple-400 to-pink-400", desc: "A magical family in a special house." },
-  { id: 4, title: "Luca", color: "from-teal-400 to-blue-400", desc: "Sea creatures spend a fun summer on land." },
-  { id: 5, title: "Soul", color: "from-blue-500 to-purple-500", desc: "Finding what makes life special and fun." },
-  { id: 6, title: "Onward", color: "from-blue-400 to-pink-400", desc: "Two elf brothers go on a magical quest." },
+  { id: 13, title: "Soul", poster: "/movie-posters/soul.png", desc: "A musician finds his spark in life.", tags: ["movies", "feel-good", "new-popular"] },
+  { id: 14, title: "Paddington", poster: "/movie-posters/paddington.png", desc: "A kind bear finds a loving family.", tags: ["movies", "animals-nature"] },
+  { id: 15, title: "Toy Story", poster: "/movie-posters/toy-story.png", desc: "Toys come to life when you're away.", tags: ["movies", "feel-good", "adventure"] },
+  { id: 16, title: "Encanto", poster: "/movie-posters/encanto.png", desc: "A magical family in Colombia.", tags: ["movies", "feel-good", "new-popular"] },
+  { id: 17, title: "Onward", poster: "/movie-posters/onward.png", desc: "Two brothers go on a magical quest.", tags: ["movies", "feel-good", "adventure"] },
+  { id: 18, title: "Luca", poster: "/movie-posters/luca.png", desc: "Two sea monsters become best friends.", tags: ["movies", "feel-good", "ocean-friends", "new-popular"] },
 ]
 
 const animalsNature = [
-  { id: 1, title: "Bluey", color: "from-blue-400 to-blue-300", desc: "A playful puppy and her family." },
-  { id: 2, title: "Puffin Rock", color: "from-green-400 to-teal-400", desc: "A puffin explores the island." },
-  { id: 3, title: "Octonauts", color: "from-blue-400 to-teal-400", desc: "Underwater animal rescue team." },
-  {
-    id: 4,
-    title: "The Jungle Book",
-    color: "from-green-500 to-yellow-500",
-    desc: "A boy grows up with jungle animals.",
-  },
-  { id: 5, title: "Bambi", color: "from-green-400 to-brown-400", desc: "A young deer makes forest friends." },
-  {
-    id: 6,
-    title: "Elinor Wonders Why",
-    color: "from-green-400 to-blue-400",
-    desc: "A curious bunny learns about nature.",
-  },
+  { id: 19, title: "Bluey", color: "from-blue-400 to-blue-300", desc: "A playful puppy and her family.", tags: ["movies", "animals-nature", "feel-good"] },
+  { id: 20, title: "Puffin Rock", poster: "/kids-shows/elinor-wonders-why.png", desc: "A puffin explores the island.", tags: ["movies", "animals-nature", "ocean-friends"] },
+  { id: 21, title: "Octonauts", poster: "/kids-shows/octonauts.png", desc: "Underwater animal rescue team.", tags: ["movies", "ocean-friends", "animals-nature", "adventure"] },
+  { id: 22, title: "The Jungle Book", poster: "/kids-shows/jungle-book.png", desc: "A boy grows up with jungle animals.", tags: ["movies", "animals-nature", "adventure"] },
+  { id: 23, title: "Bambi", poster: "/kids-shows/bambi.png", desc: "A young deer makes forest friends.", tags: ["movies", "animals-nature"] },
+  { id: 24, title: "Elinor Wonders Why", color: "from-green-400 to-blue-400", desc: "A curious bunny learns about nature.", tags: ["movies", "animals-nature"] },
 ]
 
 const schoolPicks = [
-  {
-    id: 1,
-    title: "The Magic School Bus",
-    color: "from-orange-400 to-red-400",
-    desc: "A class takes magical field trips!",
-  },
-  {
-    id: 2,
-    title: "Curious George",
-    color: "from-yellow-400 to-brown-400",
-    desc: "A curious monkey explores and learns.",
-  },
-  { id: 3, title: "Arthur", color: "from-yellow-400 to-orange-400", desc: "An aardvark and his friends at school." },
-  { id: 4, title: "Wild Kratts", color: "from-green-400 to-blue-400", desc: "Brothers discover animal superpowers." },
-  { id: 5, title: "Sesame Street", color: "from-red-400 to-yellow-400", desc: "Friends learn letters and numbers." },
-  { id: 6, title: "Daniel Tiger", color: "from-red-400 to-orange-400", desc: "A tiger learns about feelings." },
+  { id: 25, title: "The Magic School Bus", color: "from-orange-400 to-red-400", desc: "A class takes magical field trips!", tags: ["movies", "adventure"] },
+  { id: 26, title: "Curious George", poster: "/kids-shows/curious-george.png", desc: "A curious monkey explores and learns.", tags: ["movies", "animals-nature"] },
+  { id: 27, title: "Arthur", color: "from-yellow-400 to-orange-400", desc: "An aardvark and his friends at school.", tags: ["movies", "feel-good"] },
+  { id: 28, title: "Wild Kratts", poster: "/kids-shows/wild-kratts.png", desc: "Brothers discover animal superpowers.", tags: ["movies", "animals-nature", "adventure"] },
+  { id: 29, title: "Sesame Street", color: "from-red-400 to-yellow-400", desc: "Friends learn letters and numbers.", tags: ["movies", "feel-good"] },
+  { id: 30, title: "Daniel Tiger", poster: "/kids-shows/daniel-tiger.png", desc: "A tiger learns about feelings.", tags: ["movies", "feel-good", "animals-nature"] },
 ]
 
 function getAgeBand(grade: string | number): "A" | "B" | "C" | "D" {
@@ -169,7 +179,7 @@ function getBandConfig(band: "A" | "B" | "C" | "D", kidName: string): BandConfig
 export default function KidsHomePage() {
   const searchParams = useSearchParams()
   const kidId = searchParams.get("kid") || "1"
-  const [selectedCategory, setSelectedCategory] = useState("Movies")
+  const [activeFilter, setActiveFilter] = useState<CategoryId>("movies")
 
   const selectedKid = kidsProfiles.find((k) => k.id === Number.parseInt(kidId)) || kidsProfiles[0]
 
@@ -178,15 +188,15 @@ export default function KidsHomePage() {
 
   const visibleCategories = categories.slice(0, config.categoryCount)
 
-  const allRows = [
-    { title: "For You", data: forYou },
-    { title: "Adventure", data: adventure },
-    { title: "Feel-Good Stories", data: feelGoodStories },
-    { title: "Animals & Nature", data: animalsNature },
-    { title: "School Picks", data: schoolPicks },
-  ]
+  const visibleMovies = useMemo(
+    () =>
+      activeFilter === "movies"
+        ? allMovies
+        : allMovies.filter((movie) => movie.tags.includes(activeFilter)),
+    [activeFilter]
+  )
 
-  const visibleRows = allRows.slice(0, config.maxRows)
+  const heroMovie = visibleMovies[0] ?? allMovies[0]
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-[#E5F0FF] via-[#F0E5FF] to-[#E5F0FF] dark:bg-gradient-to-br dark:from-[#0A0F2C] dark:via-[#1A1640] dark:to-[#0A0F2C] transition-colors">
@@ -256,13 +266,16 @@ export default function KidsHomePage() {
             {visibleCategories.map((cat) => (
               <button
                 key={cat.id}
-                onClick={() => setSelectedCategory(cat.name)}
+                type="button"
+                role="tab"
+                aria-pressed={activeFilter === cat.id}
+                onClick={() => setActiveFilter(cat.id)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-full font-semibold text-sm whitespace-nowrap transition-all shadow-md hover:shadow-lg hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#6B9DFC] ${
-                  selectedCategory === cat.name
+                  activeFilter === cat.id
                     ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white scale-105"
                     : "bg-white/60 dark:bg-slate-800/60 text-slate-700 dark:text-slate-200"
                 }`}
-                style={{ backgroundColor: selectedCategory === cat.name ? cat.color : undefined }}
+                style={{ backgroundColor: activeFilter === cat.id ? cat.color : undefined }}
               >
                 <span className="text-lg" aria-hidden="true">
                   {cat.icon}
@@ -275,17 +288,28 @@ export default function KidsHomePage() {
       )}
 
       <section className="px-4 md:px-8 mt-6">
-        <div className="relative h-48 md:h-64 rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 flex items-center justify-between p-6 md:p-8">
-          <div className="z-10 max-w-md space-y-3">
+        <div className="relative h-48 md:h-64 rounded-2xl overflow-hidden shadow-2xl flex items-center justify-between p-6 md:p-8">
+          {heroMovie.poster ? (
+            <Image 
+              src={heroMovie.poster || "/placeholder.svg"} 
+              alt={heroMovie.title} 
+              fill 
+              className="object-cover"
+            />
+          ) : (
+            <div className={`absolute inset-0 bg-gradient-to-br ${heroMovie.color}`} />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
+          <div className="relative z-10 max-w-md space-y-3">
             <h2
               className={`${band === "A" ? "text-3xl md:text-5xl" : "text-2xl md:text-4xl"} font-bold text-white drop-shadow-lg`}
             >
-              Inside Out 2
+              {heroMovie.title}
             </h2>
             <p
               className={`${band === "A" ? "text-base md:text-lg" : "text-sm md:text-base"} text-white/90 drop-shadow`}
             >
-              {band === "A" ? "Fun movie about feelings!" : "Join Riley's new emotions on an amazing adventure!"}
+              {heroMovie.desc}
             </p>
             <button
               className={`flex items-center gap-2 bg-white text-slate-900 ${band === "A" ? "px-8 py-4 text-base" : "px-6 py-3 text-sm"} rounded-full font-bold hover:bg-slate-100 transition-colors shadow-lg hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white`}
@@ -296,75 +320,68 @@ export default function KidsHomePage() {
               Watch Now
             </button>
           </div>
-          <div className="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-black/20 to-transparent" />
         </div>
       </section>
 
       <div className="px-4 md:px-8 py-6 space-y-8">
-        {visibleRows.map((row, idx) => (
-          <section key={idx} className="space-y-3">
-            <h2
-              className={`${band === "A" ? "text-2xl md:text-3xl" : "text-xl md:text-2xl"} font-bold text-slate-900 dark:text-white`}
-            >
-              {row.title}
-            </h2>
-            <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-              {row.data.map((item) => (
-                <button
-                  key={item.id}
-                  className={`group relative ${config.tileSize} shrink-0 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B9DFC] transition-all hover:scale-105`}
-                >
-                  {/* Background gradient image area */}
-                  {item.poster ? (
-                    <div className={`${band === "A" ? "h-40 md:h-48" : "h-28 md:h-36"} relative`}>
-                      <Image src={item.poster || "/placeholder.svg"} alt={item.title} fill className="object-cover" />
-                      <div className="absolute inset-0 bg-black/10 group-hover:bg-black/5 transition-colors" />
-                      <svg
-                        className="absolute inset-0 m-auto h-10 w-10 text-white/90 drop-shadow-lg z-10"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    </div>
-                  ) : (
-                    // Fallback to gradient if no poster
-                    <div
-                      className={`${band === "A" ? "h-40 md:h-48" : "h-28 md:h-36"} bg-gradient-to-br ${item.color} flex items-center justify-center relative`}
+        <section className="space-y-3">
+          <h2
+            className={`${band === "A" ? "text-2xl md:text-3xl" : "text-xl md:text-2xl"} font-bold text-slate-900 dark:text-white`}
+          >
+            {activeFilter === "movies" ? "For You" : categories.find(c => c.id === activeFilter)?.name}
+          </h2>
+          <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+            {visibleMovies.slice(1).map((item) => (
+              <button
+                key={item.id}
+                className={`group relative ${config.tileSize} shrink-0 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B9DFC] transition-all hover:scale-105`}
+              >
+                {item.poster ? (
+                  <div className={`${band === "A" ? "h-40 md:h-48" : "h-28 md:h-36"} relative`}>
+                    <Image src={item.poster || "/placeholder.svg"} alt={item.title} fill className="object-cover" />
+                    <div className="absolute inset-0 bg-black/10 group-hover:bg-black/5 transition-colors" />
+                    <svg
+                      className="absolute inset-0 m-auto h-10 w-10 text-white/90 drop-shadow-lg z-10"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
                     >
-                      <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
-                      <svg
-                        className="h-10 w-10 text-white/90 drop-shadow-lg relative z-10"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    </div>
-                  )}
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                ) : (
+                  <div
+                    className={`${band === "A" ? "h-40 md:h-48" : "h-28 md:h-36"} bg-gradient-to-br ${item.color} flex items-center justify-center relative`}
+                  >
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+                    <svg
+                      className="h-10 w-10 text-white/90 drop-shadow-lg relative z-10"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                )}
 
-                  {/* White title bar */}
-                  <div className="bg-white dark:bg-slate-800 p-3 relative z-10">
-                    <p className={`${config.titleSize} font-bold text-slate-900 dark:text-white truncate`}>
-                      {item.title}
+                <div className="bg-white dark:bg-slate-800 p-3 relative z-10">
+                  <p className={`${config.titleSize} font-bold text-slate-900 dark:text-white truncate`}>
+                    {item.title}
+                  </p>
+                </div>
+
+                {config.showDescriptions && (
+                  <div className="absolute inset-0 bg-slate-900/90 dark:bg-black/90 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 flex items-center justify-center p-4 transition-opacity duration-300 z-20 rounded-2xl">
+                    <p className="text-sm md:text-base text-white leading-relaxed text-center font-medium">
+                      {item.desc}
                     </p>
                   </div>
-
-                  {/* Hover overlay covering entire card */}
-                  {config.showDescriptions && (
-                    <div className="absolute inset-0 bg-slate-900/90 dark:bg-black/90 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 flex items-center justify-center p-4 transition-opacity duration-300 z-20 rounded-2xl">
-                      <p className="text-sm md:text-base text-white leading-relaxed text-center font-medium">
-                        {item.desc}
-                      </p>
-                    </div>
-                  )}
-                </button>
-              ))}
-            </div>
-          </section>
-        ))}
+                )}
+              </button>
+            ))}
+          </div>
+        </section>
       </div>
     </main>
   )

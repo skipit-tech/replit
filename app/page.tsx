@@ -6,6 +6,7 @@ import Image from "next/image"
 import { useI18n } from "@/i18n/I18nProvider"
 import SearchCombobox from "@/components/SearchCombobox"
 import { ThemeLogo } from "@/components/theme-logo"
+import { DemoDropdown } from "@/components/demo-dropdown"
 
 import { useMemo, useRef, useState, useEffect, memo, useCallback } from "react"
 
@@ -891,6 +892,7 @@ function Header({
               }))}
             />
           </div>
+          <DemoDropdown />
           <Link
             href="/settings"
             className="text-foreground/70 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50 rounded transition"
