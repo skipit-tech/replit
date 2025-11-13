@@ -67,8 +67,8 @@ export default function SignInPage() {
         </Link>
 
         <div className="bg-card/50 backdrop-blur border border-border rounded-3xl p-8">
-          <h1 className="text-3xl font-bold mb-2 text-center">Welcome Back</h1>
-          <p className="text-muted-foreground text-center mb-6">Sign in to continue to skip it</p>
+          <h1 className="text-3xl font-bold mb-2 text-center text-foreground">Welcome Back</h1>
+          <p className="text-muted-foreground text-center mb-6">Sign in to continue to SKIP IT</p>
 
           {error && (
             <div className="mb-4 p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm">
@@ -78,7 +78,7 @@ export default function SignInPage() {
 
           <form onSubmit={handleSignIn} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-2">
+              <label htmlFor="email" className="block text-sm font-medium mb-2 text-foreground">
                 Email
               </label>
               <input
@@ -86,14 +86,14 @@ export default function SignInPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-input border border-border focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20 transition"
+                className="w-full px-4 py-3 rounded-xl bg-input text-foreground border border-border focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20 transition placeholder:text-muted-foreground"
                 placeholder="you@example.com"
                 required
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium mb-2">
+              <label htmlFor="password" className="block text-sm font-medium mb-2 text-foreground">
                 Password
               </label>
               <input
@@ -101,7 +101,7 @@ export default function SignInPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-input border border-border focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20 transition"
+                className="w-full px-4 py-3 rounded-xl bg-input text-foreground border border-border focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20 transition placeholder:text-muted-foreground"
                 placeholder="••••••••"
                 required
               />
@@ -110,7 +110,7 @@ export default function SignInPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-xl text-primary-foreground font-semibold hover:bg-primary/90 transition disabled:opacity-50 bg-[rgba(208,227,255,1)]"
+              className="w-full py-3 rounded-xl bg-[#d0e3ff] text-[#0D0B3B] font-semibold hover:brightness-95 transition disabled:opacity-50"
             >
               {loading ? "Signing in..." : "Sign In"}
             </button>
@@ -128,7 +128,7 @@ export default function SignInPage() {
           <button
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-muted border border-border hover:bg-muted/80 transition font-semibold disabled:opacity-50 flex items-center justify-center gap-3"
+            className="w-full py-3 rounded-xl bg-muted border border-border hover:bg-muted/80 transition font-semibold disabled:opacity-50 flex items-center justify-center gap-3 text-foreground"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -153,7 +153,7 @@ export default function SignInPage() {
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Don't have an account?{" "}
-            <Link href="/signup" className="hover:underline font-semibold text-[rgba(208,227,255,1)]">
+            <Link href="/signup" className="hover:underline font-semibold text-[#6B9DFC]">
               Sign up
             </Link>
           </p>

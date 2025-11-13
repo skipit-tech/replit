@@ -199,42 +199,53 @@ export default function ContentFiltersPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-4xl font-bold text-white mb-2">Content Filters for Your School</h1>
-        <p className="text-white/80">Choose what SKIP IT should automatically skip or blur for your students.</p>
-      </div>
+      <header>
+        <h1 className="text-4xl font-bold text-[#0D0B3B] dark:text-white mb-2">Content Filters for Your School</h1>
+        <p className="text-gray-700 dark:text-gray-300">
+          Choose what SKIP IT should automatically skip for your students.
+        </p>
+      </header>
 
       {/* Filters Card */}
-      <Card className="p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-sm">
-        <div className="space-y-8">
+      <Card className="p-8 bg-white dark:bg-[#1a1654] rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <form
+          className="space-y-8"
+          onSubmit={(e) => {
+            e.preventDefault()
+            handleSave()
+          }}
+          aria-label="Content filter settings"
+        >
           {Object.entries(filtersByCategory).map(([category, categoryFilters], categoryIndex) => (
-            <div key={category}>
+            <fieldset key={category}>
               {/* Category Header */}
-              <div className="mb-4">
+              <legend className="mb-4">
                 <span
                   className={`inline-block px-3 py-1 rounded-full text-xs font-semibold border ${getCategoryBadgeColor(categoryFilters[0].color)}`}
                 >
                   {getCategoryLabel(category)}
                 </span>
-              </div>
+              </legend>
 
               {/* Category Filters */}
-              <div className="space-y-4">
+              <div className="space-y-4" role="list">
                 {categoryFilters.map((filter, index) => (
                   <div
                     key={filter.id}
                     className={`flex items-start justify-between py-4 ${
                       index !== categoryFilters.length - 1 ? "border-b border-gray-200 dark:border-gray-700" : ""
                     }`}
+                    role="listitem"
                   >
                     <div className="flex-1 mr-6">
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{filter.label}</h3>
+                      <h3 className="text-lg font-semibold text-[#0D0B3B] dark:text-white mb-1">{filter.label}</h3>
                       <p className="text-sm text-gray-600 dark:text-gray-400">{filter.description}</p>
                     </div>
                     <Switch
                       checked={filters[filter.id]}
                       onCheckedChange={() => toggleFilter(filter.id)}
-                      className="data-[state=checked]:bg-blue-600"
+                      className="data-[state=checked]:bg-[#6B9DFC]"
+                      aria-label={`Toggle ${filter.label} filter`}
                     />
                   </div>
                 ))}
@@ -242,28 +253,28 @@ export default function ContentFiltersPage() {
 
               {/* Separator between categories */}
               {categoryIndex !== Object.keys(filtersByCategory).length - 1 && (
-                <div className="mt-8 border-t-2 border-gray-300 dark:border-gray-600" />
+                <div className="mt-8 border-t-2 border-gray-300 dark:border-gray-600" aria-hidden="true" />
               )}
-            </div>
+            </fieldset>
           ))}
-        </div>
 
-        {/* Save Button */}
-        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-          <Button
-            onClick={handleSave}
-            className="w-full bg-[#0A0E27] hover:bg-[#0A0E27]/90 text-white rounded-xl py-6 text-lg font-semibold"
-          >
-            {saved ? (
-              <>
-                <Check className="w-5 h-5 mr-2" />
-                Saved Successfully
-              </>
-            ) : (
-              "Save School Rules"
-            )}
-          </Button>
-        </div>
+          {/* Save Button */}
+          <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <Button
+              type="submit"
+              className="w-full bg-[#6B9DFC] hover:bg-[#5a8de8] dark:bg-[#6B9DFC] dark:hover:bg-[#5a8de8] text-white rounded-xl py-6 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[#6B9DFC] focus:ring-offset-2"
+            >
+              {saved ? (
+                <>
+                  <Check className="w-5 h-5 mr-2" aria-hidden="true" />
+                  Saved Successfully
+                </>
+              ) : (
+                "Save School Rules"
+              )}
+            </Button>
+          </div>
+        </form>
       </Card>
     </div>
   )

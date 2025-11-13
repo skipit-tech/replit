@@ -5,7 +5,6 @@ import type React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { LayoutDashboard, Shield, Key, Users } from "lucide-react"
-import { ThemeLogo } from "@/components/theme-logo"
 
 const navItems = [
   { href: "/school-admin", label: "Overview", icon: LayoutDashboard },
@@ -22,23 +21,29 @@ export default function SchoolAdminLayout({
   const pathname = usePathname()
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-[#E8F0FF] dark:bg-[#0D0B3B]">
       {/* Sidebar */}
       <aside
-        className="w-64 bg-card border-r border-border text-card-foreground flex flex-col"
+        className="w-64 bg-white dark:bg-[#1a1654] border-r border-gray-200 dark:border-gray-700 flex flex-col shadow-sm"
         role="navigation"
         aria-label="School admin navigation"
       >
         {/* Logo */}
-        <div className="p-6 border-b border-border">
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
           <Link href="/" className="block" aria-label="Return to SKIP IT home">
-            <ThemeLogo width={120} height={40} />
+            <div className="flex items-center">
+              {/* Dark logo for LIGHT mode */}
+              <img src="/logos/skipit-dark.svg" alt="SKIP IT Logo" className="block dark:hidden h-10 w-auto" />
+
+              {/* Light logo for DARK mode */}
+              <img src="/logos/skipit-light.svg" alt="SKIP IT Logo" className="hidden dark:block h-10 w-auto" />
+            </div>
           </Link>
         </div>
 
         {/* Navigation */}
         <nav className="flex-1 p-4" aria-label="School admin sections">
-          <ul className="space-y-2">
+          <ul className="space-y-2" role="list">
             {navItems.map((item) => {
               const isActive = pathname === item.href
               const Icon = item.icon
@@ -47,10 +52,10 @@ export default function SchoolAdminLayout({
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#6B9DFC] ${
                       isActive
-                        ? "bg-primary/10 text-primary font-semibold"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                        ? "bg-[#d0e3ff]/30 dark:bg-[#6B9DFC]/20 text-[#0D0B3B] dark:text-white font-semibold"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                     }`}
                     aria-current={isActive ? "page" : undefined}
                   >
@@ -64,10 +69,10 @@ export default function SchoolAdminLayout({
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-border">
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
           <Link
             href="/"
-            className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="block px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-[#0D0B3B] dark:hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#6B9DFC] rounded"
           >
             Back to Main App
           </Link>

@@ -124,7 +124,7 @@ export default function CircularTimer({ valueSec, onChange, minSec = 1, maxSec =
           cx={size / 2}
           cy={size / 2}
           r={ringR}
-          stroke="rgba(255,255,255,0.12)"
+          className="stroke-slate-300 dark:stroke-slate-700"
           strokeWidth={stroke}
           fill="none"
         />
@@ -133,21 +133,20 @@ export default function CircularTimer({ valueSec, onChange, minSec = 1, maxSec =
           cx={size / 2}
           cy={size / 2}
           r={ringR}
-          stroke="#d0e3ff"
+          className="stroke-[#6B9DFC] dark:stroke-[#8BB3FF]"
           strokeWidth={stroke}
           fill="none"
           strokeDasharray={circumference}
           strokeDashoffset={dashoffset}
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
           strokeLinecap="round"
-          className="transition-[stroke-dashoffset] duration-100"
         />
       </svg>
 
       {/* center label */}
       <div className="text-center">
-        <div className="text-4xl font-bold">{format(valueSec)}</div>
-        <div className="text-white/60 text-sm mt-1">Trigger Timer</div>
+        <div className="text-4xl font-bold text-slate-900 dark:text-white">{format(valueSec)}</div>
+        <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">Trigger Timer</p>
       </div>
 
       {/* knob */}
@@ -160,8 +159,8 @@ export default function CircularTimer({ valueSec, onChange, minSec = 1, maxSec =
         aria-valuetext={getValueText(valueSec)}
         tabIndex={0}
         onKeyDown={onKeyDown}
-        className="absolute w-5 h-5 rounded-full bg-[#d0e3ff] shadow ring-2 ring-[#0D0B3B] cursor-grab active:cursor-grabbing focus:outline-none focus:ring-4 focus:ring-[#d0e3ff]/50"
-        style={{ left: kx - 10, top: ky - 10 }}
+        className="absolute h-4 w-4 rounded-full bg-white border-2 border-slate-700 dark:bg-slate-900 dark:border-white shadow cursor-grab active:cursor-grabbing focus:outline-none focus:ring-4 focus:ring-[#6B9DFC]/50"
+        style={{ left: kx - 8, top: ky - 8 }}
         onPointerDown={(e) => {
           ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
           setDragging(true)

@@ -338,19 +338,29 @@ export default function SettingsPage() {
           />
 
           {/* Main Content */}
-          <div>
-            <h1 className="text-4xl font-bold mb-6">{t("settings.title")}</h1>
+          <section
+            className="flex-1 px-10 py-8 bg-[#E5F0FF] text-slate-900 dark:bg-[#050821] dark:text-white transition-colors rounded-3xl"
+            aria-label="Settings content"
+          >
+            <h1 className="text-4xl font-semibold text-slate-900 dark:text-white mb-6">{t("settings.title")}</h1>
 
-            {/* Tabs */}
-            <div className="flex gap-8 border-b border-border mb-8" role="tablist" aria-label="Settings sections">
+            <nav
+              className="mt-4 mb-6 flex gap-8 border-b border-slate-200 dark:border-slate-700"
+              role="tablist"
+              aria-label="Settings sections"
+            >
               <button
                 onClick={() => setTab("trigger")}
                 role="tab"
                 aria-selected={tab === "trigger"}
                 aria-controls="trigger-panel"
                 id="trigger-tab"
-                className={`pb-3 font-semibold transition ${
-                  tab === "trigger" ? "border-b-2 border-foreground" : "text-muted-foreground hover:text-foreground"
+                className={`pb-3 text-sm ${
+                  tab === "trigger" ? "font-semibold" : "font-medium"
+                } border-b-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B9DFC] ${
+                  tab === "trigger"
+                    ? "text-slate-900 dark:text-white border-[#6B9DFC]"
+                    : "text-slate-700 dark:text-slate-100 border-transparent hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
                 {t("settings.triggersTab")}
@@ -361,8 +371,12 @@ export default function SettingsPage() {
                 aria-selected={tab === "plans"}
                 aria-controls="plans-panel"
                 id="plans-tab"
-                className={`pb-3 font-semibold transition ${
-                  tab === "plans" ? "border-b-2 border-foreground" : "text-muted-foreground hover:text-foreground"
+                className={`pb-3 text-sm ${
+                  tab === "plans" ? "font-semibold" : "font-medium"
+                } border-b-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B9DFC] ${
+                  tab === "plans"
+                    ? "text-slate-900 dark:text-white border-[#6B9DFC]"
+                    : "text-slate-700 dark:text-slate-100 border-transparent hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
                 {t("settings.plansTab")}
@@ -373,13 +387,17 @@ export default function SettingsPage() {
                 aria-selected={tab === "data"}
                 aria-controls="data-panel"
                 id="data-tab"
-                className={`pb-3 font-semibold transition ${
-                  tab === "data" ? "border-b-2 border-foreground" : "text-muted-foreground hover:text-foreground"
+                className={`pb-3 text-sm ${
+                  tab === "data" ? "font-semibold" : "font-medium"
+                } border-b-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B9DFC] ${
+                  tab === "data"
+                    ? "text-slate-900 dark:text-white border-[#6B9DFC]"
+                    : "text-slate-700 dark:text-slate-100 border-transparent hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
                 {t("settings.dataTab")}
               </button>
-            </div>
+            </nav>
 
             {/* Trigger Settings Tab */}
             {tab === "trigger" && (
@@ -444,10 +462,12 @@ export default function SettingsPage() {
                   </div>
 
                   <div>
-                    <h3 className="text-xl font-semibold mb-4">{t("settings.adjustTriggerTimer")}</h3>
+                    <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Adjust Trigger Timer</h3>
                     <div className="flex flex-col items-center gap-4">
                       <CircularTimer valueSec={timerSeconds} onChange={setTimerSeconds} size={240} />
-                      <p className="text-muted-foreground text-sm text-center max-w-xs">{t("settings.timerHelp")}</p>
+                      <p className="text-xs text-slate-600 dark:text-slate-300 text-center max-w-xs mt-4">
+                        Drag the knob to adjust skip duration. Use arrow keys for precise control.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -516,12 +536,14 @@ export default function SettingsPage() {
             {/* Data Tab - Only render ActivityDashboard when tab is active */}
             {tab === "data" && (
               <div role="tabpanel" id="data-panel" aria-labelledby="data-tab">
-                <h2 className="text-2xl font-semibold mb-4">{t("settings.dataPrivacy")}</h2>
-                <p className="text-muted-foreground mb-8">{t("settings.dataPrivacyDesc")}</p>
+                <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2">
+                  {t("settings.dataPrivacy")}
+                </h2>
+                <p className="mt-2 text-sm text-slate-600 dark:text-slate-200 mb-8">{t("settings.dataPrivacyDesc")}</p>
                 <ActivityDashboard />
               </div>
             )}
-          </div>
+          </section>
         </div>
       </main>
 

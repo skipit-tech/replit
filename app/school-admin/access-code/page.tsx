@@ -24,33 +24,44 @@ export default function AccessCodePage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-4xl font-bold text-white mb-2">Student Access Code</h1>
-        <p className="text-white/80">
+      <header>
+        <h1 className="text-4xl font-bold text-[#0D0B3B] dark:text-white mb-2">Student Access Code</h1>
+        <p className="text-gray-700 dark:text-gray-300">
           Students enter this code once in the SKIP IT extension. After that, your school's rules apply automatically.
         </p>
-      </div>
+      </header>
 
       {/* Access Code Card */}
-      <Card className="p-8 bg-white rounded-2xl shadow-sm">
+      <Card className="p-8 bg-white dark:bg-[#1a1654] rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
         <div className="max-w-md mx-auto space-y-8">
           {/* Code Display */}
           <div className="text-center">
-            <p className="text-sm text-gray-600 mb-4">Current Access Code</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Current Access Code</p>
             <div className="relative">
-              <div className="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-2xl p-8 mb-4">
-                <div className="text-5xl font-bold text-gray-900 tracking-wider font-mono">{accessCode}</div>
+              <div
+                className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-2xl p-8 mb-4"
+                role="region"
+                aria-label="Access code display"
+              >
+                <div className="text-5xl font-bold text-[#0D0B3B] dark:text-white tracking-wider font-mono">
+                  {accessCode}
+                </div>
               </div>
               <Button
                 onClick={copyToClipboard}
                 variant="ghost"
-                className="absolute top-4 right-4 text-gray-600 hover:text-gray-900"
+                className="absolute top-4 right-4 text-gray-600 dark:text-gray-400 hover:text-[#0D0B3B] dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-[#6B9DFC]"
                 size="sm"
+                aria-label="Copy access code to clipboard"
               >
                 <Copy className="w-4 h-4" />
               </Button>
               {copied && (
-                <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1 rounded">
+                <div
+                  className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-[#0D0B3B] dark:bg-white text-white dark:text-[#0D0B3B] text-xs px-3 py-1 rounded"
+                  role="status"
+                  aria-live="polite"
+                >
                   Copied!
                 </div>
               )}
@@ -58,9 +69,9 @@ export default function AccessCodePage() {
           </div>
 
           {/* Instructions */}
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-            <h3 className="font-semibold text-gray-900 mb-2">How to use:</h3>
-            <ol className="text-sm text-gray-700 space-y-2 list-decimal list-inside">
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6">
+            <h3 className="font-semibold text-[#0D0B3B] dark:text-white mb-2">How to use:</h3>
+            <ol className="text-sm text-gray-700 dark:text-gray-300 space-y-2 list-decimal list-inside">
               <li>Share this code with your students</li>
               <li>Students enter it once in the SKIP IT extension</li>
               <li>Your school's content filters apply automatically</li>
@@ -71,13 +82,13 @@ export default function AccessCodePage() {
           <Button
             onClick={generateNewCode}
             variant="outline"
-            className="w-full border-2 border-gray-300 hover:border-gray-400 text-gray-700 rounded-xl py-6 text-lg font-semibold bg-transparent"
+            className="w-full border-2 border-gray-300 dark:border-gray-600 hover:border-[#6B9DFC] dark:hover:border-[#6B9DFC] text-[#0D0B3B] dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl py-6 text-lg font-semibold bg-transparent focus:outline-none focus:ring-2 focus:ring-[#6B9DFC]"
           >
             <RefreshCw className="w-5 h-5 mr-2" />
             Generate New Code
           </Button>
 
-          <p className="text-xs text-gray-500 text-center">
+          <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
             Generating a new code will invalidate the previous code for new installations.
           </p>
         </div>

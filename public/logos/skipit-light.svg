@@ -1,0 +1,9 @@
+<svg width="140" height="40" viewBox="0 0 140 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Skip icon - two triangles pointing right -->
+  <path d="M8 10L18 20L8 30V10Z" fill="#8BB3FF"/>
+  <path d="M16 10L26 20L16 30V10Z" fill="#8BB3FF"/>
+  <rect x="27" y="10" width="2" height="20" fill="#8BB3FF"/>
+  
+  <!-- SKIP IT text -->
+  <text x="38" y="26" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" letter-spacing="-0.5">SKIP IT.</text>
+</svg>

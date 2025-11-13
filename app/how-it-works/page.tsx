@@ -65,7 +65,7 @@ export default function HowItWorksPage() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span className="text-[rgba(208,227,255,1)]">Violence detected - skipping 15 seconds</span>
+                <span className="text-[rgba(208,227,255,1)]">Gun Violence detected - skipping 8 seconds</span>
               </div>
               <span>1:45:20</span>
             </div>

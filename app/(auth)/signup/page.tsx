@@ -5,6 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { ThemeLogo } from "@/components/theme-logo"
 
 export default function SignUpPage() {
   const router = useRouter()
@@ -95,17 +96,13 @@ export default function SignUpPage() {
   return (
     <div className="min-h-screen bg-[#0D0B3B] text-white flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        <Link href="/" className="flex justify-center mb-8">
-          <div className="text-4xl font-bold tracking-wider">
-            <span className="text-[#d0e3ff]">SKIP</span>
-            <span className="text-white"> IT</span>
-            <span className="text-[#d0e3ff]">.</span>
-          </div>
+        <Link href="/" className="flex justify-center mb-8 hover:opacity-80 transition">
+          <ThemeLogo />
         </Link>
 
         <div className="bg-white/5 backdrop-blur border border-white/10 rounded-3xl p-8">
-          <h1 className="text-3xl font-bold mb-2 text-center">Create Account</h1>
-          <p className="text-white/60 text-center mb-6">Start your journey with SKIP IT</p>
+          <h1 className="text-3xl font-bold mb-2 text-center text-white">Create Account</h1>
+          <p className="text-white/80 text-center mb-6">Start your journey with SKIP IT</p>
 
           {error && (
             <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
@@ -115,7 +112,7 @@ export default function SignUpPage() {
 
           <form onSubmit={handleSignUp} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-2">
+              <label htmlFor="email" className="block text-sm font-medium mb-2 text-white">
                 Email
               </label>
               <input
@@ -123,14 +120,14 @@ export default function SignUpPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-[#d0e3ff] focus:outline-none transition"
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-[#d0e3ff] focus:outline-none transition text-white placeholder:text-white/50"
                 placeholder="you@example.com"
                 required
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium mb-2">
+              <label htmlFor="password" className="block text-sm font-medium mb-2 text-white">
                 Password
               </label>
               <input
@@ -138,14 +135,14 @@ export default function SignUpPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-[#d0e3ff] focus:outline-none transition"
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-[#d0e3ff] focus:outline-none transition text-white placeholder:text-white/50"
                 placeholder="••••••••"
                 required
               />
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2 text-white">
                 Confirm Password
               </label>
               <input
@@ -153,7 +150,7 @@ export default function SignUpPage() {
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-[#d0e3ff] focus:outline-none transition"
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-[#d0e3ff] focus:outline-none transition text-white placeholder:text-white/50"
                 placeholder="••••••••"
                 required
               />
@@ -180,7 +177,7 @@ export default function SignUpPage() {
           <button
             onClick={handleGoogleSignUp}
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition font-semibold disabled:opacity-50 flex items-center justify-center gap-3"
+            className="w-full py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition font-semibold disabled:opacity-50 flex items-center justify-center gap-3 text-white"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -203,7 +200,7 @@ export default function SignUpPage() {
             Continue with Google
           </button>
 
-          <p className="mt-6 text-center text-sm text-white/60">
+          <p className="mt-6 text-center text-sm text-white/70">
             Already have an account?{" "}
             <Link href="/signin" className="text-[#d0e3ff] hover:underline font-semibold">
               Sign in
