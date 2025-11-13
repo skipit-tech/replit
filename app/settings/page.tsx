@@ -15,6 +15,7 @@ export default function SettingsPage() {
 
   const [tab, setTab] = useState<Tab>("trigger")
   const [selectedPlan, setSelectedPlan] = useState<Plan>("family")
+  const [isSignedIn, setIsSignedIn] = useState(true) // TODO: Replace with actual Firebase auth state
   const [triggers, setTriggers] = useState({
     abuse: false,
     violence: false,
@@ -37,14 +38,29 @@ export default function SettingsPage() {
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
             <img src="/skipit-logo.png" alt="SKIP IT." className="h-8 w-auto" />
           </Link>
-          <div className="flex items-center gap-2">
-            <div className="text-sm text-right hidden md:block">
-              <div className="text-white">Jane Doe</div>
-              <div className="text-white/60 text-xs">Premium</div>
-            </div>
-            <button className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 grid place-items-center">
-              <User className="w-5 h-5" />
-            </button>
+          <div className="flex items-center gap-3">
+            {isSignedIn && (
+              <>
+                <button
+                  onClick={() => {
+                    // TODO: Add Firebase logout functionality here
+                    console.log("Logout clicked")
+                    setIsSignedIn(false)
+                  }}
+                  className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition shadow-md hover:shadow-lg flex items-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Logout
+                </button>
+                <div className="text-sm text-right hidden md:block">
+                  <div className="text-white">Jane Doe</div>
+                  <div className="text-white/60 text-xs">Premium</div>
+                </div>
+                <button className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 grid place-items-center">
+                  <User className="w-5 h-5" />
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -111,17 +127,6 @@ export default function SettingsPage() {
                 </div>
               </div>
             </div>
-
-            <button
-              onClick={() => {
-                // TODO: Add Firebase logout functionality here
-                console.log("Logout clicked")
-              }}
-              className="mt-6 w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-xl transition shadow-md hover:shadow-lg"
-            >
-              <LogOut className="w-5 h-5" />
-              Log Out
-            </button>
           </aside>
 
           {/* Main Content */}
@@ -129,7 +134,7 @@ export default function SettingsPage() {
             <h1 className="text-4xl font-bold mb-6">{t("settings.title")}</h1>
 
             {/* Tabs */}
-            <div className="flex gap-8 border-b border-white/20 mb-8 items-center">
+            <div className="flex gap-8 border-b border-white/20 mb-8">
               <button
                 onClick={() => setTab("trigger")}
                 className={`pb-3 font-semibold transition ${
@@ -153,17 +158,6 @@ export default function SettingsPage() {
                 }`}
               >
                 {t("settings.dataTab")}
-              </button>
-
-              <button
-                onClick={() => {
-                  // TODO: Add Firebase logout functionality here
-                  console.log("Logout clicked")
-                }}
-                className="ml-auto pb-3 px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition shadow-md hover:shadow-lg flex items-center gap-2"
-              >
-                <LogOut className="w-4 h-4" />
-                Logout
               </button>
             </div>
 
