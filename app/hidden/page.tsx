@@ -161,6 +161,8 @@ export default function HiddenPage() {
 }
 
 function Header() {
+  const [isSignedIn, setIsSignedIn] = useState(false)
+
   return (
     <header className="sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-[#0D0B3B]/70 border-b border-white/10">
       <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-4">
@@ -205,7 +207,26 @@ function Header() {
               </svg>
             </div>
           </div>
-          <button className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20" aria-label="Profile" />
+
+          {!isSignedIn ? (
+            <>
+              <a href="/signin" className="hidden md:block px-4 py-2 text-sm text-white/80 hover:text-white transition">
+                Sign In
+              </a>
+              <a
+                href="/signup"
+                className="hidden md:block px-4 py-2 text-sm bg-[#6B9DFC] hover:bg-[#5A8DE8] text-white rounded-lg transition"
+              >
+                Sign Up
+              </a>
+            </>
+          ) : null}
+
+          <a href="/settings" className="flex items-center gap-2">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#6B9DFC] to-[#4A7DD8] flex items-center justify-center ring-2 ring-white/10 hover:ring-white/20 transition">
+              <User className="w-5 h-5 text-white" />
+            </div>
+          </a>
         </div>
       </div>
     </header>
