@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useI18n } from "@/i18n/I18nProvider"
 
 type TimeFilter = "week" | "month" | "all"
 
@@ -11,24 +12,53 @@ interface TriggerData {
   scenes: number
 }
 
+const mockData = {
+  week: {
+    minutesProtected: 42,
+    scenesSkipped: 16,
+    weeklyActivity: [3, 1, 4, 2, 5, 0, 1],
+    triggerData: [
+      { name: "Sexual content", color: "#ef4444", percentage: 32, scenes: 6 },
+      { name: "Violence", color: "#a855f7", percentage: 25, scenes: 5 },
+      { name: "Emotional distress", color: "#eab308", percentage: 19, scenes: 3 },
+      { name: "Self-harm", color: "#3b82f6", percentage: 13, scenes: 2 },
+      { name: "Animal harm", color: "#22c55e", percentage: 11, scenes: 2 },
+    ],
+  },
+  month: {
+    minutesProtected: 178,
+    scenesSkipped: 64,
+    weeklyActivity: [8, 12, 9, 15, 11, 13, 10],
+    triggerData: [
+      { name: "Sexual content", color: "#ef4444", percentage: 30, scenes: 19 },
+      { name: "Violence", color: "#a855f7", percentage: 28, scenes: 18 },
+      { name: "Emotional distress", color: "#eab308", percentage: 20, scenes: 13 },
+      { name: "Self-harm", color: "#3b82f6", percentage: 12, scenes: 8 },
+      { name: "Animal harm", color: "#22c55e", percentage: 10, scenes: 6 },
+    ],
+  },
+  all: {
+    minutesProtected: 892,
+    scenesSkipped: 312,
+    weeklyActivity: [42, 38, 45, 51, 48, 40, 44],
+    triggerData: [
+      { name: "Sexual content", color: "#ef4444", percentage: 31, scenes: 97 },
+      { name: "Violence", color: "#a855f7", percentage: 27, scenes: 84 },
+      { name: "Emotional distress", color: "#eab308", percentage: 19, scenes: 59 },
+      { name: "Self-harm", color: "#3b82f6", percentage: 13, scenes: 41 },
+      { name: "Animal harm", color: "#22c55e", percentage: 10, scenes: 31 },
+    ],
+  },
+}
+
 export default function ActivityDashboard() {
+  const { t } = useI18n()
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("week")
 
-  // Mock data
-  const minutesProtected = 42
-  const scenesSkipped = 16
-  const weeklyActivity = [3, 1, 4, 2, 5, 0, 1] // Last 7 days
-  const dailyGoal = { current: 0, target: 15 }
-
-  const triggerData: TriggerData[] = [
-    { name: "Sexual content", color: "#ef4444", percentage: 32, scenes: 6 },
-    { name: "Violence", color: "#a855f7", percentage: 25, scenes: 5 },
-    { name: "Emotional distress", color: "#eab308", percentage: 19, scenes: 3 },
-    { name: "Self-harm", color: "#3b82f6", percentage: 13, scenes: 2 },
-    { name: "Animal harm", color: "#22c55e", percentage: 11, scenes: 2 },
-  ]
+  const { minutesProtected, scenesSkipped, weeklyActivity, triggerData } = mockData[timeFilter]
 
   const maxActivity = Math.max(...weeklyActivity)
+  const dailyGoal = { current: 0, target: 15 }
 
   return (
     <div className="space-y-6">
@@ -42,7 +72,7 @@ export default function ActivityDashboard() {
               timeFilter === filter ? "bg-white text-[#0D0B3B]" : "text-white/70 hover:text-white"
             }`}
           >
-            {filter === "week" ? "This Week" : filter === "month" ? "This Month" : "All Time"}
+            {t(`settings.activity.timeFilter.${filter}`)}
           </button>
         ))}
       </div>
@@ -51,13 +81,12 @@ export default function ActivityDashboard() {
       <div className="grid md:grid-cols-2 gap-6">
         {/* Minutes Protected Card */}
         <div className="bg-white rounded-2xl p-6 shadow-lg">
-          <h3 className="text-sm font-semibold text-gray-600 mb-3">Minutes Protected</h3>
+          <h3 className="text-sm font-semibold text-gray-600 mb-3">{t("settings.activity.minutesProtected")}</h3>
           <div className="flex items-baseline gap-2 mb-4">
             <span className="text-5xl font-bold text-gray-900">{minutesProtected}</span>
-            <span className="text-xl text-gray-500">min</span>
+            <span className="text-xl text-gray-500">{t("settings.activity.min")}</span>
           </div>
-          <p className="text-sm text-gray-500 mb-3">This week</p>
-          {/* Progress bar */}
+          <p className="text-sm text-gray-500 mb-3">{t(`settings.activity.timeLabel.${timeFilter}`)}</p>
           <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
             <div className="h-full bg-[#d0e3ff] rounded-full" style={{ width: "70%" }} />
           </div>
@@ -65,13 +94,12 @@ export default function ActivityDashboard() {
 
         {/* Scenes Skipped Card */}
         <div className="bg-white rounded-2xl p-6 shadow-lg">
-          <h3 className="text-sm font-semibold text-gray-600 mb-3">Scenes Skipped</h3>
+          <h3 className="text-sm font-semibold text-gray-600 mb-3">{t("settings.activity.scenesSkipped")}</h3>
           <div className="flex items-baseline gap-2 mb-4">
             <span className="text-5xl font-bold text-gray-900">{scenesSkipped}</span>
-            <span className="text-xl text-gray-500">scenes</span>
+            <span className="text-xl text-gray-500">{t("settings.activity.scenes")}</span>
           </div>
-          <p className="text-sm text-gray-500 mb-3">This week</p>
-          {/* Mini 7-day chart */}
+          <p className="text-sm text-gray-500 mb-3">{t(`settings.activity.timeLabel.${timeFilter}`)}</p>
           <div className="flex items-end gap-1 h-12">
             {weeklyActivity.map((count, i) => (
               <div key={i} className="flex-1 flex flex-col justify-end">
@@ -87,10 +115,8 @@ export default function ActivityDashboard() {
 
       {/* Donut Chart - Triggers Filtered */}
       <div className="bg-white rounded-2xl p-6 shadow-lg">
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">Triggers Filtered</h3>
-        <p className="text-sm text-gray-500 mb-6">
-          A breakdown of the types of scenes SKIP IT skipped or blurred for you.
-        </p>
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">{t("settings.activity.triggersFiltered")}</h3>
+        <p className="text-sm text-gray-500 mb-6">{t("settings.activity.triggersDesc")}</p>
 
         <div className="grid md:grid-cols-2 gap-8 items-center">
           {/* Donut Chart */}
@@ -121,8 +147,8 @@ export default function ActivityDashboard() {
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">
-                <div className="text-3xl font-bold text-gray-900">{scenesSkipped}</div>
-                <div className="text-sm text-gray-500">Total</div>
+                <div className="text-2xl font-bold text-gray-900">{scenesSkipped}</div>
+                <div className="text-sm text-gray-500">{t("settings.activity.total")}</div>
               </div>
             </div>
           </div>
@@ -133,10 +159,12 @@ export default function ActivityDashboard() {
               <div key={i} className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: trigger.color }} />
-                  <span className="text-sm font-medium text-gray-700">{trigger.name}</span>
+                  <span className="text-sm font-medium text-gray-700">
+                    {t(`settings.activity.triggers.${trigger.name}`)}
+                  </span>
                 </div>
                 <div className="text-sm text-gray-500">
-                  {trigger.percentage}% · {trigger.scenes} scenes
+                  {trigger.percentage}% · {trigger.scenes} {t("settings.activity.scenes")}
                 </div>
               </div>
             ))}
@@ -146,13 +174,14 @@ export default function ActivityDashboard() {
 
       {/* Optional Daily Goal Card */}
       <div className="bg-white rounded-2xl p-6 shadow-lg">
-        <h3 className="text-sm font-semibold text-gray-600 mb-3">Content Wellness Goal</h3>
+        <h3 className="text-sm font-semibold text-gray-600 mb-3">{t("settings.activity.wellnessGoal")}</h3>
         <div className="flex items-baseline gap-2 mb-4">
           <span className="text-3xl font-bold text-gray-900">{dailyGoal.current}</span>
-          <span className="text-xl text-gray-500">/ {dailyGoal.target} min</span>
+          <span className="text-xl text-gray-500">
+            / {dailyGoal.target} {t("settings.activity.min")}
+          </span>
         </div>
-        <p className="text-sm text-gray-500 mb-3">Goal: {dailyGoal.target} min of protected viewing</p>
-        {/* Progress bar */}
+        <p className="text-sm text-gray-500 mb-3">{t("settings.activity.goalDesc", { target: dailyGoal.target })}</p>
         <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
           <div
             className="h-full bg-gradient-to-r from-[#d0e3ff] to-[#93b8f0] rounded-full transition-all"

@@ -8,13 +8,13 @@ import type { Locale } from "@/i18n/translations"
 import Link from "next/link"
 import ActivityDashboard from "@/components/ActivityDashboard"
 
-type Tab = "trigger" | "plans" | "data" | "activity"
+type Tab = "trigger" | "plans" | "data"
 type Plan = "starter" | "single" | "family" | "org"
 
 export default function SettingsPage() {
   const { t, locale, setLocale } = useI18n()
 
-  const [tab, setTab] = useState<Tab>("trigger")
+  const [tab, setTab] = useState<Tab>("data") // Changed default tab from "trigger" to "data" to hide Activity tab
   const [selectedPlan, setSelectedPlan] = useState<Plan>("family")
   const [isSignedIn, setIsSignedIn] = useState(true) // TODO: Replace with actual Firebase auth state
   const [triggers, setTriggers] = useState({
@@ -137,14 +137,6 @@ export default function SettingsPage() {
             {/* Tabs */}
             <div className="flex gap-8 border-b border-white/20 mb-8">
               <button
-                onClick={() => setTab("activity")}
-                className={`pb-3 font-semibold transition ${
-                  tab === "activity" ? "border-b-2 border-white" : "text-white/60 hover:text-white"
-                }`}
-              >
-                Activity
-              </button>
-              <button
                 onClick={() => setTab("trigger")}
                 className={`pb-3 font-semibold transition ${
                   tab === "trigger" ? "border-b-2 border-white" : "text-white/60 hover:text-white"
@@ -169,9 +161,6 @@ export default function SettingsPage() {
                 {t("settings.dataTab")}
               </button>
             </div>
-
-            {/* Activity Dashboard Tab */}
-            {tab === "activity" && <ActivityDashboard />}
 
             {/* Trigger Settings Tab */}
             {tab === "trigger" && (
@@ -293,7 +282,8 @@ export default function SettingsPage() {
             {tab === "data" && (
               <div>
                 <h2 className="text-2xl font-semibold mb-4">{t("settings.dataPrivacy")}</h2>
-                <p className="text-white/70">{t("settings.dataPrivacyDesc")}</p>
+                <p className="text-white/70 mb-8">{t("settings.dataPrivacyDesc")}</p>
+                <ActivityDashboard />
               </div>
             )}
           </div>
