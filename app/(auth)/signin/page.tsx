@@ -62,7 +62,11 @@ export default function SignInPage() {
     <div className="min-h-screen bg-[#0D0B3B] text-white flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <Link href="/" className="flex justify-center mb-8">
-          <img src="/skipit-logo.png" alt="SKIP IT." className="h-10 w-auto" />
+          <div className="text-4xl font-bold tracking-wider">
+            <span className="text-[#d0e3ff]">SKIP</span>
+            <span className="text-white"> IT</span>
+            <span className="text-[#d0e3ff]">.</span>
+          </div>
         </Link>
 
         <div className="bg-white/5 backdrop-blur border border-white/10 rounded-3xl p-8">
