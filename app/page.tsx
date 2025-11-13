@@ -52,8 +52,7 @@ const realMovies: Movie[] = [
     triggers: ["Criminal Activity", "Pregnancy Discussion", "Gun Violence Reference", "Career Disappointment"],
     provider: "Netflix",
     poster: "/movies/carry-on.jpg",
-    backdrop:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Untitled%20design%20%282%29-DOMEq29KKXCP9E3j3C3qTSbRwpAQm0.png",
+    backdrop: "#000000",
     tagline: "A TSA agent is blackmailed into letting a dangerous package slip through security.",
     link: "https://www.netflix.com/search?q=carry%20on&jbv=81476963",
     trailer: { type: "youtube", id: "KS0XacjMmOc" },
@@ -87,8 +86,7 @@ const realMovies: Movie[] = [
     triggers: ["Violence", "Trauma", "Strangulation", "Dismissive Behavior"],
     provider: "Netflix",
     poster: "/movies/woman-of-the-hour.jpg",
-    backdrop:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Untitled%20design%20%283%29-8EGi3iGFYt25sn30GNtFer0yT9aWZ6.png",
+    backdrop: "#000000",
     tagline: "Based on the shocking true story of The Dating Game's deadliest bachelor.",
     link: "https://www.netflix.com/search?q=woman%20of%20the%20&jbv=81728818",
     trailer: { type: "youtube", id: "qeVkVI0hH0g" },
@@ -106,8 +104,7 @@ const realMovies: Movie[] = [
     triggers: ["Self-Deprecation", "Reference to Violence", "Destructive Technology", "Parental Conflict"],
     provider: "Netflix",
     poster: "/movies/how-to-train-your-dragon.png",
-    backdrop:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Untitled%20design%20%281%29-VQuanII143hJlbIeAHya1lfx3BtPsp.png",
+    backdrop: "#000000",
     tagline: "One adventure will change two worlds.",
     link: "https://www.netflix.com/title/70117095",
     trailer: { type: "youtube", id: "oKiYuIsPxYk" },
@@ -160,8 +157,7 @@ const heroSlides: Movie[] = [
     triggers: ["Criminal Activity", "Pregnancy Discussion", "Gun Violence Reference", "Career Disappointment"],
     provider: "Netflix",
     poster: "/movies/carry-on.jpg",
-    backdrop:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Untitled%20design%20%282%29-DOMEq29KKXCP9E3j3C3qTSbRwpAQm0.png",
+    backdrop: "#000000",
     tagline: "A TSA agent is blackmailed into letting a dangerous package slip through security.",
     link: "https://www.netflix.com/search?q=carry%20on&jbv=81476963",
     trailer: { type: "youtube", id: "KS0XacjMmOc" },
@@ -179,8 +175,7 @@ const heroSlides: Movie[] = [
     triggers: ["Violence", "Trauma", "Strangulation", "Dismissive Behavior"],
     provider: "Netflix",
     poster: "/movies/woman-of-the-hour.jpg",
-    backdrop:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Untitled%20design%20%283%29-8EGi3iGFYt25sn30GNtFer0yT9aWZ6.png",
+    backdrop: "#000000",
     tagline: "Based on the shocking true story of The Dating Game's deadliest bachelor.",
     link: "https://www.netflix.com/search?q=woman%20of%20the%20&jbv=81728818",
     trailer: { type: "youtube", id: "qeVkVI0hH0g" },
@@ -198,8 +193,7 @@ const heroSlides: Movie[] = [
     triggers: ["Self-Deprecation", "Reference to Violence", "Destructive Technology", "Parental Conflict"],
     provider: "Netflix",
     poster: "/movies/how-to-train-your-dragon.png",
-    backdrop:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Untitled%20design%20%281%29-VQuanII143hJlbIeAHya1lfx3BtPsp.png",
+    backdrop: "#000000",
     tagline: "One adventure will change two worlds.",
     link: "https://www.netflix.com/title/70117095",
     trailer: { type: "youtube", id: "oKiYuIsPxYk" },
@@ -370,14 +364,24 @@ export default function Page() {
                   window.open(currentSlide.link, "_blank", "noopener,noreferrer")
                 }
               }}
-              className="cursor-pointer"
+              className="cursor-pointer relative"
             >
-              <img
-                src={currentSlide.backdrop || "/placeholder.svg"}
-                alt={`${currentSlide.title} backdrop`}
-                className="w-full aspect-[23/9] object-cover"
-                style={{ objectPosition: objectPos }}
-              />
+              {currentSlide.backdrop === "#000000" ? (
+                <div className="w-full aspect-[23/9] bg-black" />
+              ) : (
+                <img
+                  src={currentSlide.backdrop || "/placeholder.svg"}
+                  alt={`${currentSlide.title} backdrop`}
+                  className="w-full aspect-[23/9] object-cover"
+                  style={{ objectPosition: objectPos }}
+                />
+              )}
+
+              {currentSlide.id === "carry-on" && currentSlide.triggers && currentSlide.triggers.length > 0 && (
+                <div className="absolute top-6 right-6 bg-[#d0e3ff]/95 backdrop-blur text-[#0D0B3B] px-4 py-2 rounded-xl text-sm font-semibold z-20">
+                  Trigger Detected: {currentSlide.triggers[0]}
+                </div>
+              )}
 
               {showHeroTrailer && currentSlide.trailer && (
                 <div className="absolute inset-0 pointer-events-none z-10">
