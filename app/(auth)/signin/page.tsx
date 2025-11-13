@@ -5,7 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import Image from "next/image"
+import { ThemeLogo } from "@/components/theme-logo"
 
 export default function SignInPage() {
   const router = useRouter()
@@ -60,18 +60,18 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0D0B3B] text-white flex items-center justify-center px-4">
+    <div className="min-h-screen bg-background text-foreground flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <Link href="/" className="flex justify-center mb-8 hover:opacity-80 transition">
-          <Image src="/skipit-logo.png" alt="SKIP IT." width={120} height={32} className="h-8 w-auto" />
+          <ThemeLogo />
         </Link>
 
-        <div className="bg-white/5 backdrop-blur border border-white/10 rounded-3xl p-8">
+        <div className="bg-card/50 backdrop-blur border border-border rounded-3xl p-8">
           <h1 className="text-3xl font-bold mb-2 text-center">Welcome Back</h1>
-          <p className="text-white/60 text-center mb-6">Sign in to continue to SKIP IT</p>
+          <p className="text-muted-foreground text-center mb-6">Sign in to continue to skip it</p>
 
           {error && (
-            <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+            <div className="mb-4 p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm">
               {error}
             </div>
           )}
@@ -86,7 +86,7 @@ export default function SignInPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-[#d0e3ff] focus:outline-none transition"
+                className="w-full px-4 py-3 rounded-xl bg-input border border-border focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20 transition"
                 placeholder="you@example.com"
                 required
               />
@@ -101,7 +101,7 @@ export default function SignInPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-[#d0e3ff] focus:outline-none transition"
+                className="w-full px-4 py-3 rounded-xl bg-input border border-border focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20 transition"
                 placeholder="••••••••"
                 required
               />
@@ -110,7 +110,7 @@ export default function SignInPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-xl bg-[#d0e3ff] text-[#0D0B3B] font-semibold hover:brightness-95 transition disabled:opacity-50"
+              className="w-full py-3 rounded-xl text-primary-foreground font-semibold hover:bg-primary/90 transition disabled:opacity-50 bg-[rgba(208,227,255,1)]"
             >
               {loading ? "Signing in..." : "Sign In"}
             </button>
@@ -118,17 +118,17 @@ export default function SignInPage() {
 
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/10" />
+              <div className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-[#0D0B3B] text-white/60">Or continue with</span>
+              <span className="px-4 bg-card text-muted-foreground">Or continue with</span>
             </div>
           </div>
 
           <button
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition font-semibold disabled:opacity-50 flex items-center justify-center gap-3"
+            className="w-full py-3 rounded-xl bg-muted border border-border hover:bg-muted/80 transition font-semibold disabled:opacity-50 flex items-center justify-center gap-3"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -151,9 +151,9 @@ export default function SignInPage() {
             Continue with Google
           </button>
 
-          <p className="mt-6 text-center text-sm text-white/60">
+          <p className="mt-6 text-center text-sm text-muted-foreground">
             Don't have an account?{" "}
-            <Link href="/signup" className="text-[#d0e3ff] hover:underline font-semibold">
+            <Link href="/signup" className="hover:underline font-semibold text-[rgba(208,227,255,1)]">
               Sign up
             </Link>
           </p>

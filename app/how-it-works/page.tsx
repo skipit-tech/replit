@@ -1,6 +1,8 @@
+import { ThemeLogo } from "@/components/theme-logo"
+
 export default function HowItWorksPage() {
   return (
-    <div className="min-h-screen bg-[#0D0B3B] text-white font-dm-sans">
+    <div className="min-h-screen bg-background text-foreground font-dm-sans">
       <Header />
 
       <main className="max-w-5xl mx-auto px-4 py-12 pb-24">
@@ -8,7 +10,7 @@ export default function HowItWorksPage() {
         <section className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">How SKIP IT. Works</h1>
 
-          <p className="text-lg text-white/70 max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Watch your favorite movies and shows without the stress. SKIP IT. automatically detects and skips triggering
             content based on your preferences.
           </p>
@@ -36,7 +38,7 @@ export default function HowItWorksPage() {
         {/* Mock Player */}
         <section className="mb-16">
           <h2 className="text-2xl font-bold mb-6 text-center">See It In Action</h2>
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 md:p-8">
+          <div className="bg-card border border-border rounded-3xl p-6 md:p-8">
             <div className="aspect-video bg-black rounded-2xl mb-4 relative overflow-hidden">
               <img
                 src="/images/untitled-20design-20-284-29.png"
@@ -46,23 +48,24 @@ export default function HowItWorksPage() {
             </div>
 
             {/* Timeline */}
-            <div className="relative h-2 bg-white/10 rounded-full overflow-hidden">
-              <div className="absolute left-0 top-0 h-full w-[35%] bg-white/30" />
-              <div className="absolute left-[35%] top-0 h-full w-[8%] bg-[#d0e3ff]" />
-              <div className="absolute left-[43%] top-0 h-full w-[57%] bg-white/30" />
+            <div className="relative h-2 bg-muted rounded-full overflow-hidden">
+              <div className="absolute left-0 top-0 h-full w-[35%] bg-muted-foreground/30" />
+              <div className="absolute left-[35%] top-0 h-full w-[8%] text-[rgba(208,227,255,1)] bg-[rgba(208,227,255,1)]" />
+              <div className="absolute left-[43%] top-0 h-full w-[57%] bg-muted-foreground/30" />
             </div>
 
-            <div className="flex items-center justify-between mt-4 text-sm text-white/60">
+            <div className="flex items-center justify-between mt-4 text-sm text-muted-foreground">
               <span>12:34</span>
-              <div className="flex items-center gap-2 text-[#d0e3ff]">
+              <div className="flex items-center gap-2 text-secondary">
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path
+                    className="text-[rgba(208,227,255,1)]"
                     fillRule="evenodd"
                     d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>Violence detected - skipping 15 seconds</span>
+                <span className="text-[rgba(208,227,255,1)]">Violence detected - skipping 15 seconds</span>
               </div>
               <span>1:45:20</span>
             </div>
@@ -85,7 +88,7 @@ export default function HowItWorksPage() {
               "Death",
               "Trauma",
             ].map((trigger) => (
-              <span key={trigger} className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm">
+              <span key={trigger} className="px-4 py-2 rounded-full bg-muted border border-border text-sm">
                 {trigger}
               </span>
             ))}
@@ -117,21 +120,21 @@ export default function HowItWorksPage() {
 
         {/* CTA */}
         <section className="text-center">
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12">
+          <div className="bg-card border border-border rounded-3xl p-8 md:p-12">
             <h2 className="text-3xl font-bold mb-4">Ready to Watch Safely?</h2>
-            <p className="text-white/70 mb-6 max-w-xl mx-auto">
+            <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
               Join thousands of users who are enjoying their favorite content without the stress.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="/signup"
-                className="px-8 py-3 rounded-xl bg-[#d0e3ff] text-[#0D0B3B] font-semibold hover:brightness-95 transition"
+                className="px-8 py-3 rounded-xl text-primary-foreground font-semibold hover:bg-primary/90 transition bg-[rgba(208,227,255,1)]"
               >
                 Sign Up Free
               </a>
               <a
                 href="/signin"
-                className="px-8 py-3 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 transition"
+                className="px-8 py-3 rounded-xl border border-border bg-muted hover:bg-muted/80 transition"
               >
                 Sign In
               </a>
@@ -147,19 +150,19 @@ export default function HowItWorksPage() {
 
 function StepCard({ number, title, description }: { number: string; title: string; description: string }) {
   return (
-    <div className="bg-white/5 border border-white/10 rounded-3xl p-6 text-center">
-      <div className="w-12 h-12 rounded-full bg-[#d0e3ff] text-[#0D0B3B] font-bold text-xl flex items-center justify-center mx-auto mb-4">
+    <div className="bg-card border border-border rounded-3xl p-6 text-center">
+      <div className="w-12 h-12 rounded-full text-[#0D0B3B] font-bold text-xl flex items-center justify-center mx-auto mb-4 bg-blue-200">
         {number}
       </div>
       <h3 className="text-xl font-semibold mb-2">{title}</h3>
-      <p className="text-white/70 text-sm">{description}</p>
+      <p className="text-muted-foreground text-sm">{description}</p>
     </div>
   )
 }
 
 function FAQItem({ question, answer }: { question: string; answer: string }) {
   return (
-    <details className="bg-white/5 border border-white/10 rounded-2xl p-5 group">
+    <details className="bg-card border border-border rounded-2xl p-5 group">
       <summary className="font-semibold cursor-pointer list-none flex items-center justify-between">
         {question}
         <svg
@@ -176,36 +179,48 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
           />
         </svg>
       </summary>
-      <p className="mt-3 text-white/70 text-sm">{answer}</p>
+      <p className="mt-3 text-muted-foreground text-sm">{answer}</p>
     </details>
   )
 }
 
 function Header() {
   return (
-    <header className="sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-[#0D0B3B]/70 border-b border-white/10">
+    <header className="sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-background/70 border-b border-border">
       <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-4">
         <div className="flex items-center gap-2">
           <a href="/">
-            <img src="/skipit-logo.png" alt="SKIP IT." className="h-8 w-auto" />
+            <ThemeLogo />
           </a>
         </div>
-        <nav className="hidden md:flex items-center gap-6 ml-6 text-sm text-white/80">
-          <a className="hover:text-white" href="/">
+        <nav className="hidden md:flex items-center gap-6 ml-6 text-sm text-muted-foreground">
+          <a className="hover:text-foreground transition" href="/">
             Movies
           </a>
-          <a className="hover:text-white" href="/">
+          <a className="hover:text-foreground transition" href="/">
             TV Shows
           </a>
-          <a className="hover:text-white" href="/hidden">
+          <a className="hover:text-foreground transition" href="/hidden">
             Hidden
           </a>
-          <a className="hover:text-white text-white" href="/how-it-works">
+          <a className="text-foreground font-semibold transition" href="/how-it-works">
             How it Works
           </a>
         </nav>
         <div className="ml-auto flex items-center gap-3">
-          <a href="/settings" className="text-white/70 hover:text-white transition" aria-label="Profile">
+          <a
+            href="/signin"
+            className="px-4 py-2 rounded-xl border border-border bg-muted hover:bg-muted/80 transition text-sm"
+          >
+            Sign In
+          </a>
+          <a
+            href="/signup"
+            className="px-8 py-3 rounded-xl text-[#0D0B3B] dark:text-[#0D0B3B] font-semibold transition text-sm bg-[#d0e3ff] hover:bg-[#c0d3ef]"
+          >
+            Sign Up
+          </a>
+          <a href="/settings" className="text-muted-foreground hover:text-foreground transition" aria-label="Profile">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -215,18 +230,6 @@ function Header() {
               />
             </svg>
           </a>
-          <a
-            href="/signin"
-            className="px-4 py-2 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 transition text-sm"
-          >
-            Sign In
-          </a>
-          <a
-            href="/signup"
-            className="px-8 py-3 rounded-xl bg-[#d0e3ff] text-[#0D0B3B] font-semibold hover:brightness-95 transition text-sm"
-          >
-            Sign Up
-          </a>
         </div>
       </div>
     </header>
@@ -235,9 +238,9 @@ function Header() {
 
 function BottomNav() {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-[#0D0B3B]/95 backdrop-blur border-t border-white/10 z-50 md:hidden">
-      <div className="max-w-md mx-auto flex justify-around py-3 text-sm text-white/70">
-        <a href="/" className="flex flex-col items-center gap-1 hover:text-white transition">
+    <nav className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur border-t border-border z-50 md:hidden">
+      <div className="max-w-md mx-auto flex justify-around py-3 text-sm text-muted-foreground">
+        <a href="/" className="flex flex-col items-center gap-1 hover:text-foreground transition">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
@@ -248,7 +251,7 @@ function BottomNav() {
           </svg>
           <span className="text-xs">Home</span>
         </a>
-        <a href="/explore" className="flex flex-col items-center gap-1 hover:text-white transition">
+        <a href="/explore" className="flex flex-col items-center gap-1 hover:text-foreground transition">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
@@ -259,7 +262,7 @@ function BottomNav() {
           </svg>
           <span className="text-xs">Explore</span>
         </a>
-        <a href="/settings" className="flex flex-col items-center gap-1 hover:text-white transition">
+        <a href="/settings" className="flex flex-col items-center gap-1 hover:text-foreground transition">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"

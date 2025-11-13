@@ -4,25 +4,28 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  /* Updated to exact brand colors from pitch deck - soft lavender-blue background with rich brand blue accents */
+  --background: oklch(0.93 0.03 250); /* Light lavender-blue #C5D4F0 from pitch deck */
+  --foreground: oklch(0.2 0.06 260); /* Dark navy for text */
+  --card: oklch(0.96 0.02 250); /* Very light lavender-blue cards */
+  --card-foreground: oklch(0.2 0.06 260);
+  --popover: oklch(0.98 0.01 250);
+  --popover-foreground: oklch(0.2 0.06 260);
+  /* Using exact #d0e3ff light blue for primary in light mode */
+  --primary: oklch(0.9 0.035 255); /* Exact #d0e3ff light blue */
+  --primary-foreground: oklch(0.2 0.06 260); /* Dark navy text on light blue */
+  --secondary: oklch(0.62 0.1 240); /* Medium blue #7C9AC5 from palette */
+  --secondary-foreground: oklch(0.99 0.01 250);
+  --muted: oklch(0.88 0.04 250); /* Muted lavender-blue */
+  --muted-foreground: oklch(0.5 0.05 260);
+  /* Using exact #d0e3ff light blue for accent in light mode */
+  --accent: oklch(0.9 0.035 255); /* Exact #d0e3ff light blue */
+  --accent-foreground: oklch(0.2 0.06 260); /* Dark navy text */
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.85 0.04 250); /* Soft lavender-blue borders */
+  --input: oklch(0.98 0.01 250);
+  --ring: oklch(0.5 0.18 265); /* Rich blue focus ring */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -40,30 +43,34 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
+  /* Updated to use exact dark navy #1A1654 from brand palette */
+  --background: oklch(0.16 0.1 270); /* Dark navy #1A1654 */
+  --foreground: oklch(0.98 0.01 250); /* Almost white text */
+  --card: oklch(0.2 0.1 270); /* Slightly lighter navy for cards */
+  --card-foreground: oklch(0.98 0.01 250);
+  --popover: oklch(0.2 0.1 270);
+  --popover-foreground: oklch(0.98 0.01 250);
+  /* Replaced cyan with brand blue #6B9DFC to match color palette */
+  --primary: oklch(0.68 0.12 245); /* Brand blue #6B9DFC instead of cyan */
+  --primary-foreground: oklch(0.98 0.01 250); /* White text on blue */
+  --secondary: oklch(0.62 0.1 240); /* Medium blue #7C9AC5 */
+  --secondary-foreground: oklch(0.98 0.01 250);
+  --muted: oklch(0.28 0.1 270); /* Muted navy */
+  --muted-foreground: oklch(0.7 0.05 250); /* Light gray text */
+  /* Replaced cyan accent with brand blue */
+  --accent: oklch(0.68 0.12 245); /* Brand blue accent matching primary */
+  --accent-foreground: oklch(0.98 0.01 250);
+  --destructive: oklch(0.55 0.25 27);
+  --destructive-foreground: oklch(0.98 0.01 250);
+  --border: oklch(0.28 0.1 270); /* Subtle navy border */
+  --input: oklch(0.24 0.1 270);
+  /* Replaced cyan ring with brand blue */
+  --ring: oklch(0.68 0.12 245); /* Brand blue focus ring */
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);

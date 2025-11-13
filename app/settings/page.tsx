@@ -1,30 +1,193 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
-import { Home, Search, User, ChevronDown, LogOut, Mail } from "lucide-react"
+import { useState, useCallback, memo, useEffect } from "react"
+import { Home, Search, User, ChevronDown, LogOut, Mail, Sun, Moon } from "lucide-react"
 import CircularTimer from "@/components/circular-timer"
 import { useI18n } from "@/i18n/I18nProvider"
 import type { Locale } from "@/i18n/translations"
 import Link from "next/link"
-import ActivityDashboard from "@/components/ActivityDashboard"
+import dynamic from "next/dynamic"
+import { useTheme } from "@/hooks/use-theme"
+import { ThemeLogo } from "@/components/theme-logo"
+import { ProfileEditor } from "@/components/ProfileEditor"
+import { onAuthChange, getUserProfile, type UserProfile } from "@/lib/firebase/auth"
+
+const ActivityDashboard = dynamic(() => import("@/components/ActivityDashboard"), {
+  loading: () => (
+    <div className="flex items-center justify-center py-12">
+      <div className="w-12 h-12 border-4 border-[#d0e3ff]/20 border-t-[#d0e3ff] rounded-full animate-spin" />
+    </div>
+  ),
+  ssr: false,
+})
 
 type Tab = "trigger" | "plans" | "data"
 type Plan = "starter" | "single" | "family" | "org"
 
+const ProfileSidebar = memo(function ProfileSidebar({
+  locale,
+  setLocale,
+  theme,
+  toggleTheme,
+  onContactClick,
+  userProfile,
+  onEditProfile,
+}: {
+  locale: string
+  setLocale: (locale: Locale) => void
+  theme: string
+  toggleTheme: () => void
+  onContactClick: () => void
+  userProfile: UserProfile | null
+  onEditProfile: () => void
+}) {
+  const { t } = useI18n()
+
+  return (
+    <aside
+      aria-label="Profile information"
+      className="bg-gradient-to-br from-blue-100 to-blue-50 dark:from-[#0D0B3B] dark:to-[#1a1654] rounded-3xl p-6 h-fit shadow-lg"
+    >
+      <div className="flex flex-col items-center">
+        <div className="w-32 h-32 rounded-full overflow-hidden mb-4 ring-4 ring-blue-400/30">
+          <img
+            src={userProfile?.photoURL || "/placeholder-user.jpg"}
+            alt="Profile picture of Jane Doe"
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{userProfile?.displayName || "JANE DOE"}</h2>
+        <p className="text-sm text-slate-600 dark:text-blue-200 mt-1">Premium</p>
+      </div>
+
+      <div className="mt-6 space-y-4">
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="font-semibold text-slate-900 dark:text-white">{t("settings.contact")}</h3>
+            <button
+              onClick={onEditProfile}
+              className="text-slate-600 dark:text-blue-200 hover:text-slate-900 dark:hover:text-white"
+              aria-label="Edit contact information"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                />
+              </svg>
+            </button>
+          </div>
+          <p className="text-sm text-slate-700 dark:text-blue-100">
+            {t("settings.phone")}: {userProfile?.phoneNumber || "(000)-000-000"}
+          </p>
+          <p className="text-sm text-slate-700 dark:text-blue-100">
+            {t("settings.email")}: {userProfile?.email || "janedoe@hello.com"}
+          </p>
+        </div>
+
+        <div>
+          <label htmlFor="language-select" className="block font-semibold mb-2 text-slate-900 dark:text-white">
+            {t("settings.language")}
+          </label>
+          <div className="relative">
+            <select
+              id="language-select"
+              value={locale}
+              onChange={(e) => setLocale(e.target.value as Locale)}
+              className="w-full bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg px-3 py-2 text-sm appearance-none cursor-pointer border border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition"
+              aria-label="Select language"
+            >
+              <option value="en">English</option>
+              <option value="es">Español</option>
+              <option value="zh">中文 (Chinese)</option>
+              <option value="tl">Tagalog</option>
+              <option value="vi">Tiếng Việt (Vietnamese)</option>
+              <option value="ar">العربية (Arabic)</option>
+              <option value="ko">한국어 (Korean)</option>
+              <option value="fr">Français</option>
+              <option value="ru">Русский (Russian)</option>
+              <option value="pt">Português (Portuguese)</option>
+              <option value="hi">हिन्दी (Hindi)</option>
+            </select>
+            <ChevronDown
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none text-slate-600 dark:text-blue-200"
+              aria-hidden="true"
+            />
+          </div>
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-semibold text-slate-900 dark:text-white">{t("settings.theme")}</h3>
+              <p className="text-sm text-slate-600 dark:text-blue-200 mt-1" id="theme-status">
+                {theme === "dark" ? "Dark Mode" : "Light Mode"}
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Sun
+                className={`w-5 h-5 ${theme === "light" ? "text-slate-900" : "text-slate-400 dark:text-blue-300"}`}
+                aria-hidden="true"
+              />
+              <button
+                onClick={toggleTheme}
+                className={`relative w-14 h-7 rounded-full transition-colors ${
+                  theme === "dark" ? "bg-blue-600" : "bg-slate-300"
+                }`}
+                aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+                aria-pressed={theme === "dark"}
+                role="switch"
+                aria-describedby="theme-status"
+              >
+                <span
+                  className={`absolute top-0.5 w-6 h-6 bg-white rounded-full transition-all shadow-md ${
+                    theme === "dark" ? "right-0.5" : "left-0.5"
+                  }`}
+                />
+              </button>
+              <Moon
+                className={`w-5 h-5 ${theme === "dark" ? "text-slate-900 dark:text-white" : "text-slate-400"}`}
+                aria-hidden="true"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 pt-6 border-t border-slate-300 dark:border-slate-600">
+          <button
+            onClick={onContactClick}
+            className="w-full py-3 px-4 bg-slate-900 dark:bg-blue-600 hover:bg-slate-800 dark:hover:bg-blue-700 text-white font-semibold rounded-xl transition shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+          >
+            <Mail className="w-5 h-5" />
+            Contact Support
+          </button>
+          <p className="text-xs text-slate-600 dark:text-blue-200 text-center mt-2">We're here if you need help.</p>
+        </div>
+      </div>
+    </aside>
+  )
+})
+
 export default function SettingsPage() {
   const { t, locale, setLocale } = useI18n()
-
+  const { theme, toggleTheme } = useTheme()
+  const [isSignedIn, setIsSignedIn] = useState(true)
   const [tab, setTab] = useState<Tab>("data")
   const [selectedPlan, setSelectedPlan] = useState<Plan>("family")
-  const [isSignedIn, setIsSignedIn] = useState(true)
   const [showContactModal, setShowContactModal] = useState(false)
+  const [showProfileEditor, setShowProfileEditor] = useState(false)
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
+
   const [contactForm, setContactForm] = useState({
     name: "",
     email: "janedoe@hello.com",
     message: "",
   })
+
   const [triggers, setTriggers] = useState({
     abuse: false,
     violence: false,
@@ -39,39 +202,120 @@ export default function SettingsPage() {
     skipSummary: true,
   })
   const [timerSeconds, setTimerSeconds] = useState(30)
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+  const [pendingPlan, setPendingPlan] = useState<Plan | null>(null)
 
-  const handleContactSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("Contact form submitted:", contactForm)
-    setShowContactModal(false)
-    setContactForm({ ...contactForm, name: "", message: "" })
-  }
+  useEffect(() => {
+    const unsubscribe = onAuthChange(async (user) => {
+      if (user) {
+        const profile = await getUserProfile(user.uid)
+        setUserProfile(profile)
+        setContactForm((prev) => ({ ...prev, email: profile?.email || prev.email }))
+      } else {
+        setUserProfile(null)
+      }
+    })
+
+    return () => unsubscribe()
+  }, [])
+
+  const handleContactSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault()
+      try {
+        const response = await fetch("/api/contact", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            to: "info@skipit.tech",
+            from: contactForm.email,
+            name: contactForm.name,
+            message: contactForm.message,
+          }),
+        })
+
+        if (response.ok) {
+          console.log("[v0] Contact form sent successfully to info@skipit.tech")
+          setShowContactModal(false)
+          setContactForm((prev) => ({ ...prev, name: "", message: "" }))
+        } else {
+          console.error("[v0] Failed to send contact form")
+        }
+      } catch (error) {
+        console.error("[v0] Error sending contact form:", error)
+      }
+    },
+    [contactForm],
+  )
+
+  const handlePlanChange = useCallback((plan: Plan) => {
+    setSelectedPlan((current) => {
+      if (plan !== current) {
+        setPendingPlan(plan)
+        setShowUpgradeModal(true)
+        return current
+      }
+      return current
+    })
+  }, [])
+
+  const confirmPlanUpgrade = useCallback(() => {
+    if (pendingPlan) {
+      setSelectedPlan(pendingPlan)
+      setShowUpgradeModal(false)
+      setPendingPlan(null)
+    }
+  }, [pendingPlan])
+
+  const cancelPlanUpgrade = useCallback(() => {
+    setShowUpgradeModal(false)
+    setPendingPlan(null)
+  }, [])
+
+  const handleLogout = useCallback(() => {
+    console.log("Logout clicked")
+    setIsSignedIn(false)
+  }, [])
+
+  const handleContactClick = useCallback(() => {
+    setShowContactModal(true)
+  }, [])
+
+  const handleEditProfile = useCallback(() => {
+    setShowProfileEditor(true)
+  }, [])
+
+  const handleSaveProfile = useCallback((updatedProfile: Partial<UserProfile>) => {
+    setUserProfile((prev) => (prev ? { ...prev, ...updatedProfile } : null))
+  }, [])
 
   return (
-    <div className="min-h-screen bg-[#0D0B3B] text-white pb-20">
-      <header className="sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-[#0D0B3B]/70 border-b border-white/10">
+    <div className="min-h-screen bg-background text-foreground pb-20">
+      <header
+        role="banner"
+        className="sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-background/70 border-b border-border"
+      >
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-            <img src="/skipit-logo.png" alt="SKIP IT." className="h-8 w-auto" />
+            <ThemeLogo />
           </Link>
           <div className="flex items-center gap-3">
             {isSignedIn && (
               <>
                 <button
-                  onClick={() => {
-                    console.log("Logout clicked")
-                    setIsSignedIn(false)
-                  }}
+                  onClick={handleLogout}
                   className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition shadow-md hover:shadow-lg flex items-center gap-2"
                 >
                   <LogOut className="w-4 h-4" />
                   Logout
                 </button>
                 <div className="text-sm text-right hidden md:block">
-                  <div className="text-white">Jane Doe</div>
-                  <div className="text-white/60 text-xs">Premium</div>
+                  <div className="text-foreground">{userProfile?.displayName || "Jane Doe"}</div>
+                  <div className="text-muted-foreground text-xs">Premium</div>
                 </div>
-                <button className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 grid place-items-center">
+                <button className="w-10 h-10 rounded-full bg-muted hover:bg-accent grid place-items-center">
                   <User className="w-5 h-5" />
                 </button>
               </>
@@ -80,112 +324,57 @@ export default function SettingsPage() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-8">
+      <main role="main" id="main" className="max-w-6xl mx-auto px-4 py-8">
         <div className="grid md:grid-cols-[320px_1fr] gap-6">
           {/* Profile Sidebar */}
-          <aside className="bg-gradient-to-br from-blue-100 to-blue-50 rounded-3xl p-6 text-[#0D0B3B] h-fit shadow-lg">
-            <div className="flex flex-col items-center">
-              <div className="w-32 h-32 rounded-full overflow-hidden mb-4 ring-4 ring-white/50">
-                <img src="/placeholder-user.jpg" alt="Jane Doe" className="w-full h-full object-cover" />
-              </div>
-              <h2 className="text-2xl font-bold">JANE DOE</h2>
-              <p className="text-sm text-black/60 mt-1">Premium</p>
-            </div>
-
-            <div className="mt-6 space-y-4">
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-semibold">{t("settings.contact")}</h3>
-                  <button className="text-black/60 hover:text-black">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                      />
-                    </svg>
-                  </button>
-                </div>
-                <p className="text-sm text-black/70">{t("settings.phone")}: (000)-000-000</p>
-                <p className="text-sm text-black/70">{t("settings.email")}: janedoe@hello.com</p>
-              </div>
-
-              <div>
-                <h3 className="font-semibold mb-2">{t("settings.language")}</h3>
-                <div className="relative">
-                  <select
-                    value={locale}
-                    onChange={(e) => setLocale(e.target.value as Locale)}
-                    className="w-full bg-white rounded-lg px-3 py-2 text-sm appearance-none cursor-pointer"
-                  >
-                    <option value="en">English</option>
-                    <option value="es">Español</option>
-                    <option value="zh">中文 (Chinese)</option>
-                    <option value="tl">Tagalog</option>
-                    <option value="vi">Tiếng Việt (Vietnamese)</option>
-                    <option value="ar">العربية (Arabic)</option>
-                    <option value="ko">한국어 (Korean)</option>
-                    <option value="fr">Français</option>
-                    <option value="ru">Русский (Russian)</option>
-                    <option value="pt">Português (Portuguese)</option>
-                    <option value="hi">हिन्दी (Hindi)</option>
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" />
-                </div>
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold">{t("settings.theme")}</h3>
-                    <p className="text-sm text-black/60">{t("settings.darkMode")}</p>
-                  </div>
-                  <button className="relative w-12 h-6 bg-blue-500 rounded-full transition">
-                    <span className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full transition" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="mt-6 pt-6 border-t border-black/10">
-                <button
-                  onClick={() => setShowContactModal(true)}
-                  className="w-full py-3 px-4 bg-[#0D0B3B] hover:opacity-90 text-white font-semibold rounded-xl transition shadow-md hover:shadow-lg flex items-center justify-center gap-2"
-                >
-                  <Mail className="w-5 h-5" />
-                  Contact Support
-                </button>
-                <p className="text-xs text-black/50 text-center mt-2">We're here if you need help.</p>
-              </div>
-            </div>
-          </aside>
+          <ProfileSidebar
+            locale={locale}
+            setLocale={setLocale}
+            theme={theme}
+            toggleTheme={toggleTheme}
+            onContactClick={handleContactClick}
+            userProfile={userProfile}
+            onEditProfile={handleEditProfile}
+          />
 
           {/* Main Content */}
           <div>
             <h1 className="text-4xl font-bold mb-6">{t("settings.title")}</h1>
 
             {/* Tabs */}
-            <div className="flex gap-8 border-b border-white/20 mb-8">
+            <div className="flex gap-8 border-b border-border mb-8" role="tablist" aria-label="Settings sections">
               <button
                 onClick={() => setTab("trigger")}
+                role="tab"
+                aria-selected={tab === "trigger"}
+                aria-controls="trigger-panel"
+                id="trigger-tab"
                 className={`pb-3 font-semibold transition ${
-                  tab === "trigger" ? "border-b-2 border-white" : "text-white/60 hover:text-white"
+                  tab === "trigger" ? "border-b-2 border-foreground" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {t("settings.triggersTab")}
               </button>
               <button
                 onClick={() => setTab("plans")}
+                role="tab"
+                aria-selected={tab === "plans"}
+                aria-controls="plans-panel"
+                id="plans-tab"
                 className={`pb-3 font-semibold transition ${
-                  tab === "plans" ? "border-b-2 border-white" : "text-white/60 hover:text-white"
+                  tab === "plans" ? "border-b-2 border-foreground" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {t("settings.plansTab")}
               </button>
               <button
                 onClick={() => setTab("data")}
+                role="tab"
+                aria-selected={tab === "data"}
+                aria-controls="data-panel"
+                id="data-tab"
                 className={`pb-3 font-semibold transition ${
-                  tab === "data" ? "border-b-2 border-white" : "text-white/60 hover:text-white"
+                  tab === "data" ? "border-b-2 border-foreground" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {t("settings.dataTab")}
@@ -194,10 +383,11 @@ export default function SettingsPage() {
 
             {/* Trigger Settings Tab */}
             {tab === "trigger" && (
-              <div className="space-y-8">
+              <div role="tabpanel" id="trigger-panel" aria-labelledby="trigger-tab" className="space-y-8">
                 <div>
                   <h2 className="text-2xl font-semibold mb-4">{t("settings.triggersSelected")}</h2>
-                  <div className="p-6 rounded-2xl border-2 border-[#d0e3ff]/30 bg-[#d0e3ff]/5">
+                  <fieldset className="p-6 rounded-2xl border-2 border-accent/30 bg-accent/5">
+                    <legend className="sr-only">Select content triggers to filter</legend>
                     <div className="grid md:grid-cols-2 gap-4">
                       {[
                         { key: "abuse", label: t("settings.categories.Abuse") },
@@ -209,19 +399,20 @@ export default function SettingsPage() {
                       ].map(({ key, label }) => (
                         <label
                           key={key}
-                          className="flex items-center gap-3 cursor-pointer group p-4 rounded-xl bg-white/5 hover:bg-white/10 transition shadow-md hover:shadow-lg"
+                          className="flex items-center gap-3 cursor-pointer group p-4 rounded-xl bg-muted/50 hover:bg-muted transition shadow-md hover:shadow-lg"
                         >
                           <input
                             type="checkbox"
                             checked={triggers[key as keyof typeof triggers]}
                             onChange={(e) => setTriggers({ ...triggers, [key]: e.target.checked })}
-                            className="w-5 h-5 rounded border-2 border-white/30 bg-transparent checked:bg-[#d0e3ff] checked:border-[#d0e3ff] cursor-pointer"
+                            className="w-5 h-5 rounded border-2 border-border bg-transparent checked:bg-accent checked:border-accent cursor-pointer"
+                            aria-label={`Filter ${label} content`}
                           />
-                          <span className="group-hover:text-white/90">{label}</span>
+                          <span className="group-hover:text-foreground/90">{label}</span>
                         </label>
                       ))}
                     </div>
-                  </div>
+                  </fieldset>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-8">
@@ -233,13 +424,13 @@ export default function SettingsPage() {
                     ].map(({ key, label }) => (
                       <div
                         key={key}
-                        className="flex items-center justify-between p-4 rounded-xl bg-white/5 shadow-md hover:shadow-lg transition"
+                        className="flex items-center justify-between p-4 rounded-xl bg-muted/50 shadow-md hover:shadow-lg transition"
                       >
                         <span className="font-medium">{label}</span>
                         <button
                           onClick={() => setToggles({ ...toggles, [key]: !toggles[key as keyof typeof toggles] })}
                           className={`relative w-12 h-6 rounded-full transition ${
-                            toggles[key as keyof typeof toggles] ? "bg-blue-500" : "bg-white/20"
+                            toggles[key as keyof typeof toggles] ? "bg-blue-500" : "bg-muted"
                           }`}
                         >
                           <span
@@ -256,7 +447,7 @@ export default function SettingsPage() {
                     <h3 className="text-xl font-semibold mb-4">{t("settings.adjustTriggerTimer")}</h3>
                     <div className="flex flex-col items-center gap-4">
                       <CircularTimer valueSec={timerSeconds} onChange={setTimerSeconds} size={240} />
-                      <p className="text-white/60 text-sm text-center max-w-xs">{t("settings.timerHelp")}</p>
+                      <p className="text-muted-foreground text-sm text-center max-w-xs">{t("settings.timerHelp")}</p>
                     </div>
                   </div>
                 </div>
@@ -265,7 +456,7 @@ export default function SettingsPage() {
 
             {/* Plans & Billing Tab */}
             {tab === "plans" && (
-              <div className="space-y-8">
+              <div role="tabpanel" id="plans-panel" aria-labelledby="plans-tab" className="space-y-8">
                 <div>
                   <h2 className="text-2xl font-semibold mb-4">{t("settings.plans")}</h2>
                   <div className="space-y-3">
@@ -282,21 +473,33 @@ export default function SettingsPage() {
                       <label
                         key={key}
                         className={`flex items-start gap-4 p-4 rounded-2xl border-2 cursor-pointer transition shadow-md hover:shadow-lg ${
-                          selectedPlan === key
-                            ? "border-[#d0e3ff] bg-[#d0e3ff]/5"
-                            : "border-white/20 hover:border-white/30"
+                          selectedPlan === key ? "border-accent bg-accent/5" : "border-border hover:border-accent/50"
                         }`}
                       >
                         <input
                           type="radio"
                           name="plan"
                           checked={selectedPlan === key}
-                          onChange={() => setSelectedPlan(key as Plan)}
-                          className="mt-1 w-5 h-5 accent-[#d0e3ff]"
+                          onChange={() => handlePlanChange(key as Plan)}
+                          className="mt-1 w-5 h-5 accent-accent"
                         />
                         <div className="flex-1">
                           <div className="font-semibold">{name}</div>
-                          <div className="text-sm text-white/60 mt-1">{desc}</div>
+                          <div className="text-sm text-muted-foreground mt-1">{desc}</div>
+                          {key === "org" && selectedPlan === "org" && (
+                            <div className="mt-4 space-y-2">
+                              <Link href="/school-admin">
+                                <button className="w-full py-3 px-4 bg-accent hover:bg-accent/90 text-accent-foreground font-semibold rounded-xl transition shadow-md hover:shadow-lg">
+                                  Request SKIP IT for Your Organization
+                                </button>
+                              </Link>
+                              <Link href="/school-admin">
+                                <button className="w-full py-2 text-sm text-accent hover:text-accent/80 transition underline">
+                                  Already an organization? Sign in
+                                </button>
+                              </Link>
+                            </div>
+                          )}
                         </div>
                       </label>
                     ))}
@@ -305,16 +508,16 @@ export default function SettingsPage() {
 
                 <div>
                   <h2 className="text-2xl font-semibold mb-2">{t("settings.cardDetails")}</h2>
-                  <p className="text-white/60 text-sm">{t("settings.updateCard")}</p>
+                  <p className="text-muted-foreground text-sm">{t("settings.updateCard")}</p>
                 </div>
               </div>
             )}
 
-            {/* Data Tab */}
+            {/* Data Tab - Only render ActivityDashboard when tab is active */}
             {tab === "data" && (
-              <div>
+              <div role="tabpanel" id="data-panel" aria-labelledby="data-tab">
                 <h2 className="text-2xl font-semibold mb-4">{t("settings.dataPrivacy")}</h2>
-                <p className="text-white/70 mb-8">{t("settings.dataPrivacyDesc")}</p>
+                <p className="text-muted-foreground mb-8">{t("settings.dataPrivacyDesc")}</p>
                 <ActivityDashboard />
               </div>
             )}
@@ -322,12 +525,57 @@ export default function SettingsPage() {
         </div>
       </main>
 
-      {showContactModal && (
+      {showUpgradeModal && pendingPlan && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-gradient-to-br from-blue-100 to-blue-50 rounded-3xl p-8 max-w-md w-full shadow-2xl text-[#0D0B3B]">
+          <div className="bg-card rounded-3xl p-8 max-w-md w-full shadow-2xl">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold">Contact Support</h2>
-              <button onClick={() => setShowContactModal(false)} className="text-black/60 hover:text-black transition">
+              <h2 className="text-2xl font-bold">Confirm Plan Change</h2>
+              <button onClick={cancelPlanUpgrade} className="text-muted-foreground hover:text-foreground transition">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <p className="text-muted-foreground mb-6">
+              Are you sure you want to upgrade your membership to{" "}
+              <span className="font-semibold text-foreground">{t(`settings.planNames.${pendingPlan}`)}</span>?
+            </p>
+            <div className="flex gap-4">
+              <button
+                onClick={cancelPlanUpgrade}
+                className="flex-1 py-3 px-4 bg-muted hover:bg-muted/80 text-foreground font-semibold rounded-xl transition shadow-md hover:shadow-lg"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmPlanUpgrade}
+                className="flex-1 py-3 px-4 bg-accent hover:bg-accent/90 text-accent-foreground font-semibold rounded-xl transition shadow-md hover:shadow-lg"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showContactModal && (
+        <div
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="contact-modal-title"
+        >
+          <div className="bg-gradient-to-br from-blue-100 to-blue-50 rounded-3xl p-8 max-w-md w-full shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <h2 id="contact-modal-title" className="text-2xl font-bold text-slate-900">
+                Contact Support
+              </h2>
+              <button
+                onClick={() => setShowContactModal(false)}
+                className="text-slate-600 hover:text-slate-900 transition"
+                aria-label="Close contact support dialog"
+              >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -336,52 +584,57 @@ export default function SettingsPage() {
 
             <form onSubmit={handleContactSubmit} className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-semibold mb-2">
+                <label htmlFor="contact-name" className="block text-sm font-semibold mb-2 text-slate-900">
                   Name
                 </label>
                 <input
                   type="text"
-                  id="name"
+                  id="contact-name"
                   value={contactForm.name}
                   onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-white border border-black/10 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white text-slate-900 border border-slate-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition"
                   required
+                  aria-required="true"
                 />
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold mb-2">
+                <label htmlFor="contact-email" className="block text-sm font-semibold mb-2 text-slate-900">
                   Email
                 </label>
                 <input
                   type="email"
-                  id="email"
+                  id="contact-email"
                   value={contactForm.email}
                   onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-white border border-black/10 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white text-slate-900 border border-slate-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition"
                   required
+                  aria-required="true"
                 />
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-semibold mb-2">
+                <label htmlFor="contact-message" className="block text-sm font-semibold mb-2 text-slate-900">
                   Message
                 </label>
                 <textarea
-                  id="message"
+                  id="contact-message"
                   value={contactForm.message}
                   onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
                   rows={5}
-                  className="w-full px-4 py-2.5 rounded-xl bg-white border border-black/10 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white text-slate-900 border border-slate-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition resize-none"
                   required
+                  aria-required="true"
                 />
               </div>
 
-              <p className="text-xs text-black/60 text-center">We typically respond within 24 hours.</p>
+              <p className="text-xs text-slate-600 text-center" aria-live="polite">
+                We typically respond within 24 hours.
+              </p>
 
               <button
                 type="submit"
-                className="w-full py-3 px-4 bg-[#0D0B3B] hover:opacity-90 text-white font-semibold rounded-xl transition shadow-md hover:shadow-lg"
+                className="w-full py-3 px-4 bg-[#4A5FBA] hover:bg-[#3d4f9f] text-white font-semibold rounded-xl transition shadow-md hover:shadow-lg"
               >
                 Send Message
               </button>
@@ -390,18 +643,23 @@ export default function SettingsPage() {
         </div>
       )}
 
+      {/* ProfileEditor Modal */}
+      {showProfileEditor && userProfile && (
+        <ProfileEditor profile={userProfile} onClose={() => setShowProfileEditor(false)} onSave={handleSaveProfile} />
+      )}
+
       {/* Bottom Nav */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-[#0D0B3B]/95 backdrop-blur border-t border-white/10 z-50 md:hidden">
-        <div className="max-w-md mx-auto flex justify-around py-3 text-sm text-white/70">
-          <a href="/" className="flex flex-col items-center gap-1 hover:text-white transition">
+      <nav className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur border-t border-border z-50 md:hidden">
+        <div className="max-w-md mx-auto flex justify-around py-3 text-sm text-muted-foreground">
+          <a href="/" className="flex flex-col items-center gap-1 hover:text-foreground transition">
             <Home className="w-5 h-5" />
             <span className="text-xs">{t("nav.home")}</span>
           </a>
-          <a href="/explore" className="flex flex-col items-center gap-1 hover:text-white transition">
+          <a href="/explore" className="flex flex-col items-center gap-1 hover:text-foreground transition">
             <Search className="w-5 h-5" />
             <span className="text-xs">{t("nav.explore")}</span>
           </a>
-          <a href="/settings" className="flex flex-col items-center gap-1 text-[#d0e3ff] transition">
+          <a href="/settings" className="flex flex-col items-center gap-1 text-accent transition">
             <User className="w-5 h-5" />
             <span className="text-xs">{t("nav.profile")}</span>
           </a>

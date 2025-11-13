@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo, memo } from "react"
 import { useI18n } from "@/i18n/I18nProvider"
 
 type TimeFilter = "week" | "month" | "all"
@@ -51,25 +51,93 @@ const mockData = {
   },
 }
 
+const DonutChart = memo(function DonutChart({
+  triggerData,
+  scenesSkipped,
+}: { triggerData: TriggerData[]; scenesSkipped: number }) {
+  const { t } = useI18n()
+
+  const paths = useMemo(() => {
+    let cumulativePercent = 0
+    return triggerData.map((trigger, i) => {
+      const strokeDasharray = `${trigger.percentage} ${100 - trigger.percentage}`
+      const strokeDashoffset = -cumulativePercent
+      cumulativePercent += trigger.percentage
+      return {
+        key: i,
+        strokeDasharray,
+        strokeDashoffset,
+        color: trigger.color,
+      }
+    })
+  }, [triggerData])
+
+  return (
+    <div className="relative w-64 h-64 mx-auto">
+      <svg viewBox="0 0 100 100" className="transform -rotate-90">
+        {paths.map((path) => (
+          <circle
+            key={path.key}
+            cx="50"
+            cy="50"
+            r="15.9155"
+            fill="transparent"
+            stroke={path.color}
+            strokeWidth="10"
+            strokeDasharray={path.strokeDasharray}
+            strokeDashoffset={path.strokeDashoffset}
+            className="transition-all hover:stroke-[12]"
+          />
+        ))}
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-xl font-bold text-gray-900">{scenesSkipped}</div>
+          <div className="text-sm text-gray-500">{t("settings.activity.total")}</div>
+        </div>
+      </div>
+    </div>
+  )
+})
+
+const ActivityBars = memo(function ActivityBars({ weeklyActivity }: { weeklyActivity: number[] }) {
+  const maxActivity = useMemo(() => Math.max(...weeklyActivity), [weeklyActivity])
+
+  return (
+    <div className="flex items-end gap-1 h-12">
+      {weeklyActivity.map((count, i) => (
+        <div key={i} className="flex-1 flex flex-col justify-end">
+          <div
+            className={`w-full rounded-t ${i === 6 ? "bg-[#d0e3ff]" : "bg-gray-200"}`}
+            style={{ height: `${maxActivity > 0 ? (count / maxActivity) * 100 : 0}%` }}
+          />
+        </div>
+      ))}
+    </div>
+  )
+})
+
 export default function ActivityDashboard() {
   const { t } = useI18n()
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("week")
 
-  const { minutesProtected, scenesSkipped, weeklyActivity, triggerData } = mockData[timeFilter]
+  const currentData = useMemo(() => mockData[timeFilter], [timeFilter])
+  const { minutesProtected, scenesSkipped, weeklyActivity, triggerData } = currentData
 
-  const maxActivity = Math.max(...weeklyActivity)
   const dailyGoal = { current: 0, target: 15 }
 
   return (
     <div className="space-y-6">
       {/* Time Filter */}
-      <div className="flex gap-2 bg-white/5 rounded-xl p-1 w-fit">
+      <div className="flex gap-2 bg-white/20 dark:bg-white/5 rounded-xl p-1 w-fit">
         {(["week", "month", "all"] as TimeFilter[]).map((filter) => (
           <button
             key={filter}
             onClick={() => setTimeFilter(filter)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-              timeFilter === filter ? "bg-white text-[#0D0B3B]" : "text-white/70 hover:text-white"
+              timeFilter === filter
+                ? "bg-white dark:bg-white text-[#0D0B3B]"
+                : "bg-transparent text-white hover:text-white/80"
             }`}
           >
             {t(`settings.activity.timeFilter.${filter}`)}
@@ -88,7 +156,7 @@ export default function ActivityDashboard() {
           </div>
           <p className="text-sm text-gray-500 mb-3">{t(`settings.activity.timeLabel.${timeFilter}`)}</p>
           <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div className="h-full bg-[#d0e3ff] rounded-full" style={{ width: "70%" }} />
+            <div className="h-full bg-[#d0e3ff] rounded-full transition-all duration-500" style={{ width: "70%" }} />
           </div>
         </div>
 
@@ -100,16 +168,7 @@ export default function ActivityDashboard() {
             <span className="text-xl text-gray-500">{t("settings.activity.scenes")}</span>
           </div>
           <p className="text-sm text-gray-500 mb-3">{t(`settings.activity.timeLabel.${timeFilter}`)}</p>
-          <div className="flex items-end gap-1 h-12">
-            {weeklyActivity.map((count, i) => (
-              <div key={i} className="flex-1 flex flex-col justify-end">
-                <div
-                  className={`w-full rounded-t ${i === 6 ? "bg-[#d0e3ff]" : "bg-gray-200"}`}
-                  style={{ height: `${maxActivity > 0 ? (count / maxActivity) * 100 : 0}%` }}
-                />
-              </div>
-            ))}
-          </div>
+          <ActivityBars weeklyActivity={weeklyActivity} />
         </div>
       </div>
 
@@ -119,39 +178,7 @@ export default function ActivityDashboard() {
         <p className="text-sm text-gray-500 mb-6">{t("settings.activity.triggersDesc")}</p>
 
         <div className="grid md:grid-cols-2 gap-8 items-center">
-          {/* Donut Chart */}
-          <div className="relative w-64 h-64 mx-auto">
-            <svg viewBox="0 0 100 100" className="transform -rotate-90">
-              {(() => {
-                let cumulativePercent = 0
-                return triggerData.map((trigger, i) => {
-                  const strokeDasharray = `${trigger.percentage} ${100 - trigger.percentage}`
-                  const strokeDashoffset = -cumulativePercent
-                  cumulativePercent += trigger.percentage
-                  return (
-                    <circle
-                      key={i}
-                      cx="50"
-                      cy="50"
-                      r="15.9155"
-                      fill="transparent"
-                      stroke={trigger.color}
-                      strokeWidth="10"
-                      strokeDasharray={strokeDasharray}
-                      strokeDashoffset={strokeDashoffset}
-                      className="transition-all hover:stroke-[12]"
-                    />
-                  )
-                })
-              })()}
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center">
-                <div className="text-xl font-bold text-gray-900">{scenesSkipped}</div>
-                <div className="text-sm text-gray-500">{t("settings.activity.total")}</div>
-              </div>
-            </div>
-          </div>
+          <DonutChart triggerData={triggerData} scenesSkipped={scenesSkipped} />
 
           {/* Legend */}
           <div className="space-y-3">
@@ -184,7 +211,7 @@ export default function ActivityDashboard() {
         <p className="text-sm text-gray-500 mb-3">{t("settings.activity.goalDesc", { target: dailyGoal.target })}</p>
         <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-[#d0e3ff] to-[#93b8f0] rounded-full transition-all"
+            className="h-full bg-gradient-to-r from-[#d0e3ff] to-[#93b8f0] rounded-full transition-all duration-500"
             style={{ width: `${(dailyGoal.current / dailyGoal.target) * 100}%` }}
           />
         </div>

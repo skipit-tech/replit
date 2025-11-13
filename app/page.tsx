@@ -1,13 +1,113 @@
 "use client"
 
 import type React from "react"
-import { Home, Search, User, EyeOff, Volume2, VolumeX } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { useI18n } from "@/i18n/I18nProvider"
 import SearchCombobox from "@/components/SearchCombobox"
+import { ThemeLogo } from "@/components/theme-logo"
 
-import { useMemo, useRef, useState, useEffect } from "react"
+import { useMemo, useRef, useState, useEffect, memo, useCallback } from "react"
+
+const HomeIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+    <polyline points="9 22 9 12 15 12 15 22" />
+  </svg>
+)
+
+const SearchIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="11" cy="11" r="8" />
+    <path d="m21 21-4.35-4.35" />
+  </svg>
+)
+
+const UserIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+  </svg>
+)
+
+const EyeOffIcon = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
+    <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
+    <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
+    <line x1="2" y1="2" x2="22" y2="22" />
+  </svg>
+)
+
+const Volume2Icon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+  </svg>
+)
+
+const VolumeXIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+    <line x1="22" y1="9" x2="16" y2="15" />
+    <line x1="16" y1="9" x2="22" y2="15" />
+  </svg>
+)
 
 type Trailer = { type: "youtube"; id: string } | { type: "mp4"; src: string }
 
@@ -29,6 +129,7 @@ type Movie = {
   genres?: string[]
   summary?: string
   type: "movie" | "tv"
+  addedDate?: string // ISO date string
 }
 
 function useIsDesktop() {
@@ -62,6 +163,7 @@ const realMovies: Movie[] = [
     genres: ["Thriller", "Crime", "Action"],
     summary:
       "A young TSA agent fights to outsmart a mysterious traveler who blackmails him into letting a dangerous package slip onto a Christmas Eve flight.",
+    addedDate: "2025-01-05",
   },
   {
     id: "despicable-me-4",
@@ -78,6 +180,24 @@ const realMovies: Movie[] = [
     genres: ["Animation", "Comedy", "Family"],
     summary:
       "Gru, Lucy, Margo, Edith, and Agnes welcome a new member to the family, Gru Jr., who is intent on tormenting his dad. Gru faces a new nemesis in Maxime Le Mal and his girlfriend Valentina, and the family is forced to go on the run.",
+    addedDate: "2025-01-08",
+  },
+  {
+    id: "inside-out",
+    title: "Inside Out",
+    year: 2015,
+    type: "movie",
+    triggers: ["Depression", "Emotional Distress", "Family Conflict", "Identity Crisis"],
+    provider: "Disney+",
+    poster: "/movies/inside-out.jpg",
+    backdrop: "/movies/inside-out.jpg",
+    tagline: "Meet the little voices inside your head.",
+    link: "https://www.disneyplus.com/movies/inside-out/uzQ2ycVDi2IE",
+    trailer: { type: "youtube", id: "yRUAzGQ3nSY" },
+    genres: ["Animation", "Family", "Comedy", "Adventure"],
+    summary:
+      "Growing up can be a bumpy road, and it's no exception for Riley, who is uprooted from her Midwest life when her father starts a new job in San Francisco. Riley's guiding emotions—Joy, Fear, Anger, Disgust and Sadness—live in Headquarters, the control center inside Riley's mind.",
+    addedDate: "2024-09-15",
   },
   {
     id: "woman-of-the-hour",
@@ -96,6 +216,7 @@ const realMovies: Movie[] = [
     genres: ["Thriller", "Crime", "Drama"],
     summary:
       "The stranger-than-fiction story of an aspiring actress in 1970s Los Angeles and a serial killer in the midst of a years-long murder spree, whose lives intersect when they're cast on an episode of The Dating Game.",
+    addedDate: "2024-11-15",
   },
   {
     id: "how-to-train-your-dragon",
@@ -114,6 +235,7 @@ const realMovies: Movie[] = [
     genres: ["Animation", "Family", "Adventure"],
     summary:
       "A hapless young Viking who aspires to hunt dragons becomes the unlikely friend of a young dragon himself, and learns there may be more to the creatures than he assumed.",
+    addedDate: "2024-10-20",
   },
   {
     id: "criminal-minds-s1e1",
@@ -130,6 +252,7 @@ const realMovies: Movie[] = [
     genres: ["Crime", "Drama", "Thriller"],
     summary:
       "An elite team of FBI profilers analyze the country's most twisted criminal minds, anticipating their next moves before they strike again. The Behavioral Analysis Unit's most experienced agent is David Rossi.",
+    addedDate: "2025-01-10",
   },
   {
     id: "the-substitute",
@@ -146,6 +269,7 @@ const realMovies: Movie[] = [
     genres: ["Action", "Thriller", "Crime"],
     summary:
       "After a botched mission in Cuba, professional mercenary Shale and his crew Joey Six, Hollan, Rem, and Wellman head home to Miami, Florida, where Shale is reunited with his fiance Jane Hetzko, who works as a teacher at Columbus High School.",
+    addedDate: "2025-01-12",
   },
 ]
 
@@ -265,6 +389,17 @@ export default function Page() {
     return filtered.filter((m) => watchedIds.has(m.id))
   }, [filtered, watchedIds])
 
+  const newReleases = useMemo(() => {
+    const now = new Date()
+    const thirtyOneDaysAgo = new Date(now.getTime() - 31 * 24 * 60 * 60 * 1000)
+
+    return filtered.filter((m) => {
+      if (!m.addedDate) return false
+      const addedDate = new Date(m.addedDate)
+      return addedDate >= thirtyOneDaysAgo && addedDate <= now
+    })
+  }, [filtered])
+
   const heroNext = () => setSlide((s) => (s + 1) % heroSlides.length)
   const heroPrev = () => setSlide((s) => (s - 1 + heroSlides.length) % heroSlides.length)
 
@@ -323,53 +458,27 @@ export default function Page() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0D0B3B] text-white">
+    <div className="min-h-screen bg-background text-foreground">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:text-[#0D0B3B] focus:rounded-lg focus:font-semibold focus:ring-2 focus:ring-[#4A5FBA]"
+      >
+        Skip to main content
+      </a>
+
       <Header contentType={contentType} setContentType={setContentType} items={items} />
-      <main id="main" className="max-w-6xl mx-auto px-4 pb-24 font-dm-sans">
+
+      <main id="main-content" className="max-w-6xl mx-auto px-4 pb-24 font-dm-sans">
         <section
           className="mt-6 relative overflow-hidden rounded-3xl ring-1 ring-white/10"
           aria-roledescription="carousel"
-          aria-label={t("rows.trending")}
+          aria-label="Featured content"
         >
-          <button
-            onClick={heroPrev}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 grid place-items-center w-10 h-10 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur border border-white/20 transition"
-            aria-label="Previous slide"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-          </button>
+          <div role="region" aria-live="polite" aria-atomic="true" className="sr-only">
+            Featured: {currentSlide.title}. Slide {slide + 1} of {heroSlides.length}
+          </div>
 
-          <button
-            onClick={heroNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 grid place-items-center w-10 h-10 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur border border-white/20 transition"
-            aria-label="Next slide"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-          </button>
-
-          <div role="group" aria-live="polite" aria-atomic="true" className="relative">
+          <div className="relative">
             <div
               onClick={() => {
                 handleMovieClick(currentSlide.id)
@@ -377,7 +486,19 @@ export default function Page() {
                   window.open(currentSlide.link, "_blank", "noopener,noreferrer")
                 }
               }}
-              className="cursor-pointer relative"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault()
+                  handleMovieClick(currentSlide.id)
+                  if (currentSlide.link) {
+                    window.open(currentSlide.link, "_blank", "noopener,noreferrer")
+                  }
+                }
+              }}
+              className="cursor-pointer relative focus:outline-none focus:ring-2 focus:ring-white/50 rounded-3xl"
+              role="button"
+              tabIndex={0}
+              aria-label={`${currentSlide.title} (${currentSlide.year}). ${currentSlide.tagline}. Press enter to watch on ${currentSlide.provider}.`}
             >
               {currentSlide.backdrop === "#000000" ? (
                 <div className="w-full aspect-[23/9] bg-black" />
@@ -443,7 +564,7 @@ export default function Page() {
               )}
             </div>
 
-            <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-10 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10 pointer-events-none">
+            <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-10 bg-gradient-to-t from-[#0D0B3B] via-[#0D0B3B]/50 to-transparent z-10 pointer-events-none">
               <div
                 className="max-w-2xl space-y-3 md:space-y-4 pointer-events-auto"
                 onMouseEnter={() => setShowHeroTrailer(true)}
@@ -451,7 +572,7 @@ export default function Page() {
                 onFocus={() => setShowHeroTrailer(true)}
                 onBlur={() => setShowHeroTrailer(false)}
               >
-                <h2 className="text-3xl md:text-5xl font-bold text-balance">
+                <h1 className="text-3xl md:text-5xl font-bold text-balance text-white">
                   {currentSlide.id === "how-to-train-your-dragon" ? (
                     <>
                       How to Train
@@ -461,59 +582,123 @@ export default function Page() {
                   ) : (
                     currentSlide.title
                   )}
-                </h2>
+                </h1>
                 {currentSlide.tagline && (
                   <p className="text-sm md:text-base text-white/90 text-pretty">{currentSlide.tagline}</p>
                 )}
-                <div className="flex gap-3">
+
+                <div className="flex gap-3" role="group" aria-label="Featured content actions">
                   <button
                     onClick={playTrailer}
-                    className="px-6 py-2.5 rounded-xl bg-[#d0e3ff] text-[#0D0B3B] font-semibold hover:brightness-95 transition pointer-events-auto"
+                    className="px-6 py-2.5 rounded-xl bg-[#d0e3ff] text-[#0D0B3B] font-semibold hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-white/50 transition pointer-events-auto"
+                    aria-label={`Play trailer for ${currentSlide.title}`}
                   >
                     {t("hero.play")}
                   </button>
                   <button
                     onClick={() => setOverlayMovie(currentSlide)}
-                    className="px-6 py-2.5 rounded-xl border border-white/30 bg-white/10 hover:bg-white/20 transition backdrop-blur font-semibold pointer-events-auto"
+                    className="px-6 py-2.5 rounded-xl border-2 border-white/90 bg-white/10 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 text-white transition backdrop-blur font-semibold pointer-events-auto"
+                    aria-label={`View details for ${currentSlide.title}`}
                   >
                     {t("hero.details")}
                   </button>
                   {showHeroTrailer && currentSlide.trailer && (
                     <button
                       onClick={toggleHeroMute}
-                      className="p-2.5 rounded-xl border border-white/30 bg-white/10 hover:bg-white/20 transition backdrop-blur pointer-events-auto"
+                      className="p-2.5 rounded-xl border-2 border-white/90 bg-white/10 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 text-white transition backdrop-blur pointer-events-auto"
                       aria-label={heroMuted ? "Unmute trailer" : "Mute trailer"}
+                      aria-pressed={!heroMuted}
                     >
-                      {heroMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                      {heroMuted ? <VolumeXIcon /> : <Volume2Icon />}
                     </button>
                   )}
                 </div>
               </div>
             </div>
+
+            <div
+              className="absolute top-1/2 -translate-y-1/2 left-4 right-4 flex justify-between pointer-events-none z-20"
+              role="group"
+              aria-label="Carousel navigation"
+            >
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  heroPrev()
+                }}
+                className="pointer-events-auto w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 backdrop-blur border border-white/20 text-white grid place-items-center transition"
+                aria-label={`Previous featured title. Currently showing ${currentSlide.title}.`}
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M15 18l-6-6 6-6" />
+                </svg>
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  heroNext()
+                }}
+                className="pointer-events-auto w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 backdrop-blur border border-white/20 text-white grid place-items-center transition"
+                aria-label={`Next featured title. Currently showing ${currentSlide.title}.`}
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M9 18l6-6-6-6" />
+                </svg>
+              </button>
+            </div>
           </div>
         </section>
 
-        <div className="mt-6 flex flex-wrap gap-2">
-          {providers.map((p) => (
-            <button
-              key={p}
-              onClick={() => setProvider(p === "All" ? undefined : p)}
-              className={`px-4 py-2 rounded-2xl border transition ${
-                provider === p || (!provider && p === "All")
-                  ? "bg-white/10 border-white/20"
-                  : "bg-transparent border-white/10 hover:bg-white/5"
-              }`}
-            >
-              {p === "All" ? t("filters.all") : p}
-            </button>
-          ))}
-        </div>
+        <nav aria-label="Filter by streaming service" className="mt-6">
+          <div className="flex flex-wrap gap-2" role="group">
+            {providers.map((p) => (
+              <button
+                key={p}
+                onClick={() => setProvider(p === "All" ? undefined : p)}
+                className={`px-4 py-2 rounded-2xl border transition font-medium focus:outline-none focus:ring-2 focus:ring-[#4A5FBA]/50 ${
+                  provider === p || (!provider && p === "All")
+                    ? "bg-[#4A5FBA] border-[#4A5FBA] text-white hover:bg-[#3d4e9d]"
+                    : "bg-white border-white/20 text-[#0D0B3B] hover:bg-[#4A5FBA] hover:border-[#4A5FBA] hover:text-white"
+                }`}
+                aria-pressed={provider === p || (!provider && p === "All")}
+                aria-label={`${p === "All" ? "Show all streaming services" : `Filter by ${p}`}`}
+              >
+                {p === "All" ? t("filters.all") : p}
+              </button>
+            ))}
+          </div>
+        </nav>
 
         <GenreFilters items={items} genre={genre} setGenre={setGenre} />
+
+        <div className="mt-4 text-sm text-foreground/60 italic text-center" role="status" aria-live="polite">
+          You're in control. You can pause, leave, or adjust settings anytime.
+        </div>
 
         <Rows
           filtered={filtered}
           continueWatching={continueWatching}
+          newReleases={newReleases}
           setOverlayMovie={setOverlayMovie}
           onMovieClick={handleMovieClick}
           onHideMovie={handleHideMovie}
@@ -527,13 +712,22 @@ export default function Page() {
 
 function DetailsOverlay({ movie, onClose }: { movie: Movie; onClose: () => void }) {
   const { t } = useI18n()
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose()
     }
     document.addEventListener("keydown", handleEscape)
-    return () => document.removeEventListener("keydown", handleEscape)
+
+    closeButtonRef.current?.focus()
+
+    document.body.style.overflow = "hidden"
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape)
+      document.body.style.overflow = ""
+    }
   }, [onClose])
 
   return (
@@ -542,35 +736,47 @@ function DetailsOverlay({ movie, onClose }: { movie: Movie; onClose: () => void 
       onClick={onClose}
       role="dialog"
       aria-modal="true"
-      aria-labelledby="detailsTitle"
+      aria-labelledby="movie-details-title"
+      aria-describedby="movie-details-description"
     >
       <div
-        className="bg-white/90 text-black rounded-3xl max-w-lg w-full p-6 relative"
+        className="bg-white/90 text-black rounded-3xl max-w-lg w-full p-6 relative focus:outline-none"
         onClick={(e) => e.stopPropagation()}
+        tabIndex={-1}
       >
         <button
+          ref={closeButtonRef}
           onClick={onClose}
-          className="absolute top-4 right-4 text-black/60 hover:text-black text-2xl leading-none"
-          aria-label={t("details.close") || "Close"}
+          className="absolute top-4 right-4 text-black/60 hover:text-black focus:outline-none focus:ring-2 focus:ring-[#4A5FBA] rounded text-2xl leading-none w-8 h-8 flex items-center justify-center"
+          aria-label={`Close details dialog for ${movie.title}`}
         >
-          ✕
+          <span aria-hidden="true">✕</span>
         </button>
-        <h2 id="detailsTitle" className="text-2xl font-bold mb-2">
+
+        <h2 id="movie-details-title" className="text-2xl font-bold mb-2 pr-8">
           {movie.title}
         </h2>
+
         {movie.triggers && movie.triggers.length > 0 && (
-          <div className="mb-4">
+          <div className="mb-4" role="region" aria-label="Content warnings">
             <p className="text-sm font-semibold mb-2">{t("details.triggerWarnings")}</p>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2" role="list" aria-label="List of content warnings">
               {movie.triggers.map((trigger, i) => (
-                <span key={i} className="text-xs px-2 py-1 rounded-full bg-black/10 border border-black/20">
+                <span
+                  key={i}
+                  className="text-xs px-2 py-1 rounded-full bg-black/10 border border-black/20"
+                  role="listitem"
+                >
                   {trigger}
                 </span>
               ))}
             </div>
           </div>
         )}
-        <p className="text-base leading-relaxed">{movie.summary || t("details.noSummary")}</p>
+
+        <p id="movie-details-description" className="text-base leading-relaxed">
+          {movie.summary || t("details.noSummary")}
+        </p>
       </div>
     </div>
   )
@@ -590,21 +796,25 @@ function GenreFilters({
   const chips = ["All", ...allGenres]
 
   return (
-    <div className="mt-3 flex flex-wrap gap-2">
-      {chips.map((g) => (
-        <button
-          key={g}
-          onClick={() => setGenre(g === "All" ? undefined : g)}
-          className={`px-3 py-1.5 rounded-2xl border text-sm transition ${
-            genre === g || (!genre && g === "All")
-              ? "bg-white/10 border-white/20"
-              : "bg-transparent border-white/10 hover:bg-white/5"
-          }`}
-        >
-          {g === "All" ? t("filters.all") : g}
-        </button>
-      ))}
-    </div>
+    <nav aria-label="Filter by genre" className="mt-3">
+      <div className="flex flex-wrap gap-2" role="group">
+        {chips.map((g) => (
+          <button
+            key={g}
+            onClick={() => setGenre(g === "All" ? undefined : g)}
+            className={`px-3 py-1.5 rounded-2xl border text-sm transition font-medium focus:outline-none focus:ring-2 focus:ring-[#4A5FBA]/50 ${
+              genre === g || (!genre && g === "All")
+                ? "bg-[#4A5FBA] border-[#4A5FBA] text-white hover:bg-[#3d4e9d]"
+                : "bg-white border-white/20 text-[#0D0B3B] hover:bg-[#4A5FBA] hover:border-[#4A5FBA] hover:text-white"
+            }`}
+            aria-pressed={genre === g || (!genre && g === "All")}
+            aria-label={`${g === "All" ? "Show all genres" : `Filter by ${g} genre`}`}
+          >
+            {g === "All" ? t("filters.all") : g}
+          </button>
+        ))}
+      </div>
+    </nav>
   )
 }
 
@@ -620,31 +830,56 @@ function Header({
   const { t } = useI18n()
 
   return (
-    <header role="banner" className="sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-[#0D0B3B]/70">
+    <header
+      role="banner"
+      className="sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-background/70 border-b border-border"
+    >
       <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-4">
-        <Link href="/" className="flex items-center gap-2" onClick={() => setContentType(undefined)}>
-          <img src="/skipit-logo.png" alt="SKIP IT." className="h-8 w-auto" />
+        <Link
+          href="/"
+          className="flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-white/50 rounded"
+          onClick={() => setContentType(undefined)}
+          aria-label="SKIP IT home - Return to homepage"
+        >
+          <ThemeLogo />
         </Link>
-        <nav aria-label="Primary" className="hidden md:flex items-center gap-6 ml-6 text-sm text-white/80">
+
+        <nav
+          aria-label="Primary navigation"
+          className="hidden md:flex items-center gap-6 ml-6 text-sm text-foreground/80"
+        >
           <button
             onClick={() => setContentType(contentType === "movie" ? undefined : "movie")}
-            className={`hover:text-white ${contentType === "movie" ? "text-white font-semibold" : ""}`}
+            className={`hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50 rounded transition ${contentType === "movie" ? "text-white font-semibold" : ""}`}
+            aria-pressed={contentType === "movie"}
+            aria-label={contentType === "movie" ? "Currently viewing movies" : "Filter to show movies only"}
           >
             {t("nav.movies")}
           </button>
           <button
             onClick={() => setContentType(contentType === "tv" ? undefined : "tv")}
-            className={`hover:text-white ${contentType === "tv" ? "text-white font-semibold" : ""}`}
+            className={`hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50 rounded transition ${contentType === "tv" ? "text-white font-semibold" : ""}`}
+            aria-pressed={contentType === "tv"}
+            aria-label={contentType === "tv" ? "Currently viewing TV shows" : "Filter to show TV shows only"}
           >
             {t("nav.tvShows")}
           </button>
-          <a className="hover:text-white" href="/hidden">
+          <Link
+            href="/hidden"
+            className="hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50 rounded transition"
+            aria-label="View hidden content"
+          >
             {t("nav.hidden")}
-          </a>
-          <a className="hover:text-white" href="/how-it-works">
+          </Link>
+          <Link
+            href="/how-it-works"
+            className="hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50 rounded transition"
+            aria-label="Learn how SKIP IT works"
+          >
             {t("nav.how")}
-          </a>
+          </Link>
         </nav>
+
         <div className="ml-auto flex items-center gap-3 w-full md:w-auto">
           <div className="flex-1 md:flex-none md:w-[340px]">
             <SearchCombobox
@@ -656,8 +891,12 @@ function Header({
               }))}
             />
           </div>
-          <Link href="/settings" className="text-white/70 hover:text-white transition" aria-label="Profile">
-            <User className="w-5 h-5" />
+          <Link
+            href="/settings"
+            className="text-foreground/70 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50 rounded transition"
+            aria-label="Go to profile and settings"
+          >
+            <UserIcon />
           </Link>
         </div>
       </div>
@@ -668,12 +907,14 @@ function Header({
 function Rows({
   filtered,
   continueWatching,
+  newReleases,
   setOverlayMovie,
   onMovieClick,
   onHideMovie,
 }: {
   filtered: Movie[]
   continueWatching: Movie[]
+  newReleases: Movie[]
   setOverlayMovie: (m: Movie) => void
   onMovieClick: (id: string) => void
   onHideMovie: (id: string) => void
@@ -700,7 +941,7 @@ function Rows({
       )}
       <Row
         title={t("rows.new")}
-        items={filtered.slice(0, 10)}
+        items={newReleases}
         setOverlayMovie={setOverlayMovie}
         onMovieClick={onMovieClick}
         onHideMovie={onHideMovie}
@@ -725,16 +966,25 @@ function Row({
   const ref = useRef<HTMLDivElement>(null)
   const go = (dir: 1 | -1) => ref.current?.scrollBy({ left: dir * (ref.current.clientWidth * 0.9), behavior: "smooth" })
 
+  const rowId = `row-${title.replace(/\s+/g, "-").toLowerCase()}`
+
   return (
-    <section aria-label={title}>
+    <section aria-labelledby={rowId}>
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-xl font-semibold">{title}</h3>
-        <div className="flex gap-2">
-          <SmallArrow onClick={() => go(-1)} ariaLabel="Scroll left" />
-          <SmallArrow right onClick={() => go(1)} ariaLabel="Scroll right" />
+        <h2 id={rowId} className="text-xl font-semibold">
+          {title}
+        </h2>
+        <div className="flex gap-2" role="group" aria-label={`${title} navigation controls`}>
+          <SmallArrow onClick={() => go(-1)} ariaLabel={`Scroll ${title} left`} />
+          <SmallArrow right onClick={() => go(1)} ariaLabel={`Scroll ${title} right`} />
         </div>
       </div>
-      <div ref={ref} className="relative overflow-x-auto scrollbar-none snap-x snap-mandatory flex gap-4 pr-2">
+      <div
+        ref={ref}
+        className="relative overflow-x-auto scrollbar-none snap-x snap-mandatory flex gap-4 pr-2 focus-within:ring-2 focus-within:ring-white/20 rounded-lg"
+        role="list"
+        aria-label={`${title} content`}
+      >
         {items.map((m) => (
           <Card
             key={m.id}
@@ -749,7 +999,7 @@ function Row({
   )
 }
 
-function Card({
+const Card = memo(function Card({
   movie,
   setOverlayMovie,
   onMovieClick,
@@ -764,127 +1014,190 @@ function Card({
   const [hover, setHover] = useState(false)
   const [cardMuted, setCardMuted] = useState(true)
   const [posterSrc, setPosterSrc] = useState(movie.poster || "/placeholder.svg")
-  const [playKey, setPlayKey] = useState(0)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
 
-  const toggleMute = (e: React.MouseEvent) => {
+  const toggleMute = useCallback((e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    setCardMuted(!cardMuted)
-    if (videoRef.current) {
-      videoRef.current.muted = !cardMuted
-    }
-  }
 
-  const playTrailer = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (movie.trailer) {
-      const url =
-        movie.trailer.type === "youtube" ? `https://www.youtube.com/watch?v=${movie.trailer.id}` : movie.trailer.src
-      window.open(url, "_blank", "noopener,noreferrer")
-    }
-  }
+    setCardMuted((prev) => {
+      const newMuted = !prev
 
-  const openDetails = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setOverlayMovie(movie)
-  }
+      // Handle HTML5 video
+      if (videoRef.current) {
+        videoRef.current.muted = newMuted
+      }
 
-  const handleHide = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    onHideMovie(movie.id)
-  }
+      // Handle YouTube iframe with postMessage API
+      if (iframeRef.current?.contentWindow) {
+        try {
+          const command = newMuted ? "mute" : "unMute"
+          iframeRef.current.contentWindow.postMessage(
+            JSON.stringify({
+              event: "command",
+              func: command,
+              args: [],
+            }),
+            "*",
+          )
+        } catch (error) {
+          console.error("[v0] Failed to toggle mute:", error)
+        }
+      }
 
-  const handleCardClick = (e: React.MouseEvent) => {
-    onMovieClick(movie.id)
-    if (movie.link) {
-      window.open(movie.link, "_blank", "noopener,noreferrer")
-    }
-  }
+      return newMuted
+    })
+  }, [])
 
-  const handleMouseEnter = () => {
+  const playTrailer = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (movie.trailer) {
+        const url =
+          movie.trailer.type === "youtube" ? `https://www.youtube.com/watch?v=${movie.trailer.id}` : movie.trailer.src
+        window.open(url, "_blank", "noopener,noreferrer")
+      }
+    },
+    [movie.trailer],
+  )
+
+  const openDetails = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      setOverlayMovie(movie)
+    },
+    [movie, setOverlayMovie],
+  )
+
+  const handleHide = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      onHideMovie(movie.id)
+    },
+    [movie.id, onHideMovie],
+  )
+
+  const handleCardClick = useCallback(
+    (e: React.MouseEvent) => {
+      onMovieClick(movie.id)
+      if (movie.link) {
+        window.open(movie.link, "_blank", "noopener,noreferrer")
+      }
+    },
+    [movie.id, movie.link, onMovieClick],
+  )
+
+  const handleMouseEnter = useCallback(() => {
     setHover(true)
-    setPlayKey((k) => k + 1)
-  }
+  }, [])
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
     setHover(false)
-  }
+  }, [])
+
+  const handleCardKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault()
+        onMovieClick(movie.id)
+        if (movie.link) {
+          window.open(movie.link, "_blank", "noopener,noreferrer")
+        }
+      }
+    },
+    [movie.id, movie.link, onMovieClick],
+  )
 
   const cardContent = (
     <div
       id={`card-${movie.id}`}
-      className="shrink-0 w-[176px] sm:w-[184px] md:w-[196px] lg:w-[208px] xl:w-[224px] snap-start cursor-pointer group"
+      className="shrink-0 w-[176px] sm:w-[184px] md:w-[196px] lg:w-[208px] xl:w-[224px] snap-start cursor-pointer group focus:outline-none focus:ring-2 focus:ring-white/50 rounded-2xl"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onFocus={handleMouseEnter}
       onBlur={handleMouseLeave}
       onClick={handleCardClick}
+      onKeyDown={handleCardKeyDown}
       tabIndex={0}
+      role="listitem"
+      aria-label={`${movie.title} (${movie.year}). ${movie.triggers?.length ? `Content warnings: ${movie.triggers.join(", ")}. ` : ""}Available on ${movie.provider}. Press enter to watch.`}
     >
       <div className="relative aspect-[2/3] overflow-hidden rounded-2xl ring-1 ring-white/10">
-        <div className="relative w-full h-full">
-          <Image
-            src={posterSrc || "/placeholder.svg"}
-            alt={movie.title}
-            fill
-            sizes="(max-width: 640px) 176px, (max-width: 768px) 184px, (max-width: 1024px) 196px, (max-width: 1280px) 208px, 224px"
-            className={`object-cover transition-all duration-500 group-hover:scale-110 ${
-              hover && movie.trailer ? "opacity-0" : "opacity-100"
-            }`}
-            loading="lazy"
-            onError={() => setPosterSrc(POSTER_FALLBACK)}
-          />
-        </div>
+        <Image
+          src={posterSrc || "/placeholder.svg"}
+          alt={`Movie poster for ${movie.title}`}
+          fill
+          sizes="(max-width: 640px) 176px, (max-width: 768px) 184px, (max-width: 1024px) 196px, (max-width: 1280px) 208px, 224px"
+          className="object-cover"
+          onError={() => setPosterSrc(POSTER_FALLBACK)}
+          loading="lazy"
+        />
 
         {hover && movie.trailer && (
-          <HoverPreview
-            trailer={movie.trailer}
-            title={movie.title}
-            muted={cardMuted}
-            videoRef={videoRef}
-            playKey={playKey}
-          />
+          <div className="absolute inset-0 z-[5]">
+            <HoverPreview
+              trailer={movie.trailer}
+              title={movie.title}
+              muted={cardMuted}
+              videoRef={videoRef}
+              iframeRef={iframeRef}
+            />
+          </div>
         )}
 
-        <div className="absolute left-2 top-2 text-[10px] px-2 py-1 rounded-full bg-black/60 z-10">
+        <div
+          className="absolute left-2 top-2 text-[10px] px-2 py-1 rounded-full bg-[#0D0B3B] text-white font-medium z-10"
+          role="note"
+          aria-label={`Available on ${movie.provider}`}
+        >
           {movie.provider}
         </div>
 
-        <div className="absolute right-2 top-2 flex gap-1.5 z-10">
+        <div
+          className="absolute right-2 top-2 flex gap-1.5 z-10"
+          role="group"
+          aria-label={`Quick actions for ${movie.title}`}
+        >
           {hover && movie.trailer && (
             <button
               onClick={toggleMute}
-              className="w-7 h-7 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur grid place-items-center transition"
-              aria-label={cardMuted ? "Unmute" : "Mute"}
+              className="w-7 h-7 rounded-full bg-[#0D0B3B] hover:bg-[#1a1654] focus:outline-none focus:ring-2 focus:ring-white/50 text-white backdrop-blur grid place-items-center transition"
+              aria-label={cardMuted ? `Unmute preview for ${movie.title}` : `Mute preview for ${movie.title}`}
+              aria-pressed={!cardMuted}
             >
-              {cardMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+              {cardMuted ? <VolumeXIcon /> : <Volume2Icon />}
             </button>
           )}
           <button
             onClick={handleHide}
-            className="w-7 h-7 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur grid place-items-center transition"
-            aria-label="Hide movie"
-            title="Hide / Archive"
+            className="w-7 h-7 rounded-full bg-[#0D0B3B] hover:bg-[#1a1654] focus:outline-none focus:ring-2 focus:ring-white/50 text-white backdrop-blur grid place-items-center transition"
+            aria-label={`Hide ${movie.title} from your feed`}
           >
-            <EyeOff className="w-4 h-4" />
+            <EyeOffIcon />
           </button>
         </div>
 
         {hover && (
-          <div className="absolute bottom-2 left-2 right-2 flex gap-2 z-20">
+          <div
+            className="absolute bottom-2 left-2 right-2 flex gap-2 z-20"
+            role="group"
+            aria-label={`${movie.title} actions`}
+          >
             <button
               onClick={playTrailer}
               className="flex-1 px-2 py-1.5 text-xs font-semibold rounded-lg bg-[#d0e3ff] text-[#0D0B3B] hover:brightness-95 transition"
+              aria-label={`Play trailer for ${movie.title}`}
             >
               {t("hero.play")}
             </button>
             <button
               onClick={openDetails}
-              className="flex-1 px-2 py-1.5 text-xs font-semibold rounded-lg border border-white/30 bg-white/10 hover:bg-white/20 transition backdrop-blur"
+              className="flex-1 px-2 py-1.5 text-xs font-semibold rounded-lg border-2 border-white bg-white/10 hover:bg-white/20 text-white transition backdrop-blur"
+              aria-label={`View details for ${movie.title}`}
             >
               {t("hero.details")}
             </button>
@@ -892,8 +1205,8 @@ function Card({
         )}
       </div>
 
-      <div className="mt-2 text-xs sm:text-sm leading-tight text-white/90 line-clamp-2 transition-transform duration-300 group-hover:translate-y-[-2px]">
-        {movie.title} <span className="text-white/60">({movie.year})</span>
+      <div className="mt-2 h-[34px] text-xs sm:text-sm leading-tight text-foreground/90 line-clamp-2 transition-transform duration-300 group-hover:translate-y-[-2px]">
+        {movie.title} <span className="text-foreground/60">({movie.year})</span>
       </div>
 
       {movie.triggers && movie.triggers.length > 0 && <TriggerTicker items={movie.triggers} />}
@@ -901,6 +1214,43 @@ function Card({
   )
 
   return cardContent
+})
+
+function TriggerTicker({ items }: { items: string[] }) {
+  const list = [...items, ...items]
+
+  return (
+    <div className="mt-1.5 overflow-hidden min-h-[28px] flex items-center" role="region" aria-label="Content warnings">
+      <style>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        /* Respect prefers-reduced-motion */
+        @media (prefers-reduced-motion: reduce) {
+          .trigger-marquee { animation: none !important; }
+        }
+      `}</style>
+      <div
+        className="trigger-marquee flex gap-2 whitespace-nowrap"
+        style={{
+          width: "200%",
+          animation: "marquee 20s linear infinite",
+        }}
+        aria-hidden="true"
+      >
+        {list.map((t, i) => (
+          <span
+            key={i}
+            className="text-[11px] text-[#0D0B3B] dark:text-white px-2 py-1 rounded-full bg-white/80 dark:bg-white/10 border border-[#4A5FBA]/30 dark:border-white/10"
+          >
+            {t}
+          </span>
+        ))}
+      </div>
+      <span className="sr-only">Content warnings: {items.join(", ")}</span>
+    </div>
+  )
 }
 
 function HoverPreview({
@@ -908,25 +1258,25 @@ function HoverPreview({
   title,
   muted,
   videoRef,
-  playKey,
+  iframeRef,
 }: {
   trailer: NonNullable<Movie["trailer"]>
   title: string
   muted: boolean
   videoRef?: React.RefObject<HTMLVideoElement>
-  playKey?: number
+  iframeRef?: React.RefObject<HTMLIFrameElement>
 }) {
   return (
     <>
       <style>{`
         @keyframes kbZoom { 
-          0% { transform: scale(1.04); } 
-          100% { transform: scale(1.12); } 
+          0% { transform: scale(1.05); } 
+          100% { transform: scale(1.08); } 
         }
         @media (prefers-reduced-motion: reduce) {
-          .kb-anim { animation: none !important; }
+          .kb-anim { animation: none !important; transform: scale(1.05); }
         }
-        /* Hide all YouTube UI elements */
+        /* Hide YouTube UI elements */
         .ytp-chrome-top,
         .ytp-show-cards-title,
         .ytp-title,
@@ -947,7 +1297,7 @@ function HoverPreview({
           <video
             ref={videoRef}
             className="h-full w-auto mx-auto object-cover kb-anim"
-            style={{ animation: "kbZoom 12s ease-in-out infinite alternate" }}
+            style={{ animation: "kbZoom 8s ease-in-out infinite alternate" }}
             src={trailer.src}
             autoPlay
             muted={muted}
@@ -957,13 +1307,14 @@ function HoverPreview({
         ) : (
           <div className="absolute inset-0 pointer-events-none">
             <iframe
-              key={`${trailer.id}-${playKey || 0}`}
+              ref={iframeRef}
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[115%] w-[205%] kb-anim pointer-events-none"
-              style={{ animation: "kbZoom 12s linear infinite", border: "none" }}
-              src={`https://www.youtube.com/embed/${trailer.id}?autoplay=1&mute=${muted ? 1 : 0}&controls=0&playsinline=1&rel=0&modestbranding=1&loop=1&playlist=${trailer.id}&disablekb=1&fs=0&iv_load_policy=3&cc_load_policy=0&autohide=1`}
+              style={{ animation: "kbZoom 8s linear infinite", border: "none" }}
+              src={`https://www.youtube.com/embed/${trailer.id}?autoplay=1&mute=1&controls=0&playsinline=1&rel=0&modestbranding=1&loop=1&playlist=${trailer.id}&disablekb=1&fs=0&iv_load_policy=3&cc_load_policy=0&autohide=1&enablejsapi=1`}
               title={`${title} trailer`}
               allow="autoplay; encrypted-media"
               aria-hidden="true"
+              loading="lazy"
             />
           </div>
         )}
@@ -974,40 +1325,12 @@ function HoverPreview({
   )
 }
 
-function TriggerTicker({ items }: { items: string[] }) {
-  const list = [...items, ...items]
-
-  return (
-    <div className="mt-1 overflow-hidden">
-      <style>{`
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-      `}</style>
-      <div
-        className="flex gap-2 whitespace-nowrap"
-        style={{
-          width: "200%",
-          animation: "marquee 12s linear infinite",
-        }}
-      >
-        {list.map((t, i) => (
-          <span key={i} className="text-[11px] text-white/75 px-2 py-1 rounded-full bg-white/10 border border-white/10">
-            {t}
-          </span>
-        ))}
-      </div>
-    </div>
-  )
-}
-
 function SmallArrow({ right, onClick, ariaLabel }: { right?: boolean; onClick: () => void; ariaLabel?: string }) {
   return (
     <button
       onClick={onClick}
-      aria-label={ariaLabel || (right ? "Next" : "Previous")}
-      className="grid place-items-center w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 border border-white/10"
+      aria-label={ariaLabel || (right ? "Scroll right" : "Scroll left")}
+      className="grid place-items-center w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 border border-white/10 transition"
     >
       <svg
         width="18"
@@ -1018,6 +1341,7 @@ function SmallArrow({ right, onClick, ariaLabel }: { right?: boolean; onClick: (
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
+        aria-hidden="true"
       >
         <path d={right ? "M9 18l6-6-6-6" : "M15 18l-6-6 6-6"} />
       </svg>
@@ -1031,29 +1355,34 @@ function BottomNav() {
   return (
     <nav
       aria-label="Mobile navigation"
-      className="fixed bottom-0 left-0 right-0 bg-[#0D0B3B]/95 backdrop-blur border-t border-white/10 z-50 md:hidden"
+      className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur border-t border-border z-50 md:hidden"
     >
-      <div className="max-w-md mx-auto flex justify-around py-3 text-sm text-white/70">
-        <a href="/" className="flex flex-col items-center gap-1 hover:text-white transition" aria-label={t("nav.home")}>
-          <Home className="w-5 h-5" aria-hidden="true" />
+      <div className="max-w-md mx-auto flex justify-around py-3 text-sm text-foreground/70">
+        <Link
+          href="/"
+          className="flex flex-col items-center gap-1 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50 rounded transition"
+          aria-label="Home"
+          aria-current="page"
+        >
+          <HomeIcon />
           <span className="text-xs">{t("nav.home")}</span>
-        </a>
-        <a
+        </Link>
+        <Link
           href="/explore"
-          className="flex flex-col items-center gap-1 hover:text-white transition"
-          aria-label={t("nav.explore")}
+          className="flex flex-col items-center gap-1 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50 rounded transition"
+          aria-label="Explore content"
         >
-          <Search className="w-5 h-5" aria-hidden="true" />
+          <SearchIcon />
           <span className="text-xs">{t("nav.explore")}</span>
-        </a>
-        <a
+        </Link>
+        <Link
           href="/settings"
-          className="flex flex-col items-center gap-1 hover:text-white transition"
-          aria-label={t("nav.profile")}
+          className="flex flex-col items-center gap-1 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50 rounded transition"
+          aria-label="Profile and settings"
         >
-          <User className="w-5 h-5" aria-hidden="true" />
+          <UserIcon />
           <span className="text-xs">{t("nav.profile")}</span>
-        </a>
+        </Link>
       </div>
     </nav>
   )

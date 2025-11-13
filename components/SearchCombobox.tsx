@@ -77,13 +77,15 @@ export default function SearchCombobox({ data }: { data: SearchItem[] }) {
         placeholder="Search movies, series…"
         aria-autocomplete="list"
         aria-controls="search-listbox"
-        className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-3 placeholder:text-white/50 outline-none focus:ring-2 focus:ring-[#d0e3ff]/50"
+        className="w-full bg-white dark:bg-white border border-[#4A5FBA]/30 dark:border-white/10 rounded-xl py-2.5 pl-10 pr-3 text-[#0D0B3B] dark:text-[#0D0B3B] placeholder:text-[#0D0B3B]/60 dark:placeholder:text-[#0D0B3B]/60 outline-none focus:ring-2 focus:ring-[#d0e3ff]/50"
       />
+
       <svg
-        className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/60"
+        className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#0D0B3B]/60 dark:text-white/60"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
+        aria-hidden="true"
       >
         <path
           strokeLinecap="round"
@@ -98,7 +100,7 @@ export default function SearchCombobox({ data }: { data: SearchItem[] }) {
           id="search-listbox"
           role="listbox"
           ref={listRef}
-          className="absolute z-50 mt-2 w-full rounded-xl border border-white/10 bg-[#0d0b3b] shadow-xl overflow-hidden"
+          className="absolute z-50 mt-2 w-full rounded-xl border border-[#4A5FBA]/30 dark:border-white/10 bg-white dark:bg-[#0d0b3b] shadow-xl overflow-hidden"
         >
           {list.map((item, idx) => (
             <li
@@ -107,12 +109,14 @@ export default function SearchCombobox({ data }: { data: SearchItem[] }) {
               aria-selected={idx === active}
               onMouseDown={(e) => e.preventDefault()} // prevent input blur before click
               onClick={() => onSelect(item)}
-              className={`px-3 py-2 cursor-pointer flex items-center justify-between ${
-                idx === active ? "bg-white/10" : "hover:bg-white/5"
+              className={`px-3 py-2 cursor-pointer flex items-center justify-between text-[#0D0B3B] dark:text-white ${
+                idx === active ? "bg-[#4A5FBA]/10 dark:bg-white/10" : "hover:bg-[#4A5FBA]/5 dark:hover:bg-white/5"
               }`}
             >
               <span className="truncate">{item.title}</span>
-              {item.provider && <span className="ml-3 text-xs text-white/60">{item.provider}</span>}
+              {item.provider && (
+                <span className="ml-3 text-xs text-[#0D0B3B]/60 dark:text-white/60">{item.provider}</span>
+              )}
             </li>
           ))}
         </ul>

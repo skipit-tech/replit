@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, memo, useCallback } from "react"
 import { Home, Search, User, Eye } from "lucide-react"
+import Image from "next/image"
 
 type Movie = {
   id: string
@@ -64,7 +65,7 @@ const realMovies = [
   {
     id: "the-babadook",
     title: "The Babadook",
-    year: 2014,
+    year: 1996,
     provider: "Hulu",
     poster: "/movies/the-babadook.jpg",
   },
@@ -98,27 +99,77 @@ const realMovies = [
   },
 ]
 
+const MovieCard = memo(function MovieCard({
+  movie,
+  onUnhide,
+}: {
+  movie: Movie
+  onUnhide: (id: string) => void
+}) {
+  const handleClick = useCallback(() => {
+    onUnhide(movie.id)
+  }, [movie.id, onUnhide])
+
+  return (
+    <div className="relative group">
+      <div className="aspect-[2/3] overflow-hidden rounded-2xl ring-1 ring-white/10">
+        <Image
+          src={movie.poster || "/placeholder.svg"}
+          alt={movie.title}
+          width={300}
+          height={450}
+          className="w-full h-full object-cover"
+          loading="lazy"
+        />
+      </div>
+      <button
+        onClick={handleClick}
+        className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur grid place-items-center transition"
+        aria-label="Unhide movie"
+        title="Unhide"
+      >
+        <Eye className="w-4 h-4" />
+      </button>
+      <div className="mt-2 text-sm leading-tight">
+        {movie.title} <span className="text-white/60">({movie.year})</span>
+      </div>
+    </div>
+  )
+})
+
 export default function HiddenPage() {
   const [hiddenIds, setHiddenIds] = useState<Set<string>>(new Set())
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const hidden = localStorage.getItem("skipit_hidden")
     if (hidden) setHiddenIds(new Set(JSON.parse(hidden)))
+    setIsLoading(false)
   }, [])
 
   const hiddenMovies = realMovies.filter((m) => hiddenIds.has(m.id))
 
-  const handleUnhide = (movieId: string) => {
-    const newHidden = new Set(hiddenIds)
-    newHidden.delete(movieId)
-    setHiddenIds(newHidden)
-    localStorage.setItem("skipit_hidden", JSON.stringify(Array.from(newHidden)))
+  const handleUnhide = useCallback((movieId: string) => {
+    setHiddenIds((prev) => {
+      const newHidden = new Set(prev)
+      newHidden.delete(movieId)
+      localStorage.setItem("skipit_hidden", JSON.stringify(Array.from(newHidden)))
+      return newHidden
+    })
+  }, [])
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0D0B3B]">
+        <div className="w-12 h-12 border-4 border-[#d0e3ff]/20 border-t-[#d0e3ff] rounded-full animate-spin" />
+      </div>
+    )
   }
 
   return (
     <div className="min-h-screen bg-[#0D0B3B] text-white pb-24">
       <Header />
-      <main className="max-w-6xl mx-auto px-4 py-8">
+      <main id="main" className="max-w-6xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6">Hidden Movies & Shows</h1>
 
         {hiddenMovies.length === 0 ? (
@@ -131,26 +182,7 @@ export default function HiddenPage() {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {hiddenMovies.map((movie) => (
-              <div key={movie.id} className="relative group">
-                <div className="aspect-[2/3] overflow-hidden rounded-2xl ring-1 ring-white/10">
-                  <img
-                    src={movie.poster || "/placeholder.svg"}
-                    alt={movie.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <button
-                  onClick={() => handleUnhide(movie.id)}
-                  className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur grid place-items-center transition"
-                  aria-label="Unhide movie"
-                  title="Unhide"
-                >
-                  <Eye className="w-4 h-4" />
-                </button>
-                <div className="mt-2 text-sm leading-tight">
-                  {movie.title} <span className="text-white/60">({movie.year})</span>
-                </div>
-              </div>
+              <MovieCard key={movie.id} movie={movie} onUnhide={handleUnhide} />
             ))}
           </div>
         )}
@@ -172,16 +204,16 @@ function Header() {
           </a>
         </div>
         <nav className="hidden md:flex items-center gap-6 ml-6 text-sm text-white/80">
-          <a className="hover:text-white" href="/">
+          <a className="hover:text-white transition" href="/">
             Movies
           </a>
-          <a className="hover:text-white" href="/">
+          <a className="hover:text-white transition" href="/">
             TV Shows
           </a>
-          <a className="hover:text-white" href="/hidden">
+          <a className="text-white font-semibold transition" href="/hidden">
             Hidden
           </a>
-          <a className="hover:text-white text-white" href="/how-it-works">
+          <a className="hover:text-white transition" href="/how-it-works">
             How it Works
           </a>
         </nav>
@@ -215,7 +247,7 @@ function Header() {
               </a>
               <a
                 href="/signup"
-                className="hidden md:block px-4 py-2 text-sm bg-[#6B9DFC] hover:bg-[#5A8DE8] text-white rounded-lg transition"
+                className="hidden md:block px-4 py-2 text-sm bg-[#d0e3ff] hover:bg-[#c0d3ef] text-[#0D0B3B] rounded-lg transition"
               >
                 Sign Up
               </a>

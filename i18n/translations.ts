@@ -62,8 +62,8 @@ export const translations: Record<Locale, Record<string, any>> = {
         singleDesc: "Best for users who want an ad free experience",
         family: "Family Plan - $7.99/month",
         familyDesc: "Best for families or households.",
-        org: "Organization Plan - TBA",
-        orgDesc: "Best for families or households.",
+        org: "Organization Plan",
+        orgDesc: "Best for schools, clinics, and organizations.",
       },
       activity: {
         timeFilter: {
@@ -178,8 +178,8 @@ export const translations: Record<Locale, Record<string, any>> = {
         singleDesc: "Mejor para usuarios que quieren una experiencia sin anuncios",
         family: "Plan familiar - $7.99/mes",
         familyDesc: "Mejor para familias o hogares.",
-        org: "Plan organizacional - Por determinar",
-        orgDesc: "Mejor para familias o hogares.",
+        org: "Plan organizacional",
+        orgDesc: "Mejor para escuelas, clínicas y organizaciones.",
       },
       activity: {
         timeFilter: {
@@ -294,8 +294,8 @@ export const translations: Record<Locale, Record<string, any>> = {
         singleDesc: "Idéal pour les utilisateurs qui veulent une expérience sans publicité",
         family: "Offre familiale - 7,99 $/mois",
         familyDesc: "Idéal pour les familles ou les ménages.",
-        org: "Offre organisation - À déterminer",
-        orgDesc: "Idéal pour les familles ou les ménages.",
+        org: "Offre organisation",
+        orgDesc: "Idéal pour les écoles, cliniques et organisations.",
       },
       activity: {
         timeFilter: {
@@ -410,8 +410,8 @@ export const translations: Record<Locale, Record<string, any>> = {
         singleDesc: "उन उपयोगकर्ताओं के लिए सर्वश्रेष्ठ जो विज्ञापन मुक्त अनुभव चाहते हैं",
         family: "फ़ैमिली प्लान - $7.99/माह",
         familyDesc: "परिवारों या घरों के लिए सर्वश्रेष्ठ।",
-        org: "संगठन प्लान - TBA",
-        orgDesc: "परिवारों या घरों के लिए सर्वश्रेष्ठ।",
+        org: "संगठन प्लान",
+        orgDesc: "स्कूलों, क्लीनिकों और संगठनों के लिए सर्वश्रेष्ठ।",
       },
       activity: {
         timeFilter: {
@@ -526,8 +526,8 @@ export const translations: Record<Locale, Record<string, any>> = {
         singleDesc: "最适合想要无广告体验的用户",
         family: "家庭套餐 - $7.99/月",
         familyDesc: "最适合家庭或住户。",
-        org: "组织套餐 - 待定",
-        orgDesc: "最适合家庭或住户。",
+        org: "组织套餐",
+        orgDesc: "最适合学校、诊所和组织。",
       },
       activity: {
         timeFilter: {
@@ -642,8 +642,8 @@ export const translations: Record<Locale, Record<string, any>> = {
         singleDesc: "الأفضل للمستخدمين الذين يريدون تجربة خالية من الإعلانات",
         family: "خطة عائلية - $7.99/شهر",
         familyDesc: "الأفضل للعائلات أو الأسر.",
-        org: "خطة المنظمة - سيتم تحديدها",
-        orgDesc: "الأفضل للعائلات أو الأسر.",
+        org: "خطة المنظمة",
+        orgDesc: "الأفضل للمدارس والعيادات والمنظمات.",
       },
       activity: {
         timeFilter: {
@@ -758,8 +758,8 @@ export const translations: Record<Locale, Record<string, any>> = {
         singleDesc: "Pinakamahusay para sa mga user na gustong walang ad na karanasan",
         family: "Family Plan - $7.99/buwan",
         familyDesc: "Pinakamahusay para sa mga pamilya o sambahayan.",
-        org: "Organization Plan - TBA",
-        orgDesc: "Pinakamahusay para sa mga pamilya o sambahayan.",
+        org: "Organization Plan",
+        orgDesc: "Pinakamahusay para sa mga paaralan, klinika, at organisasyon.",
       },
       activity: {
         timeFilter: {
@@ -874,8 +874,8 @@ export const translations: Record<Locale, Record<string, any>> = {
         singleDesc: "Tốt nhất cho người dùng muốn trải nghiệm không quảng cáo",
         family: "Gói gia đình - $7.99/tháng",
         familyDesc: "Tốt nhất cho gia đình hoặc hộ gia đình.",
-        org: "Gói tổ chức - TBA",
-        orgDesc: "Tốt nhất cho gia đình hoặc hộ gia đình.",
+        org: "Gói tổ chức",
+        orgDesc: "Tốt nhất cho trường học, phòng khám và tổ chức.",
       },
       activity: {
         timeFilter: {
@@ -990,8 +990,8 @@ export const translations: Record<Locale, Record<string, any>> = {
         singleDesc: "광고 없는 경험을 원하는 사용자에게 최적입니다",
         family: "패밀리 플랜 - $7.99/월",
         familyDesc: "가족 또는 가구에 최적입니다.",
-        org: "조직 플랜 - 추후 공개",
-        orgDesc: "가족 또는 가구에 최적입니다.",
+        org: "조직 플랜",
+        orgDesc: "학교, 진료소 및 조직에 최적입니다.",
       },
       activity: {
         timeFilter: {
@@ -1107,8 +1107,8 @@ export const translations: Record<Locale, Record<string, any>> = {
         singleDesc: "Лучше всего для пользователей, которые хотят опыт без рекламы",
         family: "Семейный тариф - $7.99/мес.",
         familyDesc: "Лучше всего для семей или домохозяйств.",
-        org: "Организационный тариф - Уточняется",
-        orgDesc: "Лучше всего для семей или домохозяйств.",
+        org: "Организационный тариф",
+        orgDesc: "Лучше всего для школ, клиник и организаций.",
       },
       activity: {
         timeFilter: {
@@ -1223,8 +1223,8 @@ export const translations: Record<Locale, Record<string, any>> = {
         singleDesc: "Melhor para usuários que desejam uma experiência sem anúncios",
         family: "Plano familiar - $7.99/mês",
         familyDesc: "Melhor para famílias ou residências.",
-        org: "Plano organizacional - A definir",
-        orgDesc: "Melhor para famílias ou residências.",
+        org: "Plano organizacional",
+        orgDesc: "Melhor para escolas, clínicas e organizações.",
       },
       activity: {
         timeFilter: {

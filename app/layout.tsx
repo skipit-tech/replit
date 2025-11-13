@@ -9,22 +9,30 @@ const dmSans = DM_Sans({
   variable: "--font-dm-sans",
 })
 
+export const metadata = {
+  title: "SkipIt - Smart Content Filtering",
+  description: "Watch with confidence",
+    generator: 'v0.app'
+}
+
+export const viewport = {
+  themeColor: "#0D0B3B",
+  width: "device-width",
+  initialScale: 1,
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" dir="ltr">
+    <html lang="en" dir="ltr" suppressHydrationWarning>
       <head>
         <link
           href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Noto+Sans+Arabic:wght@400;600&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body className={`${dmSans.variable} font-dm-sans bg-[#0D0B3B] text-white`}>
+      <body className={`${dmSans.variable} font-dm-sans bg-[#0D0B3B] text-white antialiased`}>
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   )
 }
-
-export const metadata = {
-      generator: 'v0.app'
-    };
