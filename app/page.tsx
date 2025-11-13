@@ -764,6 +764,7 @@ function Card({
   const [hover, setHover] = useState(false)
   const [cardMuted, setCardMuted] = useState(true)
   const [posterSrc, setPosterSrc] = useState(movie.poster || "/placeholder.svg")
+  const [playKey, setPlayKey] = useState(0)
   const videoRef = useRef<HTMLVideoElement>(null)
 
   const toggleMute = (e: React.MouseEvent) => {
@@ -804,14 +805,23 @@ function Card({
     }
   }
 
+  const handleMouseEnter = () => {
+    setHover(true)
+    setPlayKey((k) => k + 1)
+  }
+
+  const handleMouseLeave = () => {
+    setHover(false)
+  }
+
   const cardContent = (
     <div
       id={`card-${movie.id}`}
       className="shrink-0 w-[176px] sm:w-[184px] md:w-[196px] lg:w-[208px] xl:w-[224px] snap-start cursor-pointer group"
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      onFocus={() => setHover(true)}
-      onBlur={() => setHover(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onFocus={handleMouseEnter}
+      onBlur={handleMouseLeave}
       onClick={handleCardClick}
       tabIndex={0}
     >
@@ -831,7 +841,13 @@ function Card({
         </div>
 
         {hover && movie.trailer && (
-          <HoverPreview trailer={movie.trailer} title={movie.title} muted={cardMuted} videoRef={videoRef} />
+          <HoverPreview
+            trailer={movie.trailer}
+            title={movie.title}
+            muted={cardMuted}
+            videoRef={videoRef}
+            playKey={playKey}
+          />
         )}
 
         <div className="absolute left-2 top-2 text-[10px] px-2 py-1 rounded-full bg-black/60 z-10">
@@ -892,11 +908,13 @@ function HoverPreview({
   title,
   muted,
   videoRef,
+  playKey,
 }: {
   trailer: NonNullable<Movie["trailer"]>
   title: string
   muted: boolean
   videoRef?: React.RefObject<HTMLVideoElement>
+  playKey?: number
 }) {
   return (
     <>
@@ -939,7 +957,7 @@ function HoverPreview({
         ) : (
           <div className="absolute inset-0 pointer-events-none">
             <iframe
-              key={trailer.id}
+              key={`${trailer.id}-${playKey || 0}`}
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[115%] w-[205%] kb-anim pointer-events-none"
               style={{ animation: "kbZoom 12s linear infinite", border: "none" }}
               src={`https://www.youtube.com/embed/${trailer.id}?autoplay=1&mute=${muted ? 1 : 0}&controls=0&playsinline=1&rel=0&modestbranding=1&loop=1&playlist=${trailer.id}&disablekb=1&fs=0&iv_load_policy=3&cc_load_policy=0&autohide=1`}
