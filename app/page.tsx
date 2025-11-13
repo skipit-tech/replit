@@ -3,6 +3,7 @@
 import type React from "react"
 import { Home, Search, User, EyeOff, Volume2, VolumeX } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { useI18n } from "@/i18n/I18nProvider"
 import SearchCombobox from "@/components/SearchCombobox"
 
@@ -236,6 +237,18 @@ export default function Page() {
     setShowHeroTrailer(false)
   }, [slide])
 
+  useEffect(() => {
+    heroSlides.forEach((slide) => {
+      if (slide.backdrop && slide.backdrop !== "#000000") {
+        const link = document.createElement("link")
+        link.rel = "preload"
+        link.as = "image"
+        link.href = slide.backdrop
+        document.head.appendChild(link)
+      }
+    })
+  }, [])
+
   const items: Movie[] = realMovies
 
   const filtered = useMemo(() => {
@@ -369,12 +382,18 @@ export default function Page() {
               {currentSlide.backdrop === "#000000" ? (
                 <div className="w-full aspect-[23/9] bg-black" />
               ) : (
-                <img
-                  src={currentSlide.backdrop || "/placeholder.svg"}
-                  alt={`${currentSlide.title} backdrop`}
-                  className="w-full aspect-[23/9] object-cover"
-                  style={{ objectPosition: objectPos }}
-                />
+                <div className="relative w-full aspect-[23/9]">
+                  <Image
+                    src={currentSlide.backdrop || "/placeholder.svg"}
+                    alt={`${currentSlide.title} backdrop`}
+                    fill
+                    priority
+                    quality={90}
+                    sizes="(max-width: 1280px) 100vw, 1280px"
+                    className="object-cover"
+                    style={{ objectPosition: objectPos }}
+                  />
+                </div>
               )}
 
               {showHeroTrailer && currentSlide.trailer && (
@@ -779,15 +798,19 @@ function Card({
       tabIndex={0}
     >
       <div className="relative aspect-[2/3] overflow-hidden rounded-2xl ring-1 ring-white/10">
-        <img
-          src={posterSrc || "/placeholder.svg"}
-          alt={movie.title}
-          className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${
-            hover && movie.trailer ? "opacity-0" : "opacity-100"
-          }`}
-          loading="lazy"
-          onError={() => setPosterSrc(POSTER_FALLBACK)}
-        />
+        <div className="relative w-full h-full">
+          <Image
+            src={posterSrc || "/placeholder.svg"}
+            alt={movie.title}
+            fill
+            sizes="(max-width: 640px) 176px, (max-width: 768px) 184px, (max-width: 1024px) 196px, (max-width: 1280px) 208px, 224px"
+            className={`object-cover transition-all duration-500 group-hover:scale-110 ${
+              hover && movie.trailer ? "opacity-0" : "opacity-100"
+            }`}
+            loading="lazy"
+            onError={() => setPosterSrc(POSTER_FALLBACK)}
+          />
+        </div>
 
         {hover && movie.trailer && (
           <HoverPreview trailer={movie.trailer} title={movie.title} muted={cardMuted} videoRef={videoRef} />
