@@ -6,8 +6,9 @@ import CircularTimer from "@/components/circular-timer"
 import { useI18n } from "@/i18n/I18nProvider"
 import type { Locale } from "@/i18n/translations"
 import Link from "next/link"
+import ActivityDashboard from "@/components/ActivityDashboard"
 
-type Tab = "trigger" | "plans" | "data"
+type Tab = "trigger" | "plans" | "data" | "activity"
 type Plan = "starter" | "single" | "family" | "org"
 
 export default function SettingsPage() {
@@ -136,6 +137,14 @@ export default function SettingsPage() {
             {/* Tabs */}
             <div className="flex gap-8 border-b border-white/20 mb-8">
               <button
+                onClick={() => setTab("activity")}
+                className={`pb-3 font-semibold transition ${
+                  tab === "activity" ? "border-b-2 border-white" : "text-white/60 hover:text-white"
+                }`}
+              >
+                Activity
+              </button>
+              <button
                 onClick={() => setTab("trigger")}
                 className={`pb-3 font-semibold transition ${
                   tab === "trigger" ? "border-b-2 border-white" : "text-white/60 hover:text-white"
@@ -160,6 +169,9 @@ export default function SettingsPage() {
                 {t("settings.dataTab")}
               </button>
             </div>
+
+            {/* Activity Dashboard Tab */}
+            {tab === "activity" && <ActivityDashboard />}
 
             {/* Trigger Settings Tab */}
             {tab === "trigger" && (
