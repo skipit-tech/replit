@@ -39,7 +39,7 @@ export default function HowItWorksPage() {
           <div className="bg-white/5 border border-white/10 rounded-3xl p-6 md:p-8">
             <div className="aspect-video bg-black rounded-2xl mb-4 relative overflow-hidden">
               <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Untitled%20design%20%284%29-Lg2mbjOyyiycYw5tSaZb1D37qXFaBc.png"
+                src="/images/untitled-20design-20-284-29.png"
                 alt="SKIP IT trigger warning overlay showing gun violence detection with description, skip, and dismiss buttons"
                 className="w-full h-full object-contain"
               />
@@ -168,7 +168,12 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
           stroke="currentColor"
           viewBox="0 0 24 24"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M19 9l-7 7-7-7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+          />
         </svg>
       </summary>
       <p className="mt-3 text-white/70 text-sm">{answer}</p>
@@ -192,11 +197,11 @@ function Header() {
           <a className="hover:text-white" href="/">
             TV Shows
           </a>
-          <a className="hover:text-white text-white" href="/how-it-works">
-            How it Works
-          </a>
           <a className="hover:text-white" href="/hidden">
             Hidden
+          </a>
+          <a className="hover:text-white text-white" href="/how-it-works">
+            How it Works
           </a>
         </nav>
         <div className="ml-auto flex items-center gap-3">

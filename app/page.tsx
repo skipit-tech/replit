@@ -601,11 +601,11 @@ function Header({
           >
             {t("nav.tvShows")}
           </button>
-          <a className="hover:text-white" href="/how-it-works">
-            {t("nav.how")}
-          </a>
           <a className="hover:text-white" href="/hidden">
             {t("nav.hidden")}
+          </a>
+          <a className="hover:text-white" href="/how-it-works">
+            {t("nav.how")}
           </a>
         </nav>
         <div className="ml-auto flex items-center gap-3 w-full md:w-auto">

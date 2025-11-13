@@ -176,11 +176,11 @@ function Header() {
           <a className="hover:text-white" href="/">
             TV Shows
           </a>
-          <a className="hover:text-white" href="/how-it-works">
-            How it Works
-          </a>
-          <a className="hover:text-white text-white" href="/hidden">
+          <a className="hover:text-white" href="/hidden">
             Hidden
+          </a>
+          <a className="hover:text-white text-white" href="/how-it-works">
+            How it Works
           </a>
         </nav>
         <div className="ml-auto flex items-center gap-3 w-full md:w-auto">
