@@ -922,7 +922,7 @@ function Rows({
   const { t } = useI18n()
 
   return (
-    <div className="mt-6 space-y-10">
+    <div className="mt-12 space-y-10">
       <Row
         title={t("rows.trending")}
         items={filtered.slice(0, 10)}

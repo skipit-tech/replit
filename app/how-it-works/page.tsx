@@ -128,7 +128,7 @@ export default function HowItWorksPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="/signup"
-                className="px-8 py-3 rounded-xl text-primary-foreground font-semibold hover:bg-primary/90 transition bg-[rgba(208,227,255,1)]"
+                className="px-8 py-3 rounded-xl text-[#0D0B3B] font-semibold hover:bg-[#c0d3ef] transition bg-[rgba(208,227,255,1)]"
               >
                 Sign Up Free
               </a>
@@ -216,7 +216,7 @@ function Header() {
           </a>
           <a
             href="/signup"
-            className="px-8 py-3 rounded-xl text-[#0D0B3B] dark:text-[#0D0B3B] font-semibold transition text-sm bg-[#d0e3ff] hover:bg-[#c0d3ef]"
+            className="px-8 py-3 rounded-xl text-[#0D0B3B] font-semibold transition text-sm bg-[#d0e3ff] hover:bg-[#c0d3ef]"
           >
             Sign Up
           </a>

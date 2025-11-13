@@ -3,6 +3,7 @@
 import { useState, useEffect, memo, useCallback } from "react"
 import { Home, Search, User, Eye } from "lucide-react"
 import Image from "next/image"
+import { ThemeLogo } from "@/components/theme-logo"
 
 type Movie = {
   id: string
@@ -200,7 +201,7 @@ function Header() {
       <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-4">
         <div className="flex items-center gap-2">
           <a href="/">
-            <img src="/skipit-logo.png" alt="SKIP IT." className="h-8 w-auto" />
+            <ThemeLogo />
           </a>
         </div>
         <nav className="hidden md:flex items-center gap-6 ml-6 text-sm text-white/80">
