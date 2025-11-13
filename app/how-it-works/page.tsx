@@ -8,15 +8,6 @@ export default function HowItWorksPage() {
         <section className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">How SKIP IT. Works</h1>
 
-          {/* Trigger Warning Example */}
-          <div className="max-w-3xl mx-auto mb-8">
-            <img
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Subtitle-UOZrSOxUnFipkcRNR39sPChTQ1DO1L.png"
-              alt="Example of SKIP IT trigger warning overlay showing detected gun violence with description and dismiss buttons"
-              className="w-full rounded-3xl shadow-2xl border border-white/10"
-            />
-          </div>
-
           <p className="text-lg text-white/70 max-w-2xl mx-auto">
             Watch your favorite movies and shows without the stress. SKIP IT. automatically detects and skips triggering
             content based on your preferences.
@@ -46,13 +37,12 @@ export default function HowItWorksPage() {
         <section className="mb-16">
           <h2 className="text-2xl font-bold mb-6 text-center">See It In Action</h2>
           <div className="bg-white/5 border border-white/10 rounded-3xl p-6 md:p-8">
-            <div className="aspect-video bg-black/40 rounded-2xl mb-4 relative overflow-hidden">
-              <img src="/movies/carry-on.jpg" alt="Movie preview" className="w-full h-full object-cover opacity-60" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-[#d0e3ff] text-[#0D0B3B] px-6 py-3 rounded-full font-semibold text-lg">
-                  Skipping triggering content...
-                </div>
-              </div>
+            <div className="aspect-video bg-black rounded-2xl mb-4 relative overflow-hidden">
+              <img
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Untitled%20design%20%284%29-Lg2mbjOyyiycYw5tSaZb1D37qXFaBc.png"
+                alt="SKIP IT trigger warning overlay showing gun violence detection with description, skip, and dismiss buttons"
+                className="w-full h-full object-contain"
+              />
             </div>
 
             {/* Timeline */}
