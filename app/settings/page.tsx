@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Home, Search, User, ChevronDown } from "lucide-react"
+import { Home, Search, User, ChevronDown, LogOut } from "lucide-react"
 import CircularTimer from "@/components/circular-timer"
 import { useI18n } from "@/i18n/I18nProvider"
 import type { Locale } from "@/i18n/translations"
@@ -52,7 +52,7 @@ export default function SettingsPage() {
       <main className="max-w-6xl mx-auto px-4 py-8">
         <div className="grid md:grid-cols-[320px_1fr] gap-6">
           {/* Profile Sidebar */}
-          <aside className="bg-gradient-to-br from-blue-100 to-blue-50 rounded-3xl p-6 text-[#0D0B3B] h-fit">
+          <aside className="bg-gradient-to-br from-blue-100 to-blue-50 rounded-3xl p-6 text-[#0D0B3B] h-fit shadow-lg">
             <div className="flex flex-col items-center">
               <div className="w-32 h-32 rounded-full overflow-hidden mb-4 ring-4 ring-white/50">
                 <img src="/placeholder-user.jpg" alt="Jane Doe" className="w-full h-full object-cover" />
@@ -111,6 +111,17 @@ export default function SettingsPage() {
                 </div>
               </div>
             </div>
+
+            <button
+              onClick={() => {
+                // TODO: Add Firebase logout functionality here
+                console.log("Logout clicked")
+              }}
+              className="mt-6 w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-xl transition shadow-md hover:shadow-lg"
+            >
+              <LogOut className="w-5 h-5" />
+              Log Out
+            </button>
           </aside>
 
           {/* Main Content */}
@@ -118,7 +129,7 @@ export default function SettingsPage() {
             <h1 className="text-4xl font-bold mb-6">{t("settings.title")}</h1>
 
             {/* Tabs */}
-            <div className="flex gap-8 border-b border-white/20 mb-8">
+            <div className="flex gap-8 border-b border-white/20 mb-8 items-center">
               <button
                 onClick={() => setTab("trigger")}
                 className={`pb-3 font-semibold transition ${
@@ -143,6 +154,17 @@ export default function SettingsPage() {
               >
                 {t("settings.dataTab")}
               </button>
+
+              <button
+                onClick={() => {
+                  // TODO: Add Firebase logout functionality here
+                  console.log("Logout clicked")
+                }}
+                className="ml-auto pb-3 px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition shadow-md hover:shadow-lg flex items-center gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                Logout
+              </button>
             </div>
 
             {/* Trigger Settings Tab */}
@@ -159,7 +181,10 @@ export default function SettingsPage() {
                       { key: "illnessInjury", label: t("settings.categories.Illness/Injury") },
                       { key: "discrimination", label: t("settings.categories.Discrimination") },
                     ].map(({ key, label }) => (
-                      <label key={key} className="flex items-center gap-3 cursor-pointer group">
+                      <label
+                        key={key}
+                        className="flex items-center gap-3 cursor-pointer group p-4 rounded-xl bg-white/5 hover:bg-white/10 transition shadow-md hover:shadow-lg"
+                      >
                         <input
                           type="checkbox"
                           checked={triggers[key as keyof typeof triggers]}
@@ -179,7 +204,10 @@ export default function SettingsPage() {
                       { key: "instantSkip", label: t("settings.toggles.instant") },
                       { key: "skipSummary", label: t("settings.toggles.summary") },
                     ].map(({ key, label }) => (
-                      <div key={key} className="flex items-center justify-between">
+                      <div
+                        key={key}
+                        className="flex items-center justify-between p-4 rounded-xl bg-white/5 shadow-md hover:shadow-lg transition"
+                      >
                         <span className="font-medium">{label}</span>
                         <button
                           onClick={() => setToggles({ ...toggles, [key]: !toggles[key as keyof typeof toggles] })}
@@ -226,7 +254,7 @@ export default function SettingsPage() {
                     ].map(({ key, name, desc }) => (
                       <label
                         key={key}
-                        className={`flex items-start gap-4 p-4 rounded-2xl border-2 cursor-pointer transition ${
+                        className={`flex items-start gap-4 p-4 rounded-2xl border-2 cursor-pointer transition shadow-md hover:shadow-lg ${
                           selectedPlan === key
                             ? "border-[#d0e3ff] bg-[#d0e3ff]/5"
                             : "border-white/20 hover:border-white/30"
