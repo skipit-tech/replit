@@ -10,6 +10,7 @@ interface TriggerData {
   color: string
   percentage: number
   scenes: number
+  minutes: number
 }
 
 const mockData = {
@@ -18,11 +19,11 @@ const mockData = {
     scenesSkipped: 16,
     weeklyActivity: [3, 1, 4, 2, 5, 0, 1],
     triggerData: [
-      { name: "Sexual content", color: "#ef4444", percentage: 32, scenes: 6 },
-      { name: "Violence", color: "#a855f7", percentage: 25, scenes: 5 },
-      { name: "Emotional distress", color: "#eab308", percentage: 19, scenes: 3 },
-      { name: "Self-harm", color: "#3b82f6", percentage: 13, scenes: 2 },
-      { name: "Animal harm", color: "#22c55e", percentage: 11, scenes: 2 },
+      { name: "Sexual content", color: "#ef4444", percentage: 32, scenes: 6, minutes: 13 },
+      { name: "Violence", color: "#a855f7", percentage: 25, scenes: 5, minutes: 11 },
+      { name: "Emotional distress", color: "#eab308", percentage: 19, scenes: 3, minutes: 8 },
+      { name: "Self-harm", color: "#3b82f6", percentage: 13, scenes: 2, minutes: 5 },
+      { name: "Animal harm", color: "#22c55e", percentage: 11, scenes: 2, minutes: 5 },
     ],
   },
   month: {
@@ -30,11 +31,11 @@ const mockData = {
     scenesSkipped: 64,
     weeklyActivity: [8, 12, 9, 15, 11, 13, 10],
     triggerData: [
-      { name: "Sexual content", color: "#ef4444", percentage: 30, scenes: 19 },
-      { name: "Violence", color: "#a855f7", percentage: 28, scenes: 18 },
-      { name: "Emotional distress", color: "#eab308", percentage: 20, scenes: 13 },
-      { name: "Self-harm", color: "#3b82f6", percentage: 12, scenes: 8 },
-      { name: "Animal harm", color: "#22c55e", percentage: 10, scenes: 6 },
+      { name: "Sexual content", color: "#ef4444", percentage: 30, scenes: 19, minutes: 53 },
+      { name: "Violence", color: "#a855f7", percentage: 28, scenes: 18, minutes: 50 },
+      { name: "Emotional distress", color: "#eab308", percentage: 20, scenes: 13, minutes: 36 },
+      { name: "Self-harm", color: "#3b82f6", percentage: 12, scenes: 8, minutes: 21 },
+      { name: "Animal harm", color: "#22c55e", percentage: 10, scenes: 6, minutes: 18 },
     ],
   },
   all: {
@@ -42,11 +43,11 @@ const mockData = {
     scenesSkipped: 312,
     weeklyActivity: [42, 38, 45, 51, 48, 40, 44],
     triggerData: [
-      { name: "Sexual content", color: "#ef4444", percentage: 31, scenes: 97 },
-      { name: "Violence", color: "#a855f7", percentage: 27, scenes: 84 },
-      { name: "Emotional distress", color: "#eab308", percentage: 19, scenes: 59 },
-      { name: "Self-harm", color: "#3b82f6", percentage: 13, scenes: 41 },
-      { name: "Animal harm", color: "#22c55e", percentage: 10, scenes: 31 },
+      { name: "Sexual content", color: "#ef4444", percentage: 31, scenes: 97, minutes: 277 },
+      { name: "Violence", color: "#a855f7", percentage: 27, scenes: 84, minutes: 241 },
+      { name: "Emotional distress", color: "#eab308", percentage: 19, scenes: 59, minutes: 169 },
+      { name: "Self-harm", color: "#3b82f6", percentage: 13, scenes: 41, minutes: 116 },
+      { name: "Animal harm", color: "#22c55e", percentage: 10, scenes: 31, minutes: 89 },
     ],
   },
 }
@@ -56,6 +57,7 @@ const DonutChart = memo(function DonutChart({
   scenesSkipped,
 }: { triggerData: TriggerData[]; scenesSkipped: number }) {
   const { t } = useI18n()
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   const paths = useMemo(() => {
     let cumulativePercent = 0
@@ -75,27 +77,58 @@ const DonutChart = memo(function DonutChart({
   return (
     <div className="relative w-64 h-64 mx-auto">
       <svg viewBox="0 0 100 100" className="transform -rotate-90">
-        {paths.map((path) => (
+        {paths.map((path, index) => (
           <circle
             key={path.key}
             cx="50"
             cy="50"
             r="15.9155"
-            fill="transparent"
+            fill="none"
             stroke={path.color}
             strokeWidth="10"
             strokeDasharray={path.strokeDasharray}
             strokeDashoffset={path.strokeDashoffset}
-            className="transition-all hover:stroke-[12]"
+            strokeLinecap="butt"
+            className="transition-all duration-200 cursor-pointer hover:opacity-80"
+            style={{
+              stroke: path.color,
+              strokeWidth: hoveredIndex === index ? "12" : "10",
+            }}
+            onMouseEnter={() => setHoveredIndex(index)}
+            onMouseLeave={() => setHoveredIndex(null)}
           />
         ))}
       </svg>
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div className="text-center">
-          <div className="text-xl font-bold text-gray-900">{scenesSkipped}</div>
-          <div className="text-sm text-gray-500">{t("settings.activity.total")}</div>
+          <div className="text-xl font-bold text-gray-900 dark:text-white">{scenesSkipped}</div>
+          <div className="text-sm text-gray-500 dark:text-gray-400">{t("settings.activity.total")}</div>
         </div>
       </div>
+
+      {hoveredIndex !== null && (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20">
+          <div className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl p-4 min-w-[220px]">
+            <div className="flex items-center gap-2 mb-2">
+              <div
+                className="w-4 h-4 rounded-full flex-shrink-0"
+                style={{ backgroundColor: triggerData[hoveredIndex].color }}
+              />
+              <span className="font-semibold text-gray-900 dark:text-white text-base">
+                {triggerData[hoveredIndex].name}
+              </span>
+            </div>
+            <div className="text-sm text-gray-600 dark:text-gray-300 space-y-1 ml-6">
+              <div>
+                {triggerData[hoveredIndex].percentage}% ({triggerData[hoveredIndex].scenes} scenes)
+              </div>
+              <div className="font-semibold text-[#6B9DFC] text-base">
+                {triggerData[hoveredIndex].minutes} min skipped
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 })
