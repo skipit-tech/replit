@@ -281,7 +281,7 @@ export default function Page() {
 
   const toYouTubeAutoplay = (trailer: Trailer) => {
     if (trailer.type === "youtube") {
-      return `https://www.youtube.com/embed/${trailer.id}?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&playsinline=1&loop=1&playlist=${trailer.id}&enablejsapi=1&showinfo=0&disablekb=1&fs=0&iv_load_policy=3`
+      return `https://www.youtube.com/embed/${trailer.id}?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&playsinline=1&loop=1&playlist=${trailer.id}&enablejsapi=1&disablekb=1&fs=0&iv_load_policy=3&cc_load_policy=0&autohide=1`
     }
     return ""
   }
@@ -417,10 +417,28 @@ export default function Page() {
                       src={toYouTubeAutoplay(currentSlide.trailer)}
                       title={`${currentSlide.title} trailer`}
                       allow="autoplay; encrypted-media"
-                      style={{ pointerEvents: "none" }}
+                      style={{ pointerEvents: "none", border: "none" }}
                     />
                   ) : null}
-                  <div className="absolute inset-0 bg-black/20" />
+                  <style>{`
+                    iframe {
+                      border: none;
+                    }
+                    /* Hide YouTube logo and controls overlay */
+                    .ytp-chrome-top,
+                    .ytp-show-cards-title,
+                    .ytp-title,
+                    .ytp-title-text,
+                    .ytp-title-link,
+                    .ytp-watermark,
+                    .ytp-gradient-top,
+                    .ytp-chrome-top-buttons {
+                      display: none !important;
+                      opacity: 0 !important;
+                      pointer-events: none !important;
+                    }
+                  `}</style>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/40 pointer-events-none" />
                 </div>
               )}
             </div>
@@ -890,6 +908,20 @@ function HoverPreview({
         @media (prefers-reduced-motion: reduce) {
           .kb-anim { animation: none !important; }
         }
+        /* Hide all YouTube UI elements */
+        .ytp-chrome-top,
+        .ytp-show-cards-title,
+        .ytp-title,
+        .ytp-title-text,
+        .ytp-title-link,
+        .ytp-watermark,
+        .ytp-gradient-top,
+        .ytp-chrome-top-buttons,
+        .ytp-pause-overlay {
+          display: none !important;
+          opacity: 0 !important;
+          visibility: hidden !important;
+        }
       `}</style>
 
       <div className="absolute inset-0 overflow-hidden">
@@ -909,8 +941,8 @@ function HoverPreview({
             <iframe
               key={trailer.id}
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[115%] w-[205%] kb-anim pointer-events-none"
-              style={{ animation: "kbZoom 12s linear infinite" }}
-              src={`https://www.youtube.com/embed/${trailer.id}?autoplay=1&mute=${muted ? 1 : 0}&controls=0&playsinline=1&rel=0&modestbranding=1&loop=1&playlist=${trailer.id}&showinfo=0&disablekb=1&fs=0&iv_load_policy=3`}
+              style={{ animation: "kbZoom 12s linear infinite", border: "none" }}
+              src={`https://www.youtube.com/embed/${trailer.id}?autoplay=1&mute=${muted ? 1 : 0}&controls=0&playsinline=1&rel=0&modestbranding=1&loop=1&playlist=${trailer.id}&disablekb=1&fs=0&iv_load_policy=3&cc_load_policy=0&autohide=1`}
               title={`${title} trailer`}
               allow="autoplay; encrypted-media"
               aria-hidden="true"
@@ -918,7 +950,7 @@ function HoverPreview({
           </div>
         )}
 
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30" />
       </div>
     </>
   )
