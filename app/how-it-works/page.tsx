@@ -6,7 +6,17 @@ export default function HowItWorksPage() {
       <main className="max-w-5xl mx-auto px-4 py-12 pb-24">
         {/* Hero Section */}
         <section className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">How SKIP IT. Works</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">How SKIP IT. Works</h1>
+
+          {/* Trigger Warning Example */}
+          <div className="max-w-3xl mx-auto mb-8">
+            <img
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Subtitle-UOZrSOxUnFipkcRNR39sPChTQ1DO1L.png"
+              alt="Example of SKIP IT trigger warning overlay showing detected gun violence with description and dismiss buttons"
+              className="w-full rounded-3xl shadow-2xl border border-white/10"
+            />
+          </div>
+
           <p className="text-lg text-white/70 max-w-2xl mx-auto">
             Watch your favorite movies and shows without the stress. SKIP IT. automatically detects and skips triggering
             content based on your preferences.
