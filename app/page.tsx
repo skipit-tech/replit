@@ -281,7 +281,7 @@ export default function Page() {
 
   const toYouTubeAutoplay = (trailer: Trailer) => {
     if (trailer.type === "youtube") {
-      return `https://www.youtube.com/embed/${trailer.id}?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&playsinline=1&loop=1&playlist=${trailer.id}&enablejsapi=1`
+      return `https://www.youtube.com/embed/${trailer.id}?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&playsinline=1&loop=1&playlist=${trailer.id}&enablejsapi=1&showinfo=0&disablekb=1&fs=0&iv_load_policy=3`
     }
     return ""
   }
