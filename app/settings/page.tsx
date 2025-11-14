@@ -9,6 +9,7 @@ import type { Locale } from "@/i18n/translations"
 import Link from "next/link"
 import dynamic from "next/dynamic"
 import { useTheme } from "@/hooks/use-theme"
+import { useFontSize } from "@/hooks/use-font-size"
 import { ThemeLogo } from "@/components/theme-logo"
 import { ProfileEditor } from "@/components/ProfileEditor"
 import { onAuthChange, getUserProfile, type UserProfile } from "@/lib/firebase/auth"
@@ -30,6 +31,8 @@ const ProfileSidebar = memo(function ProfileSidebar({
   setLocale,
   theme,
   toggleTheme,
+  fontSize,
+  setFontSize,
   onContactClick,
   userProfile,
   onEditProfile,
@@ -38,6 +41,8 @@ const ProfileSidebar = memo(function ProfileSidebar({
   setLocale: (locale: Locale) => void
   theme: string
   toggleTheme: () => void
+  fontSize: "small" | "medium" | "large" | "x-large"
+  setFontSize: (size: "small" | "medium" | "large" | "x-large") => void
   onContactClick: () => void
   userProfile: UserProfile | null
   onEditProfile: () => void
@@ -121,6 +126,30 @@ const ProfileSidebar = memo(function ProfileSidebar({
         </div>
 
         <div>
+          <label htmlFor="font-size-select" className="block font-semibold mb-2 text-slate-900 dark:text-white">
+            Font Size
+          </label>
+          <div className="relative">
+            <select
+              id="font-size-select"
+              value={fontSize}
+              onChange={(e) => setFontSize(e.target.value as "small" | "medium" | "large" | "x-large")}
+              className="w-full bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg px-3 py-2 text-sm appearance-none cursor-pointer border border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition"
+              aria-label="Select font size"
+            >
+              <option value="small">Small</option>
+              <option value="medium">Medium (Default)</option>
+              <option value="large">Large</option>
+              <option value="x-large">Extra Large</option>
+            </select>
+            <ChevronDown
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none text-slate-600 dark:text-blue-200"
+              aria-hidden="true"
+            />
+          </div>
+        </div>
+
+        <div>
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-semibold text-slate-900 dark:text-white">{t("settings.theme")}</h3>
@@ -175,6 +204,7 @@ const ProfileSidebar = memo(function ProfileSidebar({
 export default function SettingsPage() {
   const { t, locale, setLocale } = useI18n()
   const { theme, toggleTheme } = useTheme()
+  const { fontSize, setFontSize } = useFontSize()
   const [isSignedIn, setIsSignedIn] = useState(true)
   const [tab, setTab] = useState<Tab>("data")
   const [selectedPlan, setSelectedPlan] = useState<Plan>("family")
@@ -380,6 +410,8 @@ export default function SettingsPage() {
             setLocale={setLocale}
             theme={theme}
             toggleTheme={toggleTheme}
+            fontSize={fontSize}
+            setFontSize={setFontSize}
             onContactClick={handleContactClick}
             userProfile={userProfile}
             onEditProfile={handleEditProfile}
@@ -735,6 +767,19 @@ export default function SettingsPage() {
           </a>
         </div>
       </nav>
+
+      {/* Footer with privacy policy link for desktop */}
+      <footer className="hidden md:block border-t border-border bg-background/95 backdrop-blur mt-16">
+        <div className="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between text-sm text-muted-foreground">
+          <p>© 2025 SKIP IT. Tech, Inc.</p>
+          <Link 
+            href="/privacy" 
+            className="hover:text-foreground transition focus:outline-none focus:ring-2 focus:ring-accent/50 rounded"
+          >
+            Privacy Policy
+          </Link>
+        </div>
+      </footer>
     </div>
   )
 }

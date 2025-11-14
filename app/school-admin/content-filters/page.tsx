@@ -4,7 +4,9 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
-import { Check } from "lucide-react"
+import { Check } from 'lucide-react'
+import { HiddenTriggersCard } from "@/components/hidden-triggers-card"
+import type { TriggerKey } from "@/lib/types/settings"
 
 const contentFilters = [
   // Red circle - Sexual Content
@@ -174,9 +176,19 @@ export default function ContentFiltersPage() {
     ),
   )
   const [saved, setSaved] = useState(false)
+  
+  const [hiddenTriggersEnabled, setHiddenTriggersEnabled] = useState(false)
+  const [hiddenTriggers, setHiddenTriggers] = useState<TriggerKey[]>([])
 
   const toggleFilter = (id: string) => {
     setFilters((prev) => ({ ...prev, [id]: !prev[id] }))
+    setSaved(false)
+  }
+
+  const toggleTrigger = (trigger: TriggerKey) => {
+    setHiddenTriggers((prev) =>
+      prev.includes(trigger) ? prev.filter((t) => t !== trigger) : [...prev, trigger]
+    )
     setSaved(false)
   }
 
@@ -205,6 +217,18 @@ export default function ContentFiltersPage() {
           Choose what SKIP IT should automatically skip for your students.
         </p>
       </header>
+
+      {/* HiddenTriggersCard */}
+      <HiddenTriggersCard
+        title="Hidden Content Triggers (School-wide)"
+        description="Titles with these themes will be hidden for all students on school devices."
+        note="These settings apply across all grade levels and cannot be overridden by individual users."
+        enabled={hiddenTriggersEnabled}
+        onToggleEnabled={() => setHiddenTriggersEnabled(!hiddenTriggersEnabled)}
+        hiddenTriggers={hiddenTriggers}
+        onToggleTrigger={toggleTrigger}
+        level="school"
+      />
 
       {/* Filters Card */}
       <Card className="p-8 bg-white dark:bg-[#1a1654] rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">

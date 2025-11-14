@@ -2,11 +2,14 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ChevronLeft, FileText, Send } from 'lucide-react'
+import { ChevronLeft, FileText, Send, Plus, X, Check } from 'lucide-react'
 import { Card } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
+import { Input } from "@/components/ui/input"
+import { HiddenTriggersCard } from "@/components/hidden-triggers-card"
+import type { TriggerKey } from "@/lib/types/settings"
 
 const clients = [
   {
@@ -29,6 +32,21 @@ const clients = [
   },
 ]
 
+type SensitivityLevel = "high" | "medium" | "low"
+
+type SensitizationStep = {
+  id: string
+  level: SensitivityLevel
+  timeframe: string
+  notes: string
+}
+
+type SelfSoothingSkill = {
+  id: string
+  text: string
+  active: boolean
+}
+
 export default function TherapistControlPage() {
   const [selectedClientId, setSelectedClientId] = useState(clients[0].id)
   const selectedClient = clients.find((c) => c.id === selectedClientId) || clients[0]
@@ -38,6 +56,71 @@ export default function TherapistControlPage() {
   const [preferBlur, setPreferBlur] = useState(true)
   const [showReminder, setShowReminder] = useState(true)
   const [sessionNotes, setSessionNotes] = useState("")
+  
+  const [hiddenTriggersEnabled, setHiddenTriggersEnabled] = useState(false)
+  const [hiddenTriggers, setHiddenTriggers] = useState<TriggerKey[]>([])
+
+  const [currentSensitivity, setCurrentSensitivity] = useState<SensitivityLevel>("medium")
+  const [sensitizationSteps, setSensitizationSteps] = useState<SensitizationStep[]>([
+    { id: "1", level: "high", timeframe: "Next 2 weeks", notes: "" },
+    { id: "2", level: "medium", timeframe: "Weeks 3-6", notes: "" },
+  ])
+  const [selfSoothingSkills, setSelfSoothingSkills] = useState<SelfSoothingSkill[]>([
+    { id: "1", text: "Pause and take 3 deep breaths", active: true },
+    { id: "2", text: "Use a grounding exercise (5 things you can see, 4 you can touch…)", active: true },
+    { id: "3", text: "Remind yourself: I can skip scenes if I feel overwhelmed", active: true },
+    { id: "4", text: "Reach out to a trusted person", active: true },
+    { id: "5", text: "Journal or write a quick note about how I'm feeling", active: false },
+  ])
+
+  const toggleTrigger = (trigger: TriggerKey) => {
+    setHiddenTriggers((prev) =>
+      prev.includes(trigger) ? prev.filter((t) => t !== trigger) : [...prev, trigger]
+    )
+  }
+
+  const addSensitizationStep = () => {
+    const newStep: SensitizationStep = {
+      id: Date.now().toString(),
+      level: "medium",
+      timeframe: "",
+      notes: "",
+    }
+    setSensitizationSteps([...sensitizationSteps, newStep])
+  }
+
+  const removeSensitizationStep = (id: string) => {
+    setSensitizationSteps(sensitizationSteps.filter((step) => step.id !== id))
+  }
+
+  const updateSensitizationStep = (id: string, updates: Partial<SensitizationStep>) => {
+    setSensitizationSteps(
+      sensitizationSteps.map((step) => (step.id === id ? { ...step, ...updates } : step))
+    )
+  }
+
+  const addCustomSkill = () => {
+    const newSkill: SelfSoothingSkill = {
+      id: Date.now().toString(),
+      text: "",
+      active: true,
+    }
+    setSelfSoothingSkills([...selfSoothingSkills, newSkill])
+  }
+
+  const removeSkill = (id: string) => {
+    setSelfSoothingSkills(selfSoothingSkills.filter((skill) => skill.id !== id))
+  }
+
+  const updateSkill = (id: string, updates: Partial<SelfSoothingSkill>) => {
+    setSelfSoothingSkills(
+      selfSoothingSkills.map((skill) => (skill.id === id ? { ...skill, ...updates } : skill))
+    )
+  }
+
+  const clearSensitizationPlan = () => {
+    setSensitizationSteps([])
+  }
 
   const generateSummary = () => {
     const summary = [
@@ -46,6 +129,11 @@ export default function TherapistControlPage() {
       preferBlur ? "Prefer blur over hard skip when possible" : "Use hard skips for intense content",
       showReminder ? 'Show a gentle on-screen reminder: "You can pause and take a break."' : "No on-screen reminders",
     ]
+    
+    if (hiddenTriggersEnabled && hiddenTriggers.length > 0) {
+      summary.push(`Content with these themes will be hidden: ${hiddenTriggers.join(", ").replace(/_/g, " ")}`)
+    }
+    
     return summary
   }
 
@@ -91,7 +179,7 @@ export default function TherapistControlPage() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid lg:grid-cols-[400px_1fr] gap-6">
-          {/* Left Column - Client Profile & Plan */}
+          {/* Left Column - Client Profile & Settings */}
           <div className="space-y-6">
             {/* Client Snapshot Card */}
             <Card className="p-6 bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-gray-200 dark:border-gray-700">
@@ -204,7 +292,205 @@ export default function TherapistControlPage() {
               </div>
             </Card>
 
-            {/* Session Notes Link */}
+            {/* Hidden Triggers Card */}
+            <HiddenTriggersCard
+              title="Hidden Content for This Client"
+              description="These themes will be hidden when this client uses SKIP IT. in your care. School-wide settings still apply."
+              note="Use this thoughtfully as part of your treatment plan. Hiding content is not a substitute for therapeutic work."
+              enabled={hiddenTriggersEnabled}
+              onToggleEnabled={() => setHiddenTriggersEnabled(!hiddenTriggersEnabled)}
+              hiddenTriggers={hiddenTriggers}
+              onToggleTrigger={toggleTrigger}
+              level="therapist"
+            />
+
+            <Card className="p-6 bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Sensitization Mode</h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                Plan how this client's settings will gently change over time.
+              </p>
+
+              {/* Current Sensitivity Level */}
+              <div className="mb-6">
+                <label className="text-sm font-medium text-gray-900 dark:text-white block mb-3">
+                  Current Sensitivity Level
+                </label>
+                <div className="flex gap-2">
+                  {[
+                    { value: "high", label: "High" },
+                    { value: "medium", label: "Medium" },
+                    { value: "low", label: "Low" },
+                  ].map((option) => (
+                    <button
+                      key={option.value}
+                      onClick={() => setCurrentSensitivity(option.value as SensitivityLevel)}
+                      className={`flex-1 px-4 py-2.5 rounded-xl text-sm font-medium transition ${
+                        currentSensitivity === option.value
+                          ? "bg-[#4A5FBA] dark:bg-[#6B9DFC] text-white"
+                          : "bg-gray-100 dark:bg-[#0D0B3B]/50 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#0D0B3B]"
+                      }`}
+                      aria-pressed={currentSensitivity === option.value}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-2 italic">
+                  This doesn't replace clinical judgment. It helps you gradually adjust what this client sees.
+                </p>
+              </div>
+
+              {/* Plan Over Time */}
+              <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex items-center justify-between mb-4">
+                  <label className="text-sm font-medium text-gray-900 dark:text-white">Plan Over Time</label>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={addSensitizationStep}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#4A5FBA] dark:bg-[#6B9DFC] text-white text-sm font-medium hover:brightness-95 transition"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Add Step
+                    </button>
+                    {sensitizationSteps.length > 0 && (
+                      <button
+                        onClick={clearSensitizationPlan}
+                        className="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-100 dark:hover:bg-[#0D0B3B]/50 transition"
+                      >
+                        Clear Plan
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {sensitizationSteps.length === 0 ? (
+                  <p className="text-sm text-gray-600 dark:text-gray-400 italic text-center py-4">
+                    No steps added yet. Click "Add Step" to start planning.
+                  </p>
+                ) : (
+                  <div className="space-y-4">
+                    {sensitizationSteps.map((step, index) => (
+                      <div
+                        key={step.id}
+                        className="p-4 rounded-xl bg-gray-50 dark:bg-[#0D0B3B]/30 border border-gray-200 dark:border-gray-700"
+                      >
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                            Step {index + 1}
+                          </span>
+                          <button
+                            onClick={() => removeSensitizationStep(step.id)}
+                            className="text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition"
+                            aria-label="Remove this step"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div>
+                            <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                              Sensitivity Level
+                            </label>
+                            <select
+                              value={step.level}
+                              onChange={(e) =>
+                                updateSensitizationStep(step.id, { level: e.target.value as SensitivityLevel })
+                              }
+                              className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a1654] text-gray-900 dark:text-white text-sm"
+                            >
+                              <option value="high">High (most content hidden)</option>
+                              <option value="medium">Medium</option>
+                              <option value="low">Low (more content visible)</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                              Start around (timeframe)
+                            </label>
+                            <Input
+                              value={step.timeframe}
+                              onChange={(e) => updateSensitizationStep(step.id, { timeframe: e.target.value })}
+                              placeholder="e.g., Next 2 weeks, Week 4-6"
+                              className="text-sm"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                              Optional notes
+                            </label>
+                            <Textarea
+                              value={step.notes}
+                              onChange={(e) => updateSensitizationStep(step.id, { notes: e.target.value })}
+                              placeholder="e.g., start allowing mild emotional distress scenes"
+                              className="min-h-[60px] text-sm"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-4 italic p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                  As you lower sensitivity over time, you can also adjust which themes stay hidden in the Hidden Content for This Client section above. School-wide settings still always apply.
+                </p>
+              </div>
+            </Card>
+
+            <Card className="p-6 bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                Self-Soothing Plan for This Client
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                These skills will show up on the client's screen before and after sensitive content.
+              </p>
+
+              <div className="space-y-3">
+                {selfSoothingSkills.map((skill) => (
+                  <div
+                    key={skill.id}
+                    className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 dark:bg-[#0D0B3B]/30 border border-gray-200 dark:border-gray-700"
+                  >
+                    <Switch
+                      checked={skill.active}
+                      onCheckedChange={(checked) => updateSkill(skill.id, { active: checked })}
+                      className="mt-1"
+                      aria-label={`${skill.active ? "Disable" : "Enable"} this skill`}
+                    />
+                    <Input
+                      value={skill.text}
+                      onChange={(e) => updateSkill(skill.id, { text: e.target.value })}
+                      className="flex-1 text-sm"
+                      placeholder="Enter skill description"
+                    />
+                    <button
+                      onClick={() => removeSkill(skill.id)}
+                      className="text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition mt-2"
+                      aria-label="Remove this skill"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={addCustomSkill}
+                className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-[#4A5FBA] dark:hover:border-[#6B9DFC] hover:text-[#4A5FBA] dark:hover:text-[#6B9DFC] transition"
+              >
+                <Plus className="w-4 h-4" />
+                Add Custom Skill
+              </button>
+
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-4 italic">
+                This is not emergency support. Clients should still follow your crisis and safety plan.
+              </p>
+            </Card>
+
+            {/* Session Notes */}
             <Card className="p-6 bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-gray-200 dark:border-gray-700">
               <label htmlFor="session-notes" className="text-sm font-semibold text-gray-900 dark:text-white block mb-2">
                 Notes for this client's SKIP IT. settings (optional)
@@ -221,7 +507,7 @@ export default function TherapistControlPage() {
             </Card>
           </div>
 
-          {/* Right Column - Shared Plan & Export */}
+          {/* Right Column - Summary & Export */}
           <div className="space-y-6">
             {/* Summary Card */}
             <Card className="p-6 bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-gray-200 dark:border-gray-700">
@@ -271,6 +557,12 @@ export default function TherapistControlPage() {
               </p>
               <p className="text-xs text-gray-600 dark:text-gray-400 italic">
                 Settings and preferences are stored securely and can only be accessed by authorized clinicians.
+              </p>
+            </Card>
+
+            <Card className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800">
+              <p className="text-xs text-gray-700 dark:text-gray-300 italic">
+                SKIP IT. is a support tool. It doesn't replace therapy, crisis services, or medical care.
               </p>
             </Card>
           </div>

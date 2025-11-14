@@ -1355,37 +1355,50 @@ function BottomNav() {
   const { t } = useI18n()
 
   return (
-    <nav
-      aria-label="Mobile navigation"
-      className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur border-t border-border z-50 md:hidden"
-    >
-      <div className="max-w-md mx-auto flex justify-around py-3 text-sm text-foreground/70">
-        <Link
-          href="/"
-          className="flex flex-col items-center gap-1 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50 rounded transition"
-          aria-label="Home"
-          aria-current="page"
-        >
-          <HomeIcon />
-          <span className="text-xs">{t("nav.home")}</span>
-        </Link>
-        <Link
-          href="/explore"
-          className="flex flex-col items-center gap-1 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50 rounded transition"
-          aria-label="Explore content"
-        >
-          <SearchIcon />
-          <span className="text-xs">{t("nav.explore")}</span>
-        </Link>
-        <Link
-          href="/settings"
-          className="flex flex-col items-center gap-1 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50 rounded transition"
-          aria-label="Profile and settings"
-        >
-          <UserIcon />
-          <span className="text-xs">{t("nav.profile")}</span>
-        </Link>
-      </div>
-    </nav>
+    <>
+      <nav
+        aria-label="Mobile navigation"
+        className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur border-t border-border z-50 md:hidden"
+      >
+        <div className="max-w-md mx-auto flex justify-around py-3 text-sm text-foreground/70">
+          <Link
+            href="/"
+            className="flex flex-col items-center gap-1 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50 rounded transition"
+            aria-label="Home"
+            aria-current="page"
+          >
+            <HomeIcon />
+            <span className="text-xs">{t("nav.home")}</span>
+          </Link>
+          <Link
+            href="/explore"
+            className="flex flex-col items-center gap-1 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50 rounded transition"
+            aria-label="Explore content"
+          >
+            <SearchIcon />
+            <span className="text-xs">{t("nav.explore")}</span>
+          </Link>
+          <Link
+            href="/settings"
+            className="flex flex-col items-center gap-1 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50 rounded transition"
+            aria-label="Profile and settings"
+          >
+            <UserIcon />
+            <span className="text-xs">{t("nav.profile")}</span>
+          </Link>
+        </div>
+      </nav>
+      <footer className="hidden md:block border-t border-border bg-background/95 backdrop-blur mt-16">
+        <div className="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between text-sm text-foreground/60">
+          <p>© 2025 SKIP IT. Tech, Inc.</p>
+          <Link 
+            href="/privacy" 
+            className="hover:text-white transition focus:outline-none focus:ring-2 focus:ring-white/50 rounded"
+          >
+            Privacy Policy
+          </Link>
+        </div>
+      </footer>
+    </>
   )
 }

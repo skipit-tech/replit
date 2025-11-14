@@ -6,6 +6,8 @@ import { ChevronLeft, Plus, Info } from 'lucide-react'
 import { Card } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
+import { HiddenTriggersCard } from "@/components/hidden-triggers-card"
+import type { TriggerKey } from "@/lib/types/settings"
 
 const kids = [
   {
@@ -84,6 +86,13 @@ export default function ParentControlPage() {
       >,
     ),
   )
+  
+  const [kidHiddenTriggersEnabled, setKidHiddenTriggersEnabled] = useState<Record<string, boolean>>(
+    kids.reduce((acc, kid) => ({ ...acc, [kid.id]: false }), {})
+  )
+  const [kidHiddenTriggers, setKidHiddenTriggers] = useState<Record<string, TriggerKey[]>>(
+    kids.reduce((acc, kid) => ({ ...acc, [kid.id]: [] }), {})
+  )
 
   const updateKidSetting = <K extends keyof typeof kidSettings[string]>(key: K, value: typeof kidSettings[string][K]) => {
     setKidSettings({
@@ -108,7 +117,19 @@ export default function ParentControlPage() {
     })
   }
 
+  const toggleTriggerForKid = (trigger: TriggerKey) => {
+    setKidHiddenTriggers((prev) => {
+      const currentTriggers = prev[selectedKidId] || []
+      const newTriggers = currentTriggers.includes(trigger)
+        ? currentTriggers.filter((t) => t !== trigger)
+        : [...currentTriggers, trigger]
+      return { ...prev, [selectedKidId]: newTriggers }
+    })
+  }
+
   const currentSettings = kidSettings[selectedKidId]
+  const currentHiddenTriggersEnabled = kidHiddenTriggersEnabled[selectedKidId] || false
+  const currentHiddenTriggers = kidHiddenTriggers[selectedKidId] || []
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#E8F0FF] to-[#F0E8FF] dark:from-[#0D0B3B] dark:to-[#1A1654]">
@@ -313,6 +334,23 @@ export default function ParentControlPage() {
                 )}
               </div>
             </Card>
+
+            {/* Hidden Triggers Card */}
+            <HiddenTriggersCard
+              title={`Extra Content Hidden for ${selectedKid.name}`}
+              description="We'll hide titles with these themes on this account. School or therapist settings may hide additional content."
+              note="You can adjust these at any time. These settings give you extra control beyond school policies."
+              enabled={currentHiddenTriggersEnabled}
+              onToggleEnabled={() => {
+                setKidHiddenTriggersEnabled((prev) => ({
+                  ...prev,
+                  [selectedKidId]: !prev[selectedKidId],
+                }))
+              }}
+              hiddenTriggers={currentHiddenTriggers}
+              onToggleTrigger={toggleTriggerForKid}
+              level="parent"
+            />
           </div>
 
           {/* Right Column - Insights & Safety */}
