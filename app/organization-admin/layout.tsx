@@ -4,6 +4,7 @@ import type React from "react"
 import Link from "next/link"
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, Shield, Info, Users } from 'lucide-react'
+import { AppLogo } from "@/components/app-logo"
 
 const navItems = [
   { href: "/organization-admin", label: "Overview", icon: LayoutDashboard },
@@ -30,10 +31,7 @@ export default function OrganizationAdminLayout({
         {/* Logo */}
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">
           <Link href="/" className="block" aria-label="Return to SKIP IT home">
-            <div className="flex items-center">
-              <img src="/logos/skipit-dark.svg" alt="SKIP IT Logo" className="block dark:hidden h-10 w-auto" />
-              <img src="/logos/skipit-light.svg" alt="SKIP IT Logo" className="hidden dark:block h-10 w-auto" />
-            </div>
+            <AppLogo />
           </Link>
         </div>
 

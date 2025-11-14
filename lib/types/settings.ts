@@ -43,3 +43,15 @@ export type Movie = {
   tags: string[]
   triggers?: TriggerKey[]
 }
+
+export type UserRole =
+  | "parent"
+  | "child"
+  | "teen"
+  | "teacher"
+  | "admin"
+  | "therapist"
+  | "patient"
+  | "general"
+  | "creator"
+  | "organization_admin"

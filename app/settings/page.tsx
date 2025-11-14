@@ -450,6 +450,23 @@ export default function SettingsPage() {
           >
             <h1 className="text-4xl font-semibold text-slate-900 dark:text-white mb-6">{t("settings.title")}</h1>
 
+            <div className="mb-6 p-4 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-xl border border-blue-200 dark:border-blue-800">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="font-semibold text-slate-900 dark:text-white">Need help getting started?</h2>
+                  <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                    Walk through our guided setup to configure SKIP IT. for your needs
+                  </p>
+                </div>
+                <Link
+                  href="/guided-setup"
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition shadow-md hover:shadow-lg whitespace-nowrap"
+                >
+                  Start Guided Setup
+                </Link>
+              </div>
+            </div>
+
             <nav
               className="mt-4 mb-6 flex gap-8 border-b border-slate-200 dark:border-slate-700"
               role="tablist"
