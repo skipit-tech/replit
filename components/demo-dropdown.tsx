@@ -50,6 +50,24 @@ export function DemoDropdown() {
           aria-orientation="vertical"
         >
           <Link
+            href="/organization-admin"
+            className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+            role="menuitem"
+            onClick={() => setIsOpen(false)}
+          >
+            <span className="text-xl">🏢</span>
+            <span className="font-medium">Organization Admin</span>
+          </Link>
+          <Link
+            href="/demo/patient"
+            className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+            role="menuitem"
+            onClick={() => setIsOpen(false)}
+          >
+            <span className="text-xl">💙</span>
+            <span className="font-medium">Patient View</span>
+          </Link>
+          <Link
             href="/demo/parent"
             className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
             role="menuitem"

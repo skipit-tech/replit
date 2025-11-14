@@ -327,6 +327,75 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section className="space-y-4">
+            <h2 className="text-2xl font-bold text-white mt-12 mb-6">
+              16. Crisis Resources
+            </h2>
+            <div className="bg-blue-500/10 border-2 border-blue-500/30 rounded-xl p-8 space-y-6">
+              <p className="text-white font-semibold text-lg">
+                If you or someone you know is in crisis, help is available 24/7:
+              </p>
+              
+              <div className="space-y-4">
+                <div className="bg-white/5 rounded-lg p-6 border border-white/10">
+                  <h3 className="text-xl font-semibold text-white mb-3">
+                    National Suicide Prevention Lifeline (USA)
+                  </h3>
+                  <p className="text-2xl font-bold text-[#4A5FBA] mb-2">988</p>
+                  <p className="text-foreground/80 text-sm mb-2">
+                    Call or text 988 to reach the Suicide & Crisis Lifeline
+                  </p>
+                  <p className="text-foreground/70 text-sm">
+                    Available 24 hours a day, 7 days a week
+                  </p>
+                </div>
+
+                <div className="bg-white/5 rounded-lg p-6 border border-white/10">
+                  <h3 className="text-xl font-semibold text-white mb-3">
+                    Crisis Text Line
+                  </h3>
+                  <p className="text-foreground/90 mb-2">
+                    Text <span className="font-bold text-white">HELLO</span> to <span className="text-xl font-bold text-[#4A5FBA]">741741</span>
+                  </p>
+                  <p className="text-foreground/70 text-sm">
+                    Free, confidential support via text message
+                  </p>
+                </div>
+
+                <div className="bg-white/5 rounded-lg p-6 border border-white/10">
+                  <h3 className="text-xl font-semibold text-white mb-3">
+                    International Crisis Resources
+                  </h3>
+                  <ul className="space-y-2 text-foreground/80">
+                    <li>
+                      <strong className="text-white">Canada:</strong> Call or text 988
+                    </li>
+                    <li>
+                      <strong className="text-white">UK:</strong> Call 116 123 (Samaritans)
+                    </li>
+                    <li>
+                      <strong className="text-white">Australia:</strong> Call 13 11 14 (Lifeline)
+                    </li>
+                    <li className="pt-2">
+                      <a 
+                        href="https://findahelpline.com" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-[#4A5FBA] hover:text-[#3d4e9d] underline font-medium"
+                      >
+                        Find a helpline in your country →
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <p className="text-foreground/90 leading-relaxed pt-4 border-t border-white/10">
+                <strong className="text-white">Emergency:</strong> If you are in immediate danger, please call your local emergency number (911 in the USA) or go to your nearest emergency room.
+              </p>
+            </div>
+          </section>
+
+          <section className="space-y-4">
             <h2 className="text-2xl font-bold text-white mt-12 mb-6">Contact Us</h2>
             <div className="bg-white/5 border border-white/10 rounded-xl p-8 space-y-2">
               <p className="text-white font-semibold text-lg">SKIP IT. Tech, Inc.</p>

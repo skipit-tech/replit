@@ -141,7 +141,7 @@ export default function TherapistControlPage() {
     <div className="min-h-screen bg-gradient-to-br from-[#E8F0FF] to-[#F8F4FF] dark:from-[#0D0B3B] dark:to-[#1A1654]">
       {/* Header */}
       <header className="bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-[1600px] mx-auto px-8 py-6 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3">
               <Link
@@ -177,20 +177,20 @@ export default function TherapistControlPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        <div className="grid lg:grid-cols-[400px_1fr] gap-6">
+      <main className="max-w-[1600px] mx-auto px-8 py-10">
+        <div className="grid lg:grid-cols-[480px_1fr] gap-8">
           {/* Left Column - Client Profile & Settings */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             {/* Client Snapshot Card */}
-            <Card className="p-6 bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-gray-200 dark:border-gray-700">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Client Profile</h2>
+            <Card className="p-8 bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Client Profile</h2>
               <div className="flex items-start gap-4 mb-6">
                 <div className="w-16 h-16 rounded-full bg-[#4A5FBA] dark:bg-[#6B9DFC] text-white flex items-center justify-center text-xl font-bold">
                   {selectedClient.initials}
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Age range</p>
-                  <p className="text-base font-semibold text-gray-900 dark:text-white">{selectedClient.ageRange}</p>
+                  <p className="text-base font-semibold text-gray-900 dark:text-white mt-1">{selectedClient.ageRange}</p>
                   <div className="flex flex-wrap gap-2 mt-3">
                     {selectedClient.focusTags.map((tag) => (
                       <Badge key={tag} variant="outline" className="text-xs">
@@ -200,17 +200,18 @@ export default function TherapistControlPage() {
                   </div>
                 </div>
               </div>
-              <p className="text-xs text-gray-600 dark:text-gray-400 italic p-3 bg-gray-50 dark:bg-[#0D0B3B]/50 rounded-lg">
+              <p className="text-xs text-gray-600 dark:text-gray-400 italic p-4 bg-gray-50 dark:bg-[#0D0B3B]/50 rounded-lg leading-relaxed">
                 This information is for planning viewing support, not a diagnosis.
               </p>
             </Card>
 
             {/* Therapeutic Settings */}
-            <Card className="p-6 bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-gray-200 dark:border-gray-700">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">Session-Aligned Settings</h2>
+            <Card className="p-8 bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Session-Aligned Settings</h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">Choose a protection level for this client</p>
 
               {/* Preset Profiles */}
-              <div className="space-y-2 mb-6">
+              <div className="space-y-3 mb-8">
                 {[
                   { value: "high", label: "High protection", desc: "Skips most intense content" },
                   { value: "moderate", label: "Moderate protection", desc: "Age-appropriate filtering" },
@@ -223,7 +224,7 @@ export default function TherapistControlPage() {
                   <button
                     key={option.value}
                     onClick={() => setProfile(option.value as "high" | "moderate" | "exposure")}
-                    className={`w-full p-4 rounded-xl border-2 transition text-left ${
+                    className={`w-full p-5 rounded-xl border-2 transition text-left ${
                       profile === option.value
                         ? "border-[#4A5FBA] dark:border-[#6B9DFC] bg-[#4A5FBA]/5 dark:bg-[#6B9DFC]/10"
                         : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
@@ -231,20 +232,20 @@ export default function TherapistControlPage() {
                     role="radio"
                     aria-checked={profile === option.value}
                   >
-                    <p className="font-medium text-gray-900 dark:text-white">{option.label}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">{option.desc}</p>
+                    <p className="font-medium text-gray-900 dark:text-white text-base">{option.label}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1.5 leading-relaxed">{option.desc}</p>
                   </button>
                 ))}
               </div>
 
               {/* Fine-tuning Options */}
-              <div className="pt-6 border-t border-gray-200 dark:border-gray-700 space-y-6">
-                <div className="flex items-start justify-between gap-4">
+              <div className="pt-8 border-t border-gray-200 dark:border-gray-700 space-y-8">
+                <div className="flex items-start justify-between gap-6">
                   <div className="flex-1">
-                    <label htmlFor="mild-tension" className="text-sm font-medium text-gray-900 dark:text-white block">
+                    <label htmlFor="mild-tension" className="text-sm font-medium text-gray-900 dark:text-white block mb-1.5">
                       Allow mild tension but skip graphic scenes
                     </label>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                    <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
                       Permits age-appropriate suspense while filtering intense moments.
                     </p>
                   </div>
@@ -256,12 +257,12 @@ export default function TherapistControlPage() {
                   />
                 </div>
 
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start justify-between gap-6">
                   <div className="flex-1">
-                    <label htmlFor="prefer-blur" className="text-sm font-medium text-gray-900 dark:text-white block">
+                    <label htmlFor="prefer-blur" className="text-sm font-medium text-gray-900 dark:text-white block mb-1.5">
                       Prefer blur over hard skip when possible
                     </label>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                    <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
                       Gives client more control over their viewing experience.
                     </p>
                   </div>
@@ -273,12 +274,12 @@ export default function TherapistControlPage() {
                   />
                 </div>
 
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start justify-between gap-6">
                   <div className="flex-1">
-                    <label htmlFor="show-reminder" className="text-sm font-medium text-gray-900 dark:text-white block">
+                    <label htmlFor="show-reminder" className="text-sm font-medium text-gray-900 dark:text-white block mb-1.5">
                       Show a gentle on-screen reminder
                     </label>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                    <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
                       "You can pause and take a break."
                     </p>
                   </div>
@@ -303,148 +304,74 @@ export default function TherapistControlPage() {
               onToggleTrigger={toggleTrigger}
               level="therapist"
             />
+          </div>
 
-            <Card className="p-6 bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-gray-200 dark:border-gray-700">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Sensitization Mode</h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-                Plan how this client's settings will gently change over time.
+          {/* Right Column - Summary & Export */}
+          <div className="space-y-8">
+            {/* Summary Card */}
+            <Card className="p-8 bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">What your client will see</h2>
+              <div className="space-y-4">
+                {generateSummary().map((item, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#4A5FBA] dark:bg-[#6B9DFC] mt-2 shrink-0" />
+                    <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{item}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 space-y-3">
+                <button className="w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-[#4A5FBA] hover:bg-[#3d4e9d] dark:bg-[#6B9DFC] dark:hover:bg-[#5a8ceb] text-white font-medium transition">
+                  <FileText className="w-4 h-4" />
+                  Generate client-friendly summary
+                </button>
+                <button className="w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl border-2 border-[#4A5FBA] dark:border-[#6B9DFC] text-[#4A5FBA] dark:text-[#6B9DFC] hover:bg-[#4A5FBA]/5 dark:hover:bg-[#6B9DFC]/10 font-medium transition">
+                  <Send className="w-4 h-4" />
+                  Apply to client's SKIP IT. account
+                </button>
+              </div>
+
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-5 italic leading-relaxed">
+                This tool supports therapy; it does not replace clinical judgment.
               </p>
-
-              {/* Current Sensitivity Level */}
-              <div className="mb-6">
-                <label className="text-sm font-medium text-gray-900 dark:text-white block mb-3">
-                  Current Sensitivity Level
-                </label>
-                <div className="flex gap-2">
-                  {[
-                    { value: "high", label: "High" },
-                    { value: "medium", label: "Medium" },
-                    { value: "low", label: "Low" },
-                  ].map((option) => (
-                    <button
-                      key={option.value}
-                      onClick={() => setCurrentSensitivity(option.value as SensitivityLevel)}
-                      className={`flex-1 px-4 py-2.5 rounded-xl text-sm font-medium transition ${
-                        currentSensitivity === option.value
-                          ? "bg-[#4A5FBA] dark:bg-[#6B9DFC] text-white"
-                          : "bg-gray-100 dark:bg-[#0D0B3B]/50 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#0D0B3B]"
-                      }`}
-                      aria-pressed={currentSensitivity === option.value}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mt-2 italic">
-                  This doesn't replace clinical judgment. It helps you gradually adjust what this client sees.
-                </p>
-              </div>
-
-              {/* Plan Over Time */}
-              <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
-                <div className="flex items-center justify-between mb-4">
-                  <label className="text-sm font-medium text-gray-900 dark:text-white">Plan Over Time</label>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={addSensitizationStep}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#4A5FBA] dark:bg-[#6B9DFC] text-white text-sm font-medium hover:brightness-95 transition"
-                    >
-                      <Plus className="w-4 h-4" />
-                      Add Step
-                    </button>
-                    {sensitizationSteps.length > 0 && (
-                      <button
-                        onClick={clearSensitizationPlan}
-                        className="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-100 dark:hover:bg-[#0D0B3B]/50 transition"
-                      >
-                        Clear Plan
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {sensitizationSteps.length === 0 ? (
-                  <p className="text-sm text-gray-600 dark:text-gray-400 italic text-center py-4">
-                    No steps added yet. Click "Add Step" to start planning.
-                  </p>
-                ) : (
-                  <div className="space-y-4">
-                    {sensitizationSteps.map((step, index) => (
-                      <div
-                        key={step.id}
-                        className="p-4 rounded-xl bg-gray-50 dark:bg-[#0D0B3B]/30 border border-gray-200 dark:border-gray-700"
-                      >
-                        <div className="flex items-center justify-between mb-3">
-                          <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                            Step {index + 1}
-                          </span>
-                          <button
-                            onClick={() => removeSensitizationStep(step.id)}
-                            className="text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition"
-                            aria-label="Remove this step"
-                          >
-                            <X className="w-4 h-4" />
-                          </button>
-                        </div>
-
-                        <div className="space-y-3">
-                          <div>
-                            <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
-                              Sensitivity Level
-                            </label>
-                            <select
-                              value={step.level}
-                              onChange={(e) =>
-                                updateSensitizationStep(step.id, { level: e.target.value as SensitivityLevel })
-                              }
-                              className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a1654] text-gray-900 dark:text-white text-sm"
-                            >
-                              <option value="high">High (most content hidden)</option>
-                              <option value="medium">Medium</option>
-                              <option value="low">Low (more content visible)</option>
-                            </select>
-                          </div>
-
-                          <div>
-                            <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
-                              Start around (timeframe)
-                            </label>
-                            <Input
-                              value={step.timeframe}
-                              onChange={(e) => updateSensitizationStep(step.id, { timeframe: e.target.value })}
-                              placeholder="e.g., Next 2 weeks, Week 4-6"
-                              className="text-sm"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
-                              Optional notes
-                            </label>
-                            <Textarea
-                              value={step.notes}
-                              onChange={(e) => updateSensitizationStep(step.id, { notes: e.target.value })}
-                              placeholder="e.g., start allowing mild emotional distress scenes"
-                              className="min-h-[60px] text-sm"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                <p className="text-xs text-gray-600 dark:text-gray-400 mt-4 italic p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                  As you lower sensitivity over time, you can also adjust which themes stay hidden in the Hidden Content for This Client section above. School-wide settings still always apply.
-                </p>
-              </div>
             </Card>
 
-            <Card className="p-6 bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-gray-200 dark:border-gray-700">
+            {/* Enhanced Info Cards */}
+            <Card className="p-8 bg-gradient-to-br from-[#E8F0FF] to-[#F8F4FF] dark:from-[#1a1654] dark:to-[#2d1f5e] border-[#4A5FBA]/20 dark:border-[#6B9DFC]/20">
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Using SKIP IT. in Treatment</h3>
+              <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-3 list-disc list-inside leading-relaxed">
+                <li>Settings can be adjusted as treatment progresses.</li>
+                <li>Discuss media choices as part of coping skill development.</li>
+                <li>Use viewing patterns as conversation starters in sessions.</li>
+                <li>Encourage client autonomy in their viewing choices.</li>
+              </ul>
+            </Card>
+
+            {/* Data & Privacy Notice */}
+            <Card className="p-8 bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-gray-200 dark:border-gray-700">
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Data & Privacy</h3>
+              <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                By default, no scene-level details are shared back with the therapist in this concept. SKIP IT. is
+                designed to respect privacy and autonomy while supporting emotional safety.
+              </p>
+              <p className="text-xs text-gray-600 dark:text-gray-400 italic leading-relaxed">
+                Settings and preferences are stored securely and can only be accessed by authorized clinicians.
+              </p>
+            </Card>
+
+            {/* Yellow disclaimer card */}
+            <Card className="p-5 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800">
+              <p className="text-xs text-gray-700 dark:text-gray-300 italic leading-relaxed">
+                SKIP IT. is a support tool. It doesn't replace therapy, crisis services, or medical care.
+              </p>
+            </Card>
+
+            {/* Self-Soothing Plan */}
+            <Card className="p-8 bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-gray-200 dark:border-gray-700">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                 Self-Soothing Plan for This Client
               </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
                 These skills will show up on the client's screen before and after sensitive content.
               </p>
 
@@ -452,7 +379,7 @@ export default function TherapistControlPage() {
                 {selfSoothingSkills.map((skill) => (
                   <div
                     key={skill.id}
-                    className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 dark:bg-[#0D0B3B]/30 border border-gray-200 dark:border-gray-700"
+                    className="flex items-start gap-3 p-4 rounded-lg bg-gray-50 dark:bg-[#0D0B3B]/30 border border-gray-200 dark:border-gray-700"
                   >
                     <Switch
                       checked={skill.active}
@@ -479,93 +406,171 @@ export default function TherapistControlPage() {
 
               <button
                 onClick={addCustomSkill}
-                className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-[#4A5FBA] dark:hover:border-[#6B9DFC] hover:text-[#4A5FBA] dark:hover:text-[#6B9DFC] transition"
+                className="w-full mt-5 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-[#4A5FBA] dark:hover:border-[#6B9DFC] hover:text-[#4A5FBA] dark:hover:text-[#6B9DFC] transition"
               >
                 <Plus className="w-4 h-4" />
                 Add Custom Skill
               </button>
 
-              <p className="text-xs text-gray-600 dark:text-gray-400 mt-4 italic">
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-5 italic leading-relaxed">
                 This is not emergency support. Clients should still follow your crisis and safety plan.
               </p>
             </Card>
 
-            {/* Session Notes */}
-            <Card className="p-6 bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-gray-200 dark:border-gray-700">
-              <label htmlFor="session-notes" className="text-sm font-semibold text-gray-900 dark:text-white block mb-2">
-                Notes for this client's SKIP IT. settings (optional)
-              </label>
-              <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">Visible only to you. Not shown in the app.</p>
-              <Textarea
-                id="session-notes"
-                value={sessionNotes}
-                onChange={(e) => setSessionNotes(e.target.value)}
-                placeholder="Add any clinical notes about these settings..."
-                className="min-h-[100px] text-sm"
-                aria-describedby="session-notes-description"
-              />
-            </Card>
-          </div>
+            {/* Sensitization Mode */}
+            <Card className="p-8 bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Sensitization Mode</h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+                Plan how this client's settings will gently change over time.
+              </p>
 
-          {/* Right Column - Summary & Export */}
-          <div className="space-y-6">
-            {/* Summary Card */}
-            <Card className="p-6 bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-gray-200 dark:border-gray-700">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">What your client will see</h2>
-              <div className="space-y-3">
-                {generateSummary().map((item, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#4A5FBA] dark:bg-[#6B9DFC] mt-2 shrink-0" />
-                    <p className="text-sm text-gray-700 dark:text-gray-300">{item}</p>
+              {/* Current Sensitivity Level */}
+              <div className="mb-8">
+                <label className="text-sm font-medium text-gray-900 dark:text-white block mb-4">
+                  Current Sensitivity Level
+                </label>
+                <div className="flex gap-3">
+                  {[
+                    { value: "high", label: "High" },
+                    { value: "medium", label: "Medium" },
+                    { value: "low", label: "Low" },
+                  ].map((option) => (
+                    <button
+                      key={option.value}
+                      onClick={() => setCurrentSensitivity(option.value as SensitivityLevel)}
+                      className={`flex-1 px-4 py-3 rounded-xl text-sm font-medium transition ${
+                        currentSensitivity === option.value
+                          ? "bg-[#4A5FBA] dark:bg-[#6B9DFC] text-white"
+                          : "bg-gray-100 dark:bg-[#0D0B3B]/50 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#0D0B3B]"
+                      }`}
+                      aria-pressed={currentSensitivity === option.value}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-3 italic leading-relaxed">
+                  This doesn't replace clinical judgment. It helps you gradually adjust what this client sees.
+                </p>
+              </div>
+
+              {/* Plan Over Time */}
+              <div className="pt-8 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex items-center justify-between mb-5">
+                  <label className="text-sm font-medium text-gray-900 dark:text-white">Plan Over Time</label>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={addSensitizationStep}
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#4A5FBA] dark:bg-[#6B9DFC] text-white text-sm font-medium hover:brightness-95 transition"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Add Step
+                    </button>
+                    {sensitizationSteps.length > 0 && (
+                      <button
+                        onClick={clearSensitizationPlan}
+                        className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-100 dark:hover:bg-[#0D0B3B]/50 transition"
+                      >
+                        Clear Plan
+                      </button>
+                    )}
                   </div>
-                ))}
+                </div>
+
+                {sensitizationSteps.length === 0 ? (
+                  <p className="text-sm text-gray-600 dark:text-gray-400 italic text-center py-8">
+                    No steps added yet. Click "Add Step" to start planning.
+                  </p>
+                ) : (
+                  <div className="space-y-4">
+                    {sensitizationSteps.map((step, index) => (
+                      <div
+                        key={step.id}
+                        className="p-5 rounded-xl bg-gray-50 dark:bg-[#0D0B3B]/30 border border-gray-200 dark:border-gray-700"
+                      >
+                        <div className="flex items-center justify-between mb-4">
+                          <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                            Step {index + 1}
+                          </span>
+                          <button
+                            onClick={() => removeSensitizationStep(step.id)}
+                            className="text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition"
+                            aria-label="Remove this step"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+
+                        <div className="space-y-4">
+                          <div>
+                            <label className="text-xs text-gray-600 dark:text-gray-400 block mb-2">
+                              Sensitivity Level
+                            </label>
+                            <select
+                              value={step.level}
+                              onChange={(e) =>
+                                updateSensitizationStep(step.id, { level: e.target.value as SensitivityLevel })
+                              }
+                              className="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a1654] text-gray-900 dark:text-white text-sm"
+                            >
+                              <option value="high">High (most content hidden)</option>
+                              <option value="medium">Medium</option>
+                              <option value="low">Low (more content visible)</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="text-xs text-gray-600 dark:text-gray-400 block mb-2">
+                              Start around (timeframe)
+                            </label>
+                            <Input
+                              value={step.timeframe}
+                              onChange={(e) => updateSensitizationStep(step.id, { timeframe: e.target.value })}
+                              placeholder="e.g., Next 2 weeks, Week 4-6"
+                              className="text-sm"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="text-xs text-gray-600 dark:text-gray-400 block mb-2">
+                              Optional notes
+                            </label>
+                            <Textarea
+                              value={step.notes}
+                              onChange={(e) => updateSensitizationStep(step.id, { notes: e.target.value })}
+                              placeholder="e.g., start allowing mild emotional distress scenes"
+                              className="min-h-[60px] text-sm"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-5 italic p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg leading-relaxed">
+                  As you lower sensitivity over time, you can also adjust which themes stay hidden in the Hidden Content for This Client section above. School-wide settings still always apply.
+                </p>
               </div>
-
-              <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
-                <button className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#4A5FBA] hover:bg-[#3d4e9d] dark:bg-[#6B9DFC] dark:hover:bg-[#5a8ceb] text-white font-medium transition">
-                  <FileText className="w-4 h-4" />
-                  Generate client-friendly summary
-                </button>
-                <button className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-[#4A5FBA] dark:border-[#6B9DFC] text-[#4A5FBA] dark:text-[#6B9DFC] hover:bg-[#4A5FBA]/5 dark:hover:bg-[#6B9DFC]/10 font-medium transition">
-                  <Send className="w-4 h-4" />
-                  Apply to client's SKIP IT. account
-                </button>
-              </div>
-
-              <p className="text-xs text-gray-600 dark:text-gray-400 mt-4 italic">
-                This tool supports therapy; it does not replace clinical judgment.
-              </p>
-            </Card>
-
-            {/* Enhanced Info Cards */}
-            <Card className="p-6 bg-gradient-to-br from-[#E8F0FF] to-[#F8F4FF] dark:from-[#1a1654] dark:to-[#2d1f5e] border-[#4A5FBA]/20 dark:border-[#6B9DFC]/20">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Using SKIP IT. in Treatment</h3>
-              <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-2 list-disc list-inside">
-                <li>Settings can be adjusted as treatment progresses.</li>
-                <li>Discuss media choices as part of coping skill development.</li>
-                <li>Use viewing patterns as conversation starters in sessions.</li>
-                <li>Encourage client autonomy in their viewing choices.</li>
-              </ul>
-            </Card>
-
-            {/* Data & Privacy Notice */}
-            <Card className="p-6 bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-gray-200 dark:border-gray-700">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Data & Privacy</h3>
-              <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-3">
-                By default, no scene-level details are shared back with the therapist in this concept. SKIP IT. is
-                designed to respect privacy and autonomy while supporting emotional safety.
-              </p>
-              <p className="text-xs text-gray-600 dark:text-gray-400 italic">
-                Settings and preferences are stored securely and can only be accessed by authorized clinicians.
-              </p>
-            </Card>
-
-            <Card className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800">
-              <p className="text-xs text-gray-700 dark:text-gray-300 italic">
-                SKIP IT. is a support tool. It doesn't replace therapy, crisis services, or medical care.
-              </p>
             </Card>
           </div>
+        </div>
+
+        <div className="mt-8">
+          <Card className="p-8 bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-gray-200 dark:border-gray-700">
+            <label htmlFor="session-notes" className="text-sm font-semibold text-gray-900 dark:text-white block mb-2">
+              Notes for this client's SKIP IT. settings (optional)
+            </label>
+            <p className="text-xs text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">Visible only to you. Not shown in the app.</p>
+            <Textarea
+              id="session-notes"
+              value={sessionNotes}
+              onChange={(e) => setSessionNotes(e.target.value)}
+              placeholder="Add any clinical notes about these settings..."
+              className="min-h-[100px] text-sm"
+              aria-describedby="session-notes-description"
+            />
+          </Card>
         </div>
       </main>
     </div>

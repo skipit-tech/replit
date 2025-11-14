@@ -6,6 +6,13 @@ export type TriggerKey =
   | "emotional_distress"
   | "substance_use"
 
+export type OrganizationSettings = {
+  orgId: string // Required unique identifier
+  name?: string
+  enableHiddenTriggers?: boolean
+  hiddenTriggers?: TriggerKey[]
+}
+
 export type SchoolSettings = {
   schoolName?: string
   filteringEnabled?: boolean

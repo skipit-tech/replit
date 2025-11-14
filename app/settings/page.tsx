@@ -363,6 +363,32 @@ export default function SettingsPage() {
           </p>
           <div className="grid md:grid-cols-3 gap-4">
             <Link
+              href="/organization-admin"
+              className="group p-6 rounded-2xl bg-white dark:bg-[#0D0B3B] border-2 border-gray-200 dark:border-gray-700 hover:border-[#4A5FBA] dark:hover:border-[#6B9DFC] transition shadow-lg hover:shadow-xl hover:scale-105 transform"
+            >
+              <div className="text-4xl mb-3">🏢</div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-[#4A5FBA] dark:group-hover:text-[#6B9DFC] transition">
+                View as Organization Admin
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Manage network-wide content safety for churches, community centers, and organizations.
+              </p>
+            </Link>
+
+            <Link
+              href="/demo/patient"
+              className="group p-6 rounded-2xl bg-white dark:bg-[#0D0B3B] border-2 border-gray-200 dark:border-gray-700 hover:border-[#4A5FBA] dark:hover:border-[#6B9DFC] transition shadow-lg hover:shadow-xl hover:scale-105 transform"
+            >
+              <div className="text-4xl mb-3">💙</div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-[#4A5FBA] dark:group-hover:text-[#6B9DFC] transition">
+                View as Patient
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                See therapist-created self-soothe skills and support tools.
+              </p>
+            </Link>
+
+            <Link
               href="/demo/parent"
               className="group p-6 rounded-2xl bg-white dark:bg-[#0D0B3B] border-2 border-gray-200 dark:border-gray-700 hover:border-[#4A5FBA] dark:hover:border-[#6B9DFC] transition shadow-lg hover:shadow-xl hover:scale-105 transform"
             >

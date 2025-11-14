@@ -1,19 +1,26 @@
-import type { TriggerKey, SchoolSettings, TherapistSettings, UserSettings, Movie } from "@/lib/types/settings"
+import type { TriggerKey, OrganizationSettings, SchoolSettings, TherapistSettings, UserSettings, Movie } from "@/lib/types/settings"
 
 export function getEffectiveHiddenTriggers(opts: {
+  organization?: OrganizationSettings
   school?: SchoolSettings
   therapist?: TherapistSettings
   user?: UserSettings
 }): TriggerKey[] {
   const set = new Set<TriggerKey>()
 
-  // School settings take priority (they cannot be overridden)
+  // Organization settings take top priority (cannot be overridden)
+  if (opts.organization?.enableHiddenTriggers) {
+    ;(opts.organization?.hiddenTriggers ?? []).forEach((t) => set.add(t))
+  }
+  // School settings take second priority
   if (opts.school?.enableHiddenTriggers) {
     ;(opts.school?.hiddenTriggers ?? []).forEach((t) => set.add(t))
   }
+  // Therapist settings third
   if (opts.therapist?.enableHiddenTriggers) {
     ;(opts.therapist?.hiddenTriggers ?? []).forEach((t) => set.add(t))
   }
+  // User settings last
   if (opts.user?.enableHiddenTriggers) {
     ;(opts.user?.hiddenTriggers ?? []).forEach((t) => set.add(t))
   }
