@@ -4,14 +4,18 @@ import type React from "react"
 
 import Link from "next/link"
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Shield, Key, Users } from 'lucide-react'
-import { AppLogo } from "@/components/app-logo"
+import { useState } from 'react'
+import { LayoutDashboard, Shield, Key, Users, BookOpen, Video } from 'lucide-react'
+import { Logo } from "@/components/Logo"
+import { GuidedSetupModal } from "@/components/guided-setup-modal"
 
 const navItems = [
   { href: "/school-admin", label: "Overview", icon: LayoutDashboard },
   { href: "/school-admin/content-filters", label: "Content Filters", icon: Shield },
   { href: "/school-admin/access-code", label: "Access Code", icon: Key },
   { href: "/school-admin/kids-profiles", label: "Kids Profiles", icon: Users },
+  { href: "/school-admin/guided-setup", label: "Guided Setup", icon: BookOpen, action: "modal" },
+  { href: "/demo-mode", label: "Demo Mode", icon: Video },
 ]
 
 export default function SchoolAdminLayout({
@@ -20,6 +24,14 @@ export default function SchoolAdminLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
+  const [showGuidedSetup, setShowGuidedSetup] = useState(false)
+
+  const handleNavClick = (item: typeof navItems[0], e: React.MouseEvent) => {
+    if (item.action === "modal") {
+      e.preventDefault()
+      setShowGuidedSetup(true)
+    }
+  }
 
   return (
     <div className="flex min-h-screen bg-[#E8F0FF] dark:bg-[#0D0B3B]">
@@ -31,9 +43,7 @@ export default function SchoolAdminLayout({
       >
         {/* Logo */}
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-          <Link href="/" className="block" aria-label="Return to SKIP IT home">
-            <AppLogo />
-          </Link>
+          <Logo variant="full" size={32} linkTo="/" />
         </div>
 
         {/* Navigation */}
@@ -47,6 +57,7 @@ export default function SchoolAdminLayout({
                 <li key={item.href}>
                   <Link
                     href={item.href}
+                    onClick={(e) => handleNavClick(item, e)}
                     className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#6B9DFC] ${
                       isActive
                         ? "bg-[#d0e3ff]/30 dark:bg-[#6B9DFC]/20 text-[#0D0B3B] dark:text-white font-semibold"
@@ -78,6 +89,12 @@ export default function SchoolAdminLayout({
       <main className="flex-1 overflow-auto" role="main">
         <div className="max-w-6xl mx-auto p-8">{children}</div>
       </main>
+
+      <GuidedSetupModal
+        open={showGuidedSetup}
+        onClose={() => setShowGuidedSetup(false)}
+        userRole="school-admin"
+      />
     </div>
   )
 }

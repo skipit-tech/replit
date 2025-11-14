@@ -42,7 +42,10 @@ export default function PatientDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#E8F0FF] to-[#F8F4FF] dark:from-[#0D0B3B] dark:to-[#1A1654]">
       {/* Header */}
-      <header className="bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-b border-gray-200 dark:border-gray-700">
+      <header 
+        className="bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-b border-gray-200 dark:border-gray-700"
+        role="banner"
+      >
         <div className="max-w-6xl mx-auto px-8 py-6 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3">
@@ -66,15 +69,15 @@ export default function PatientDashboard() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-8 py-10 space-y-8">
+      <main className="max-w-6xl mx-auto px-8 py-10 space-y-8" role="main" aria-label="Patient dashboard with self-soothe skills">
         {/* Self-Soothe Skills Section */}
         {hasSkills ? (
           <>
-            <section>
+            <section aria-labelledby="skills-heading">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <Heart className="w-6 h-6 text-rose-500" />
+                  <h2 id="skills-heading" className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <Heart className="w-6 h-6 text-rose-500" aria-hidden="true" />
                     Self-Soothe Skills
                   </h2>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
@@ -86,15 +89,22 @@ export default function PatientDashboard() {
                 </div>
                 <button
                   onClick={() => setShowSkillLibrary(!showSkillLibrary)}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-[#1a1654] border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-[#4A5FBA] dark:hover:border-[#6B9DFC] transition font-medium text-sm"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-[#1a1654] border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-[#4A5FBA] dark:hover:border-[#6B9DFC] transition font-medium text-sm focus:outline-none focus:ring-2 focus:ring-[#4A5FBA] dark:focus:ring-[#6B9DFC]"
+                  aria-expanded={showSkillLibrary}
+                  aria-controls="skills-grid"
                 >
-                  <BookOpen className="w-4 h-4" />
+                  <BookOpen className="w-4 h-4" aria-hidden="true" />
                   {showSkillLibrary ? "Hide" : "View All Skills"}
                 </button>
               </div>
 
               {/* Skill Cards Grid */}
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div 
+                id="skills-grid"
+                className="grid md:grid-cols-2 lg:grid-cols-3 gap-5"
+                role="list"
+                aria-label="Self-soothe skills"
+              >
                 {(showSkillLibrary ? therapistSkills : therapistSkills.slice(0, 3)).map((skill, index) => (
                   <SelfSootheSkillCard
                     key={index}
@@ -167,19 +177,21 @@ export default function PatientDashboard() {
           </>
         ) : (
           // No Skills State
-          <Card className="p-12 text-center bg-white/90 dark:bg-[#1a1654]/90">
-            <div className="max-w-md mx-auto">
-              <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mx-auto mb-4">
-                <Heart className="w-8 h-8 text-gray-400" />
+          <section aria-labelledby="no-skills-heading">
+            <Card className="p-12 text-center bg-white/90 dark:bg-[#1a1654]/90">
+              <div className="max-w-md mx-auto">
+                <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mx-auto mb-4" aria-hidden="true">
+                  <Heart className="w-8 h-8 text-gray-400" />
+                </div>
+                <h3 id="no-skills-heading" className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                  Self-Soothe Skills
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Your therapist will add tools here to support grounding and safety.
+                </p>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                Self-Soothe Skills
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Your therapist will add tools here to support grounding and safety.
-              </p>
-            </div>
-          </Card>
+            </Card>
+          </section>
         )}
       </main>
 

@@ -134,13 +134,16 @@ export default function ParentControlPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#E8F0FF] to-[#F0E8FF] dark:from-[#0D0B3B] dark:to-[#1A1654]">
       {/* Header */}
-      <header className="bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-b border-gray-200 dark:border-gray-700">
+      <header 
+        className="bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-b border-gray-200 dark:border-gray-700"
+        role="banner"
+      >
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3">
               <Link
                 href="/"
-                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition focus:outline-none focus:ring-2 focus:ring-[#4A5FBA] dark:focus:ring-[#6B9DFC] rounded"
                 aria-label="Go back to main app"
               >
                 <ChevronLeft className="w-5 h-5" />
@@ -152,12 +155,13 @@ export default function ParentControlPage() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <Badge variant="secondary" className="px-3 py-1.5">
+            <Badge variant="secondary" className="px-3 py-1.5" role="status">
               Parent account
             </Badge>
             <Link
               href="/"
-              className="text-sm font-medium text-[#4A5FBA] hover:text-[#3d4e9d] dark:text-[#6B9DFC] dark:hover:text-[#8fb3fc] transition"
+              className="text-sm font-medium text-[#4A5FBA] hover:text-[#3d4e9d] dark:text-[#6B9DFC] dark:hover:text-[#8fb3fc] transition focus:outline-none focus:ring-2 focus:ring-[#4A5FBA] dark:focus:ring-[#6B9DFC] rounded px-2 py-1"
+              aria-label="Switch to viewer mode and leave parent controls"
             >
               Switch to viewer mode
             </Link>
@@ -166,7 +170,7 @@ export default function ParentControlPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main className="max-w-7xl mx-auto px-6 py-8" role="main" aria-label="Parent control settings">
         <div className="grid lg:grid-cols-[400px_1fr] gap-6">
           {/* Left Column - Kids & Filters */}
           <div className="space-y-6">

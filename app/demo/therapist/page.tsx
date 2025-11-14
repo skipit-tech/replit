@@ -189,7 +189,7 @@ export default function TherapistControlPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#E8F0FF] to-[#F8F4FF] dark:from-[#0D0B3B] dark:to-[#1A1654]">
       {/* Header */}
-      <header className="bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-b border-gray-200 dark:border-gray-700">
+      <header className="bg-white/90 dark:bg-[#1a1654]/90 backdrop-blur border-b border-gray-200 dark:border-gray-700" role="banner">
         <div className="max-w-[1600px] mx-auto px-8 py-6 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3">
@@ -233,7 +233,7 @@ export default function TherapistControlPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-[1600px] mx-auto px-8 py-10">
+      <main className="max-w-[1600px] mx-auto px-8 py-10" role="main" aria-label="Therapist control settings">
         <div className="grid lg:grid-cols-[480px_1fr] gap-8">
           {/* Left Column - Client Profile & Settings */}
           <div className="space-y-8">
@@ -378,7 +378,7 @@ export default function TherapistControlPage() {
               <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 space-y-3">
                 <button
                   onClick={handleGenerateSummary}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-[#4A5FBA] hover:bg-[#3d4e9d] dark:bg-[#6B9DFC] dark:hover:bg-[#5a8ceb] text-white font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A5FBA] dark:focus-visible:ring-[#6B9DFC] focus-visible:ring-offset-2"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-[#4A5FBA] hover:bg-[#3d4e9d] dark:bg-[#6B9DFC] dark:hover:bg-[#5a8ceb] text-white font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A5FBA] dark:focus-visible:ring-[#6B9DFC]"
                 >
                   <FileText className="w-4 h-4" />
                   Generate Summary
@@ -632,10 +632,13 @@ export default function TherapistControlPage() {
       </main>
 
       <Dialog open={isSummaryOpen} onOpenChange={setIsSummaryOpen}>
-        <DialogContent className="max-w-lg bg-white dark:bg-[#1a1654] border-gray-200 dark:border-gray-700">
+        <DialogContent 
+          className="max-w-lg bg-white dark:bg-[#1a1654] border-gray-200 dark:border-gray-700"
+          aria-describedby="summary-description"
+        >
           <DialogHeader>
             <DialogTitle className="text-gray-900 dark:text-white">Client-friendly summary</DialogTitle>
-            <DialogDescription className="text-gray-600 dark:text-gray-400">
+            <DialogDescription id="summary-description" className="text-gray-600 dark:text-gray-400">
               You can edit this before sharing it with your client.
             </DialogDescription>
           </DialogHeader>
@@ -644,6 +647,7 @@ export default function TherapistControlPage() {
             value={clientSummary}
             onChange={(e) => setClientSummary(e.target.value)}
             className="mt-3 h-48 resize-none rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#0D0B3B]/50 p-3 text-sm text-gray-900 dark:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A5FBA] dark:focus-visible:ring-[#6B9DFC]"
+            aria-label="Edit client summary text"
           />
 
           <div className="mt-4 flex items-center justify-between gap-3">

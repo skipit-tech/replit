@@ -2,31 +2,23 @@
 
 import Image from "next/image"
 import { useTheme } from "next-themes"
-import { cn } from "@/lib/utils"
 
-interface AppLogoProps {
-  className?: string
-}
-
-export function AppLogo({ className }: AppLogoProps) {
+export function AppLogo() {
   const { theme } = useTheme()
-
   const isDark = theme === "dark"
 
   const src = isDark
-    ? "/branding/skipit-logo-dark.png"
-    : "/branding/skipit-logo-light.png"
+    ? "/branding/skipit-logo-light.png"   // white logo for dark mode
+    : "/branding/skipit-logo-dark.png"    // blue/dark logo for light mode
 
   return (
-    <div className={cn("flex items-center gap-2", className)}>
-      <Image
-        src={src || "/placeholder.svg"}
-        alt="SKIP IT. logo"
-        width={140}
-        height={32}
-        priority
-        className="h-8 w-auto"
-      />
-    </div>
+    <Image
+      src={src || "/placeholder.svg"}
+      alt="SKIP IT. logo"
+      width={150}
+      height={40}
+      priority
+      className="h-10 w-auto"
+    />
   )
 }
